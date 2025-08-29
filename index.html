@@ -875,6 +875,17 @@
         app = initializeApp(firebaseConfig);
         db = getFirestore(app);
         auth = getAuth(app);
+        
+        // FIX: Event listener for guest sign-in
+        document.getElementById('guest-signin-btn').addEventListener('click', async () => {
+            const lang = LANGUAGES[currentLanguage];
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Guest Sign-in failed:", error);
+                showMessageBox(lang.messageBox.guestError);
+            }
+        });
 
         // Firebase Auth State Listener
         onAuthStateChanged(auth, async (user) => {
@@ -971,7 +982,8 @@
                 signInAnonymously(auth);
             });
         } else {
-            signInAnonymously(auth);
+            // FIX: Removed this call to allow 'guest-signin-btn' to work
+            // signInAnonymously(auth);
         }
 
         // --- Event Listeners ---
@@ -985,17 +997,7 @@
                 showMessageBox(lang.messageBox.authError);
             }
         });
-
-        document.getElementById('guest-signin-btn').addEventListener('click', async () => {
-            const lang = LANGUAGES[currentLanguage];
-            try {
-                await signInAnonymously(auth);
-            } catch (error) {
-                console.error("Guest Sign-in failed:", error);
-                showMessageBox(lang.messageBox.guestError);
-            }
-        });
-
+        
         adSubmissionForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const lang = LANGUAGES[currentLanguage];
