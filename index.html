@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rx Store</title>
+    <!-- Inter & Noto Sans Arabic Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --font-arabic: 'Noto Sans Arabic', sans-serif;
+            --font-english: 'Inter', sans-serif;
+        }
+        body {
+            background-color: #000;
+            color: #d1d5db;
+            transition: background-color 0.5s ease;
+        }
+        [lang="ar"] {
+            font-family: var(--font-arabic);
+        }
+        [lang="en"] {
+            font-family: var(--font-english);
+        }
+        .gold-text { color: #FFD700; }
+        .gold-border { border-color: #FFD700; }
+        .gold-gradient-bg { background: linear-gradient(90deg, #FFD700, #DAA520); }
+        .card {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #FFD700;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .text-slide-in {
+            animation: slideInFromRight 1s ease-out forwards;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        .text-slide-in-1 { animation-delay: 0.2s; }
+        .text-slide-in-2 { animation-delay: 0.4s; }
+        .text-slide-in-3 { animation-delay: 0.6s; }
+        .text-slide-in-4 { animation-delay: 0.8s; }
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .product-card-animation {
+            animation: slideInAndFade 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        @keyframes slideInAndFade {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        /* Fix: Use transform for sidebar visibility */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%); /* Default state: hidden on the right */
+        }
+        [dir="rtl"] #sidebar {
+            right: unset;
+            left: 0;
+            transform: translateX(-100%); /* Default state: hidden on the left */
+        }
+        #sidebar.open {
+            transform: translateX(0); /* Open state */
+        }
+        [dir="rtl"] #sidebar.open {
+            transform: translateX(0); /* Open state */
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-300">
+
+    <!-- Language & Welcome Screen -->
+    <div id="language-page" class="fixed inset-0 bg-black flex flex-col items-center justify-center text-center z-50">
+        <div id="welcome-message-container" class="mb-8 p-4 card max-w-2xl text-xl">
+            <h1 id="welcome-text-1" class="text-3xl font-bold gold-text text-slide-in text-slide-in-1"></h1>
+            <p id="welcome-text-2" class="mt-4 text-slide-in text-slide-in-2"></p>
+        </div>
+        <div class="flex space-x-4">
+            <button id="next-btn" class="bg-gray-700 text-gray-200 py-3 px-6 rounded-full transition-colors hover:bg-gray-600 font-semibold"></button>
+            <button id="skip-btn" class="gold-gradient-bg text-black font-semibold py-3 px-6 rounded-full transition-transform hover:scale-105"></button>
+        </div>
+    </div>
+    
+    <!-- Auth & Language Selection Page -->
+    <div id="auth-page" class="hidden fixed inset-0 bg-black flex flex-col items-center justify-center p-8 z-40">
+        <div class="card p-8 text-center max-w-sm w-full">
+            <h1 id="auth-title" class="text-4xl font-bold gold-text"></h1>
+            <p id="auth-subtitle" class="text-gray-400 mt-2"></p>
+            <div class="mt-8 flex justify-center space-x-4">
+                <button id="lang-ar-btn" class="lang-btn bg-gray-700 text-gray-200 py-2 px-4 rounded-lg">العربية</button>
+                <button id="lang-en-btn" class="lang-btn bg-gray-700 text-gray-200 py-2 px-4 rounded-lg">English</button>
+            </div>
+            <button id="google-signin-btn" class="mt-8 gold-gradient-bg text-black font-semibold py-3 px-6 rounded-lg w-full flex items-center justify-center space-x-2">
+                <i class="fab fa-google text-lg"></i>
+                <span id="google-signin-text" class="mr-2"></span>
+            </button>
+            <button id="guest-signin-btn" class="mt-4 bg-gray-700 text-gray-200 py-3 px-6 rounded-lg w-full transition-colors hover:bg-gray-600">
+                <span id="guest-signin-text"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Application Container -->
+    <div id="main-app" class="hidden">
+        <!-- Header & Hamburger Menu Button -->
+        <header class="bg-black p-4 flex justify-between items-center gold-border border-b">
+            <div class="flex items-center">
+                <h1 class="text-4xl font-bold gold-text">Rx</h1>
+                <h2 class="text-xl ml-2 font-semibold text-gray-200">Store</h2>
+            </div>
+            <button id="menu-toggle-btn" class="text-gray-300 hover:text-white transition-colors">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </header>
+
+        <!-- Sidebar -->
+        <nav id="sidebar" class="fixed top-0 right-0 h-full w-64 bg-gray-900 shadow-lg z-40 p-6 flex flex-col">
+            <div class="flex justify-end mb-8">
+                <button id="sidebar-close-btn" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <ul class="space-y-4 flex-grow">
+                <li><button data-page="home" class="nav-btn w-full text-left text-lg py-2 px-4 rounded-lg transition-colors hover:bg-gray-800"></button></li>
+                <li><button data-page="products" class="nav-btn w-full text-left text-lg py-2 px-4 rounded-lg transition-colors hover:bg-gray-800"></button></li>
+                <li><button data-page="ad-submission" class="nav-btn w-full text-left text-lg py-2 px-4 rounded-lg transition-colors hover:bg-gray-800"></button></li>
+                <li><button data-page="about-us" class="nav-btn w-full text-left text-lg py-2 px-4 rounded-lg transition-colors hover:bg-gray-800"></button></li>
+                <li id="admin-nav-item" class="hidden">
+                    <button data-page="admin-panel" class="nav-btn w-full text-left text-lg py-2 px-4 rounded-lg transition-colors gold-text hover:bg-gray-800"></button>
+                </li>
+            </ul>
+            <div class="mt-8">
+                <p id="user-id" class="text-sm text-gray-500 mb-4"></p>
+                <div class="mb-4">
+                    <label for="admin-password" id="admin-pass-label" class="block text-sm font-medium text-gray-400 mb-1"></label>
+                    <input type="password" id="admin-password" class="w-full px-3 py-2 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-1 focus:ring-yellow-400">
+                </div>
+                <button id="admin-login-btn" class="gold-gradient-bg text-black font-semibold py-2 px-4 rounded-lg w-full"></button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="p-8 min-h-screen">
+            <!-- Home Page -->
+            <section id="home-page" class="page">
+                <div class="text-center py-20">
+                    <h2 id="home-title" class="text-5xl font-bold gold-text animate-pulse"></h2>
+                    <p id="home-subtitle" class="text-2xl text-gray-300 mt-4"></p>
+                </div>
+            </section>
+
+            <!-- Products Page -->
+            <section id="products-page" class="page hidden">
+                <h2 id="products-title" class="text-4xl font-bold gold-text text-center mb-8"></h2>
+                <div id="products-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Products will be dynamically added here -->
+                </div>
+                <div id="products-status" class="text-center mt-8"></div>
+            </section>
+
+            <!-- Ad Submission Page -->
+            <section id="ad-submission-page" class="page hidden">
+                <div class="max-w-xl mx-auto card p-6">
+                    <h2 id="ad-submission-title" class="text-4xl font-bold gold-text text-center mb-6"></h2>
+                    <form id="ad-submission-form" class="space-y-6">
+                        <div>
+                            <label id="label-name" for="product-name" class="block text-sm font-medium"></label>
+                            <input type="text" id="product-name" name="product-name" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200 focus:outline-none focus:ring-1 focus:ring-yellow-400">
+                        </div>
+                        <div>
+                            <label id="label-desc" for="product-desc" class="block text-sm font-medium"></label>
+                            <textarea id="product-desc" name="product-desc" rows="3" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200 focus:outline-none focus:ring-1 focus:ring-yellow-400"></textarea>
+                        </div>
+                        <div>
+                            <label id="label-price" for="product-price" class="block text-sm font-medium"></label>
+                            <input type="number" id="product-price" name="product-price" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200 focus:outline-none focus:ring-1 focus:ring-yellow-400">
+                        </div>
+                        <div>
+                            <label id="label-img" for="product-img" class="block text-sm font-medium"></label>
+                            <input type="url" id="product-img" name="product-img" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200 focus:outline-none focus:ring-1 focus:ring-yellow-400">
+                        </div>
+                        <div>
+                            <label id="label-link" for="product-link" class="block text-sm font-medium"></label>
+                            <input type="url" id="product-link" name="product-link" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200 focus:outline-none focus:ring-1 focus:ring-yellow-400"></textarea>
+                        </div>
+                        <button id="submit-ad-btn" type="submit" class="gold-gradient-bg text-black font-semibold py-3 px-6 rounded-lg w-full transition-transform hover:scale-105"></button>
+                    </form>
+                    <div id="ad-submission-status" class="mt-4 text-center text-sm"></div>
+                </div>
+            </section>
+
+            <!-- About Us Page -->
+            <section id="about-us-page" class="page hidden max-w-3xl mx-auto card p-8 text-center">
+                <h2 id="about-us-title" class="text-4xl font-bold gold-text mb-6"></h2>
+                <p id="about-us-p1" class="text-lg text-gray-400 mb-4"></p>
+                <p id="about-us-p2" class="text-lg text-gray-400"></p>
+            </section>
+
+            <!-- Admin Panel -->
+            <section id="admin-panel" class="page hidden">
+                <h2 id="admin-title" class="text-4xl font-bold gold-text text-center mb-8"></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Add Product Section -->
+                    <div class="card p-6">
+                        <h3 id="add-product-title" class="text-2xl font-semibold mb-4"></h3>
+                        <form id="add-product-form" class="space-y-4">
+                            <div>
+                                <label id="admin-label-name" for="admin-product-name" class="block text-sm font-medium"></label>
+                                <input type="text" id="admin-product-name" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200">
+                            </div>
+                            <div>
+                                <label id="admin-label-desc" for="admin-product-desc" class="block text-sm font-medium"></label>
+                                <textarea id="admin-product-desc" rows="3" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200"></textarea>
+                            </div>
+                            <div>
+                                <label id="admin-label-price" for="admin-product-price" class="block text-sm font-medium"></label>
+                                <input type="number" id="admin-product-price" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200">
+                            </div>
+                            <div>
+                                <label id="admin-label-img" for="admin-product-img" class="block text-sm font-medium"></label>
+                                <input type="url" id="admin-product-img" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200">
+                            </div>
+                            <div>
+                                <label id="admin-label-link" for="admin-product-link" class="block text-sm font-medium"></label>
+                                <input type="url" id="admin-product-link" required class="mt-1 block w-full px-3 py-2 bg-gray-800 border gold-border rounded-md text-gray-200">
+                            </div>
+                            <button id="admin-add-btn" type="submit" class="gold-gradient-bg text-black font-semibold py-2 px-4 rounded-lg w-full"></button>
+                        </form>
+                        <div id="add-product-status" class="mt-4 text-center text-sm"></div>
+                    </div>
+                    <!-- Review Ads Section -->
+                    <div class="card p-6">
+                        <h3 id="pending-ads-title" class="text-2xl font-semibold mb-4"></h3>
+                        <div id="pending-ads-list" class="space-y-4">
+                            <!-- Pending ads will be dynamically added here -->
+                        </div>
+                        <div id="pending-ads-status" class="mt-4 text-center text-sm"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Chatbot Button -->
+        <button id="chat-toggle-btn" class="fixed bottom-8 right-8 bg-gray-800 text-yellow-400 p-4 rounded-full shadow-lg transition-transform hover:scale-110 z-30">
+            <i class="fas fa-comment-dots text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Chatbot Modal -->
+    <div id="chat-modal" class="hidden fixed inset-0 flex items-center justify-center p-4 z-50 bg-black bg-opacity-75">
+        <div class="card w-full max-w-md h-full max-h-[80vh] flex flex-col">
+            <div class="p-4 gold-border border-b flex justify-between items-center">
+                <h3 id="chat-title" class="text-xl font-bold gold-text"></h3>
+                <button id="chat-close-btn" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div id="chat-history" class="p-4 flex-grow overflow-y-auto space-y-4">
+                <div class="flex justify-start">
+                    <div class="bg-gray-700 text-gray-100 p-3 rounded-lg max-w-[80%]">
+                        <p id="initial-chat-msg"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 gold-border border-t flex items-center space-x-2">
+                <input type="text" id="chat-input" class="flex-grow px-3 py-2 bg-gray-800 border gold-border rounded-full text-gray-200 focus:outline-none focus:ring-1 focus:ring-yellow-400">
+                <button id="chat-send-btn" class="gold-gradient-bg text-black p-3 rounded-full">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Box Modal (for alerts) -->
+    <div id="message-box-modal" class="hidden fixed inset-0 flex items-center justify-center p-4 z-[60] bg-black bg-opacity-75">
+        <div class="card p-6 text-center max-w-sm w-full space-y-4">
+            <p id="message-box-text" class="text-lg"></p>
+            <button id="message-box-close-btn" class="gold-gradient-bg text-black font-semibold py-2 px-4 rounded-lg"></button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // --- Global Variables and Constants ---
+        const LANGUAGES = {
+            ar: {
+                welcome: {
+                    title: "أهلاً بك في Rx Store",
+                    messages: [
+                        "معنا لا حاجة للخوف من النصب أو الاحتيال.",
+                        "هنا نجمع لك مصادر لمنتجات مضمونة حتى تشتري دون قلق.",
+                        "ولدينا فريق دعم فني لحل مشاكلك ومساعد ذكي يساعدك في أي شيء بالموقع.",
+                        "مع Rx Store، لا حاجة للقلق."
+                    ],
+                    nextBtn: "التالي",
+                    skipBtn: "تخطي"
+                },
+                auth: {
+                    title: "تسجيل الدخول",
+                    subtitle: "اختر طريقة الدخول:",
+                    googleBtn: "الدخول باستخدام Google",
+                    guestBtn: "الدخول كزائر"
+                },
+                nav: {
+                    home: "الرئيسية",
+                    products: "المنتجات",
+                    adSubmission: "إضافة إعلان",
+                    aboutUs: "من نحن",
+                    adminPanel: "لوحة المشرف",
+                    adminLoginBtn: "دخول المشرف",
+                    adminPassLabel: "كلمة سر المشرف"
+                },
+                home: {
+                    title: "مرحباً بك في Rx Store",
+                    subtitle: "بوابتك لمنتجات موثوقة وعالية الجودة."
+                },
+                products: {
+                    title: "منتجاتنا",
+                    status: {
+                        loading: "جاري تحميل المنتجات...",
+                        empty: "لا توجد منتجات معتمدة حتى الآن."
+                    },
+                    buyBtn: "شراء الآن",
+                    imgFallback: "صورة غير متوفرة"
+                },
+                adSubmission: {
+                    title: "أضف منتجك للإعلان",
+                    labels: {
+                        name: "اسم المنتج",
+                        desc: "الوصف",
+                        price: "السعر",
+                        img: "رابط الصورة",
+                        link: "رابط المنتج (برنامج Amazon Affiliate)"
+                    },
+                    submitBtn: "إرسال الطلب",
+                    status: {
+                        success: "تم إرسال طلبك بنجاح! سيتم مراجعته قريبًا.",
+                        error: "حدث خطأ أثناء إرسال الطلب. الرجاء المحاولة مرة أخرى."
+                    }
+                },
+                aboutUs: {
+                    title: "من نحن",
+                    p1: "في عالم التجارة الإلكترونية المزدحم، تبرز الحاجة إلى منصة موثوقة. Rx Store هو الحل الأمثل. نحن لا نبيع المنتجات مباشرة، بل نقدم لك أفضل المنتجات المعتمدة من مصادر موثوقة مثل Amazon، مع ضمان أعلى مستويات الجودة والأمان.",
+                    p2: "مهمتنا هي بناء الثقة بينك وبين المنتج. نقوم بفحص المنتجات بعناية لنوفر لك تجربة تسوق خالية من القلق. إذا كنت بائعاً وترغب في عرض منتجك، يمكنك إرسال طلب إعلان ليقوم فريقنا بمراجعته."
+                },
+                admin: {
+                    title: "لوحة تحكم المشرف",
+                    addProduct: {
+                        title: "إضافة منتج جديد",
+                        labels: {
+                            name: "اسم المنتج",
+                            desc: "الوصف",
+                            price: "السعر",
+                            img: "رابط الصورة",
+                            link: "رابط المنتج"
+                        },
+                        addBtn: "إضافة المنتج",
+                        status: {
+                            success: "تم إضافة المنتج بنجاح!",
+                            error: "حدث خطأ أثناء إضافة المنتج. الرجاء المحاولة مرة أخرى."
+                        }
+                    },
+                    pendingAds: {
+                        title: "طلبات الإعلانات المعلقة",
+                        acceptBtn: "قبول",
+                        deleteBtn: "حذف",
+                        submitter: "المقدم",
+                        status: {
+                            loading: "جاري تحميل الطلبات...",
+                            empty: "لا توجد طلبات معلقة حاليًا."
+                        },
+                        actionStatus: {
+                            acceptSuccess: "تم قبول المنتج وإضافته بنجاح.",
+                            acceptError: "حدث خطأ أثناء قبول الإعلان.",
+                            deleteSuccess: "تم حذف الإعلان بنجاح.",
+                            deleteError: "حدث خطأ أثناء حذف الإعلان."
+                        }
+                    }
+                },
+                chat: {
+                    title: "مساعد Rx Store",
+                    initialMsg: "مرحباً! أنا مساعدك الافتراضي في Rx Store. كيف يمكنني مساعدتك اليوم؟",
+                    inputPlaceholder: "اكتب رسالتك...",
+                    thinking: "جاري الرد...",
+                    apiError: "عذرًا، لم أتمكن من الرد. الرجاء المحاولة مرة أخرى.",
+                    technicalError: "عذرًا، حدث خطأ أثناء الاتصال بالدعم الفني. الرجاء المحاولة لاحقًا."
+                },
+                messageBox: {
+                    okBtn: "حسنًا",
+                    authError: "فشل تسجيل الدخول باستخدام Google.",
+                    guestError: "فشل تسجيل الدخول كزائر.",
+                    fetchProductsError: "فشل في تحميل المنتجات.",
+                    fetchPendingAdsError: "فشل في تحميل طلبات الإعلانات.",
+                    adminLoginSuccess: "تم الدخول كمسؤول.",
+                    adminLoginError: "كلمة السر خاطئة.",
+                    passwordEmpty: "الرجاء إدخال كلمة السر."
+                }
+            },
+            en: {
+                welcome: {
+                    title: "Welcome to Rx Store",
+                    messages: [
+                        "With us, you don't have to worry about scams or fraud.",
+                        "Here, we gather trusted sources for guaranteed products so you can buy without fear.",
+                        "We have a technical support team to solve your problems and a smart assistant to help you with anything on the site.",
+                        "With Rx Store, there's no need to worry."
+                    ],
+                    nextBtn: "Next",
+                    skipBtn: "Skip"
+                },
+                auth: {
+                    title: "Sign In",
+                    subtitle: "Choose your sign-in method:",
+                    googleBtn: "Sign in with Google",
+                    guestBtn: "Sign in as Guest"
+                },
+                nav: {
+                    home: "Home",
+                    products: "Products",
+                    adSubmission: "Add Ad",
+                    aboutUs: "About Us",
+                    adminPanel: "Admin Panel",
+                    adminLoginBtn: "Admin Login",
+                    adminPassLabel: "Admin Password"
+                },
+                home: {
+                    title: "Welcome to Rx Store",
+                    subtitle: "Your gateway to reliable and high-quality products."
+                },
+                products: {
+                    title: "Our Products",
+                    status: {
+                        loading: "Loading products...",
+                        empty: "No approved products yet."
+                    },
+                    buyBtn: "Buy Now",
+                    imgFallback: "Image not available"
+                },
+                adSubmission: {
+                    title: "Add your product for advertising",
+                    labels: {
+                        name: "Product Name",
+                        desc: "Description",
+                        price: "Price",
+                        img: "Image URL",
+                        link: "Product Link (Amazon Affiliate)"
+                    },
+                    submitBtn: "Submit Request",
+                    status: {
+                        success: "Your request has been submitted successfully! It will be reviewed soon.",
+                        error: "An error occurred while submitting the request. Please try again."
+                    }
+                },
+                aboutUs: {
+                    title: "About Us",
+                    p1: "In the crowded world of e-commerce, a reliable platform is essential. Rx Store is the perfect solution. We don't sell products directly; instead, we offer you the best verified products from trusted sources like Amazon, ensuring the highest quality and security.",
+                    p2: "Our mission is to build trust between you and the product. We carefully review products to provide you with a worry-free shopping experience. If you are a seller and want to showcase your product, you can submit an ad request for our team to review."
+                },
+                admin: {
+                    title: "Admin Panel",
+                    addProduct: {
+                        title: "Add a New Product",
+                        labels: {
+                            name: "Product Name",
+                            desc: "Description",
+                            price: "Price",
+                            img: "Image URL",
+                            link: "Product Link"
+                        },
+                        addBtn: "Add Product",
+                        status: {
+                            success: "Product added successfully!",
+                            error: "An error occurred while adding the product. Please try again."
+                        }
+                    },
+                    pendingAds: {
+                        title: "Pending Ad Requests",
+                        acceptBtn: "Accept",
+                        deleteBtn: "Delete",
+                        submitter: "Submitter",
+                        status: {
+                            loading: "Loading pending requests...",
+                            empty: "No pending requests at the moment."
+                        },
+                        actionStatus: {
+                            acceptSuccess: "Product accepted and added successfully.",
+                            acceptError: "An error occurred while accepting the ad.",
+                            deleteSuccess: "Ad deleted successfully.",
+                            deleteError: "An error occurred while deleting the ad."
+                        }
+                    }
+                },
+                chat: {
+                    title: "Rx Store Assistant",
+                    initialMsg: "Hello! I'm your virtual assistant at Rx Store. How can I help you today?",
+                    inputPlaceholder: "Type your message...",
+                    thinking: "Typing...",
+                    apiError: "Sorry, I couldn't respond. Please try again.",
+                    technicalError: "Sorry, an error occurred while connecting to technical support. Please try again later."
+                },
+                messageBox: {
+                    okBtn: "OK",
+                    authError: "Google sign-in failed.",
+                    guestError: "Guest sign-in failed.",
+                    fetchProductsError: "Failed to load products.",
+                    fetchPendingAdsError: "Failed to load ad requests.",
+                    adminLoginSuccess: "Logged in as admin.",
+                    adminLoginError: "Incorrect password.",
+                    passwordEmpty: "Please enter a password."
+                }
+            }
+        };
+
+        // NEW: Admin password hardcoded as requested
+        const ADMIN_PASSWORD = '0112452'; 
+        // NEW: Gemini API key hardcoded as requested.
+        // NOTE: In a real-world application, this should be stored securely on a backend server, not exposed in client-side code.
+        const GEMINI_API_KEY = 'AIzaSyAlh8fV3nmMPzn1vKfC3k9H6c6UybfbX_s';
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth, userId, currentLanguage;
+        let onboardingCompleted = localStorage.getItem('onboardingCompleted') === 'true';
+        let welcomeMessageIndex = 0;
+        let isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+        // UI Element References
+        const languagePage = document.getElementById('language-page');
+        const welcomeTextContainer = document.getElementById('welcome-message-container');
+        const welcomeText1 = document.getElementById('welcome-text-1');
+        const welcomeText2 = document.getElementById('welcome-text-2');
+        const nextBtn = document.getElementById('next-btn');
+        const skipBtn = document.getElementById('skip-btn');
+        const authPage = document.getElementById('auth-page');
+        const langArBtn = document.getElementById('lang-ar-btn');
+        const langEnBtn = document.getElementById('lang-en-btn');
+        const mainApp = document.getElementById('main-app');
+        const pages = document.querySelectorAll('.page');
+        const sidebar = document.getElementById('sidebar');
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const adminNavItem = document.getElementById('admin-nav-item');
+        const adminPasswordInput = document.getElementById('admin-password');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const userIdSpan = document.getElementById('user-id');
+        const productsList = document.getElementById('products-list');
+        const pendingAdsList = document.getElementById('pending-ads-list');
+        const adSubmissionForm = document.getElementById('ad-submission-form');
+        const adSubmissionStatus = document.getElementById('ad-submission-status');
+        const addProductForm = document.getElementById('add-product-form');
+        const addProductStatus = document.getElementById('add-product-status');
+        const productsStatus = document.getElementById('products-status');
+        const pendingAdsStatus = document.getElementById('pending-ads-status');
+        const chatToggleBtn = document.getElementById('chat-toggle-btn');
+        const chatModal = document.getElementById('chat-modal');
+        const chatCloseBtn = document.getElementById('chat-close-btn');
+        const chatHistory = document.getElementById('chat-history');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const messageBoxModal = document.getElementById('message-box-modal');
+        const messageBoxText = document.getElementById('message-box-text');
+        const messageBoxCloseBtn = document.getElementById('message-box-close-btn');
+
+        // --- Utility Functions ---
+        function showMessageBox(message) {
+            messageBoxText.textContent = message;
+            messageBoxModal.classList.remove('hidden');
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            updateUI();
+        }
+
+        function updateUI() {
+            const lang = LANGUAGES[currentLanguage];
+            // Welcome Page
+            welcomeText1.textContent = lang.welcome.title;
+            nextBtn.textContent = lang.welcome.nextBtn;
+            skipBtn.textContent = lang.welcome.skipBtn;
+            
+            // Auth Page
+            document.getElementById('auth-title').textContent = lang.auth.title;
+            document.getElementById('auth-subtitle').textContent = lang.auth.subtitle;
+            document.getElementById('google-signin-text').textContent = lang.auth.googleBtn;
+            document.getElementById('guest-signin-text').textContent = lang.auth.guestBtn;
+
+            // Nav
+            document.querySelector('[data-page="home"]').textContent = lang.nav.home;
+            document.querySelector('[data-page="products"]').textContent = lang.nav.products;
+            document.querySelector('[data-page="ad-submission"]').textContent = lang.nav.adSubmission;
+            document.querySelector('[data-page="about-us"]').textContent = lang.nav.aboutUs;
+            document.querySelector('[data-page="admin-panel"]').textContent = lang.nav.adminPanel;
+            document.getElementById('admin-login-btn').textContent = lang.nav.adminLoginBtn;
+            document.getElementById('admin-pass-label').textContent = lang.nav.adminPassLabel;
+            
+            // Home
+            document.getElementById('home-title').textContent = lang.home.title;
+            document.getElementById('home-subtitle').textContent = lang.home.subtitle;
+            
+            // Products
+            document.getElementById('products-title').textContent = lang.products.title;
+
+            // Ad Submission
+            document.getElementById('ad-submission-title').textContent = lang.adSubmission.title;
+            document.getElementById('label-name').textContent = lang.adSubmission.labels.name;
+            document.getElementById('label-desc').textContent = lang.adSubmission.labels.desc;
+            document.getElementById('label-price').textContent = lang.adSubmission.labels.price;
+            document.getElementById('label-img').textContent = lang.adSubmission.labels.img;
+            document.getElementById('label-link').textContent = lang.adSubmission.labels.link;
+            document.getElementById('submit-ad-btn').textContent = lang.adSubmission.submitBtn;
+
+            // About Us
+            document.getElementById('about-us-title').textContent = lang.aboutUs.title;
+            document.getElementById('about-us-p1').textContent = lang.aboutUs.p1;
+            document.getElementById('about-us-p2').textContent = lang.aboutUs.p2;
+
+            // Admin
+            document.getElementById('admin-title').textContent = lang.admin.title;
+            document.getElementById('add-product-title').textContent = lang.admin.addProduct.title;
+            document.getElementById('admin-label-name').textContent = lang.admin.addProduct.labels.name;
+            document.getElementById('admin-label-desc').textContent = lang.admin.addProduct.labels.desc;
+            document.getElementById('admin-label-price').textContent = lang.admin.addProduct.labels.price;
+            document.getElementById('admin-label-img').textContent = lang.admin.addProduct.labels.img;
+            document.getElementById('admin-label-link').textContent = lang.admin.addProduct.labels.link;
+            document.getElementById('admin-add-btn').textContent = lang.admin.addProduct.addBtn;
+            document.getElementById('pending-ads-title').textContent = lang.admin.pendingAds.title;
+
+            // Chatbot
+            document.getElementById('chat-title').textContent = lang.chat.title;
+            document.getElementById('initial-chat-msg').textContent = lang.chat.initialMsg;
+            document.getElementById('chat-input').placeholder = lang.chat.inputPlaceholder;
+            
+            // Message Box
+            document.getElementById('message-box-close-btn').textContent = lang.messageBox.okBtn;
+
+            // Update admin panel visibility
+            if (isAdmin) {
+                adminNavItem.classList.remove('hidden');
+            } else {
+                adminNavItem.classList.add('hidden');
+            }
+        }
+
+        function navigateTo(pageId) {
+            pages.forEach(page => page.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+
+            navButtons.forEach(btn => {
+                btn.classList.remove('gold-text');
+                btn.classList.add('text-gray-400');
+            });
+            const activeNavBtn = document.querySelector(`[data-page="${pageId.replace('-page', '')}"]`);
+            if (activeNavBtn) {
+                activeNavBtn.classList.remove('text-gray-400');
+                activeNavBtn.classList.add('gold-text');
+            }
+            // Close sidebar after navigation
+            sidebar.classList.remove('open');
+        }
+
+        function createProductCard(product) {
+            const lang = LANGUAGES[currentLanguage];
+            const card = document.createElement('div');
+            // NEW: Add a class for the product animation
+            card.className = 'card p-6 flex flex-col justify-between items-center text-center product-card-animation';
+            card.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="rounded-xl w-full h-48 object-cover mb-4 gold-border border-2" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1a1a1a/cccccc?text=${lang.products.imgFallback}'">
+                <div class="flex-grow">
+                    <h3 class="text-xl font-bold gold-text mb-2">${product.name}</h3>
+                    <p class="text-gray-400 text-sm mb-4">${product.description}</p>
+                    <p class="text-lg font-bold">السعر: <span class="gold-text">${product.price}</span></p>
+                </div>
+                <a href="${product.link}" target="_blank" class="gold-gradient-bg text-black font-semibold py-2 px-6 rounded-lg mt-4 w-full text-center transition-transform hover:scale-105">${lang.products.buyBtn}</a>
+            `;
+            return card;
+        }
+
+        function createPendingAdCard(ad, adId) {
+            const lang = LANGUAGES[currentLanguage];
+            const card = document.createElement('div');
+            card.className = 'card p-4 flex flex-col space-y-2';
+            card.innerHTML = `
+                <h4 class="text-lg font-semibold gold-text">${ad.name}</h4>
+                <p class="text-sm text-gray-400"><strong>${lang.admin.pendingAds.submitter}:</strong> ${ad.submitterUid}</p>
+                <div class="flex justify-end space-x-2">
+                    <button data-id="${adId}" class="accept-btn bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors hover:bg-green-700">${lang.admin.pendingAds.acceptBtn}</button>
+                    <button data-id="${adId}" class="delete-btn bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors hover:bg-red-700">${lang.admin.pendingAds.deleteBtn}</button>
+                </div>
+            `;
+            return card;
+        }
+
+        function addMessageToChat(text, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            messageElement.innerHTML = `
+                <div class="p-3 rounded-lg max-w-[80%] ${sender === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-100'}" style="white-space: pre-wrap;">
+                    <p>${text}</p>
+                </div>
+            `;
+            chatHistory.appendChild(messageElement);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        async function getGeminiResponse(userPrompt) {
+            const lang = LANGUAGES[currentLanguage];
+            const apiKey = GEMINI_API_KEY;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const systemPrompt = "أنت مساعد دعم فني ودود ومحترف لمتجر Rx Store. مهمتك هي الإجابة على استفسارات المستخدمين بشكل موجز ومفيد. قم بالتعريف بنفسك كمساعد في Rx Store عند بدء المحادثة.";
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            const fetchOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+
+            try {
+                const response = await fetch(apiUrl, fetchOptions);
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.statusText}`);
+                }
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || lang.chat.apiError;
+            } catch (error) {
+                console.error("Failed to get Gemini response:", error);
+                return lang.chat.technicalError;
+            }
+        }
+
+        function nextWelcomeMessage() {
+            const lang = LANGUAGES[currentLanguage];
+            if (welcomeMessageIndex < lang.welcome.messages.length) {
+                welcomeText2.classList.remove('text-slide-in', `text-slide-in-${welcomeMessageIndex + 1}`);
+                welcomeText2.textContent = lang.welcome.messages[welcomeMessageIndex];
+                welcomeText2.classList.add('text-slide-in', `text-slide-in-${welcomeMessageIndex + 2}`);
+                welcomeMessageIndex++;
+            } else {
+                languagePage.classList.add('hidden');
+                authPage.classList.remove('hidden');
+            }
+        }
+
+        // --- Initialization and Event Handlers ---
+        window.onload = () => {
+            currentLanguage = localStorage.getItem('language') || 'ar';
+            if (onboardingCompleted) {
+                setLanguage(currentLanguage);
+                languagePage.classList.add('hidden');
+                authPage.classList.remove('hidden');
+            } else {
+                setLanguage(currentLanguage);
+                welcomeText1.textContent = LANGUAGES[currentLanguage].welcome.title;
+                welcomeText2.textContent = LANGUAGES[currentLanguage].welcome.messages[0];
+                welcomeMessageIndex = 1;
+                localStorage.setItem('onboardingCompleted', 'true');
+            }
+        };
+
+        messageBoxCloseBtn.addEventListener('click', () => {
+            messageBoxModal.classList.add('hidden');
+        });
+
+        nextBtn.addEventListener('click', nextWelcomeMessage);
+
+        skipBtn.addEventListener('click', () => {
+            languagePage.classList.add('hidden');
+            authPage.classList.remove('hidden');
+        });
+
+        langArBtn.addEventListener('click', () => setLanguage('ar'));
+        langEnBtn.addEventListener('click', () => setLanguage('en'));
+
+        chatToggleBtn.addEventListener('click', () => {
+            chatModal.classList.remove('hidden');
+        });
+
+        chatCloseBtn.addEventListener('click', () => {
+            chatModal.classList.add('hidden');
+        });
+
+        chatSendBtn.addEventListener('click', async () => {
+            const userMessage = chatInput.value.trim();
+            if (userMessage === '') return;
+            addMessageToChat(userMessage, 'user');
+            chatInput.value = '';
+            
+            const lang = LANGUAGES[currentLanguage];
+            addMessageToChat(lang.chat.thinking, 'ai');
+            const aiResponse = await getGeminiResponse(userMessage);
+            chatHistory.lastElementChild.remove();
+            addMessageToChat(aiResponse, 'ai');
+        });
+        
+        // FIX: Sidebar open/close logic
+        menuToggleBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+        });
+        
+        sidebarCloseBtn.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
+
+        adminLoginBtn.addEventListener('click', () => {
+            const lang = LANGUAGES[currentLanguage];
+            const password = adminPasswordInput.value;
+            if (password === '') {
+                showMessageBox(lang.messageBox.passwordEmpty);
+                return;
+            }
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                localStorage.setItem('isAdmin', 'true');
+                adminNavItem.classList.remove('hidden');
+                showMessageBox(lang.messageBox.adminLoginSuccess);
+                adminPasswordInput.value = '';
+                sidebar.classList.remove('open');
+            } else {
+                showMessageBox(lang.messageBox.adminLoginError);
+            }
+        });
+        
+        // Firebase Initialization
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        // Firebase Auth State Listener
+        onAuthStateChanged(auth, async (user) => {
+            const lang = LANGUAGES[currentLanguage];
+            if (user) {
+                userId = user.uid;
+                authPage.classList.add('hidden');
+                mainApp.classList.remove('hidden');
+                userIdSpan.textContent = `UID: ${userId}`;
+                
+                if (isAdmin) {
+                    adminNavItem.classList.remove('hidden');
+                    // Listen for real-time updates on pending ads
+                    onSnapshot(collection(db, `artifacts/${appId}/public/data/pending_ads`), (snapshot) => {
+                        pendingAdsList.innerHTML = '';
+                        if (snapshot.empty) {
+                            pendingAdsStatus.textContent = lang.admin.pendingAds.status.empty;
+                        } else {
+                            pendingAdsStatus.textContent = '';
+                            snapshot.forEach(doc => {
+                                pendingAdsList.appendChild(createPendingAdCard(doc.data(), doc.id));
+                            });
+                            document.querySelectorAll('.accept-btn').forEach(btn => {
+                                btn.addEventListener('click', async (e) => {
+                                    const adId = e.target.getAttribute('data-id');
+                                    const adRef = doc(db, `artifacts/${appId}/public/data/pending_ads`, adId);
+                                    try {
+                                        const adDoc = await getDoc(adRef);
+                                        const adData = adDoc.data();
+                                        // NEW: Add to products collection
+                                        await setDoc(doc(db, `artifacts/${appId}/public/data/products`, adId), adData);
+                                        // NEW: Delete from pending_ads
+                                        await deleteDoc(adRef);
+                                        showMessageBox(lang.admin.pendingAds.actionStatus.acceptSuccess);
+                                    } catch (error) {
+                                        console.error("Error accepting ad:", error);
+                                        showMessageBox(lang.admin.pendingAds.actionStatus.acceptError);
+                                    }
+                                });
+                            });
+                            document.querySelectorAll('.delete-btn').forEach(btn => {
+                                btn.addEventListener('click', async (e) => {
+                                    const adId = e.target.getAttribute('data-id');
+                                    const adRef = doc(db, `artifacts/${appId}/public/data/pending_ads`, adId);
+                                    try {
+                                        // NEW: Delete from pending_ads
+                                        await deleteDoc(adRef);
+                                        showMessageBox(lang.admin.pendingAds.actionStatus.deleteSuccess);
+                                    } catch (error) {
+                                        console.error("Error deleting ad:", error);
+                                        showMessageBox(lang.admin.pendingAds.actionStatus.deleteError);
+                                    }
+                                });
+                            });
+                        }
+                    }, (error) => {
+                        console.error("Error fetching pending ads:", error);
+                        showMessageBox(lang.messageBox.fetchPendingAdsError);
+                    });
+                }
+                
+                // Listen for real-time updates on products
+                onSnapshot(collection(db, `artifacts/${appId}/public/data/products`), (snapshot) => {
+                    productsList.innerHTML = '';
+                    if (snapshot.empty) {
+                        productsStatus.textContent = lang.products.status.empty;
+                    } else {
+                        productsStatus.textContent = '';
+                        let delay = 0;
+                        snapshot.forEach(doc => {
+                            const productCard = createProductCard(doc.data());
+                            productsList.appendChild(productCard);
+                            // Apply a unique delay for the animation
+                            productCard.style.animationDelay = `${delay}s`;
+                            delay += 0.1;
+                        });
+                    }
+                }, (error) => {
+                    console.error("Error fetching products:", error);
+                    showMessageBox(lang.messageBox.fetchProductsError);
+                });
+                
+                navigateTo('home-page');
+            } else {
+                authPage.classList.remove('hidden');
+                mainApp.classList.add('hidden');
+            }
+        });
+
+        // Initial sign-in with custom token or anonymously
+        if (initialAuthToken) {
+            signInWithCustomToken(auth, initialAuthToken).catch(error => {
+                console.error("Custom token sign-in failed:", error);
+                signInAnonymously(auth);
+            });
+        } else {
+            signInAnonymously(auth);
+        }
+
+        // --- Event Listeners ---
+        document.getElementById('google-signin-btn').addEventListener('click', async () => {
+            const lang = LANGUAGES[currentLanguage];
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Google Sign-in failed:", error);
+                showMessageBox(lang.messageBox.authError);
+            }
+        });
+
+        document.getElementById('guest-signin-btn').addEventListener('click', async () => {
+            const lang = LANGUAGES[currentLanguage];
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Guest Sign-in failed:", error);
+                showMessageBox(lang.messageBox.guestError);
+            }
+        });
+
+        adSubmissionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const lang = LANGUAGES[currentLanguage];
+            adSubmissionStatus.innerHTML = '<div class="spinner mx-auto"></div>';
+            const formData = new FormData(adSubmissionForm);
+            const newAd = {
+                name: formData.get('product-name'),
+                description: formData.get('product-desc'),
+                price: parseFloat(formData.get('product-price')),
+                image: formData.get('product-img'),
+                link: formData.get('product-link'),
+                submitterUid: userId,
+                submittedAt: new Date(),
+            };
+            try {
+                // NEW: Use Firestore to add the ad
+                const adCollectionRef = collection(db, `artifacts/${appId}/public/data/pending_ads`);
+                await addDoc(adCollectionRef, newAd);
+                adSubmissionStatus.textContent = lang.adSubmission.status.success;
+                adSubmissionStatus.classList.add('text-green-500');
+                adSubmissionForm.reset();
+            } catch (error) {
+                console.error("Error submitting ad:", error);
+                adSubmissionStatus.textContent = lang.adSubmission.status.error;
+                adSubmissionStatus.classList.add('text-red-500');
+            }
+        });
+
+        addProductForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const lang = LANGUAGES[currentLanguage];
+            addProductStatus.innerHTML = '<div class="spinner mx-auto"></div>';
+            const newProduct = {
+                name: document.getElementById('admin-product-name').value,
+                description: document.getElementById('admin-product-desc').value,
+                price: parseFloat(document.getElementById('admin-product-price').value),
+                image: document.getElementById('admin-product-img').value,
+                link: document.getElementById('admin-product-link').value,
+                addedBy: userId,
+                addedAt: new Date(),
+            };
+            try {
+                // NEW: Use Firestore to add the product
+                const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/products`);
+                await addDoc(productsCollectionRef, newProduct);
+                addProductStatus.textContent = lang.admin.addProduct.status.success;
+                addProductStatus.classList.add('text-green-500');
+                addProductForm.reset();
+            } catch (error) {
+                console.error("Error adding product:", error);
+                addProductStatus.textContent = lang.admin.addProduct.status.error;
+                addProductStatus.classList.add('text-red-500');
+            }
+        });
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const pageId = e.target.getAttribute('data-page') + '-page';
+                navigateTo(pageId);
+            });
+        });
+    </script>
+</body>
+</html>
