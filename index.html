@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RXstore - Health Affiliate Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #f0f4f8, #e0e7ef);
+            min-height: 100vh;
+        }
+        .hidden {
+            display: none;
+        }
+        .transition-opacity {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .bg-gradient-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .btn-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+        .product-card {
+            transition: transform 0.6s ease-out, opacity 0.6s ease-out, box-shadow 0.2s;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        .product-card.animate-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .product-card.animate-out {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .dashboard-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 200px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .product-list-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .product-list-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-custom text-white shadow-lg sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-store-alt text-3xl mr-2"></i>
+                <h1 class="text-2xl font-bold">RXstore</h1>
+            </div>
+            <nav class="flex space-x-4">
+                <button id="homeBtn" class="text-white hover:text-gray-200 transition-opacity bg-transparent border-none text-lg">Home</button>
+                <button id="productsBtn" class="text-white hover:text-gray-200 transition-opacity bg-transparent border-none text-lg">Products</button>
+                <button id="dashboardBtn" class="text-white hover:text-gray-200 transition-opacity bg-transparent border-none text-lg">Dashboard</button>
+                <button id="loginBtn" class="text-white hover:text-gray-200 transition-opacity bg-transparent border-none text-lg">Log In</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Home Section -->
+        <section id="home" class="section transition-opacity">
+            <div class="hero bg-gradient-custom text-white rounded-lg p-8 mb-8">
+                <h2 class="text-4xl font-bold mb-4">Your Health, Our Priority</h2>
+                <p class="text-xl mb-6">Shop products from trusted sources. Buy with confidence.
+                <br>
+                Your one-stop destination for health and wellness products.
+                </p>
+                <button id="startBtn" class="btn-custom">Start Now</button>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="stat-card">
+                    <h3 class="text-lg font-bold mb-2">Total Clicks</h3>
+                    <p class="text-3xl font-bold text-green-600" id="clicksCount">0</p>
+                    <p class="text-sm text-gray-500">Total clicks on 'Buy' buttons</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-lg font-bold mb-2">Most Popular Product</h3>
+                    <p class="text-xl font-bold text-purple-600" id="popularProduct">No Data</p>
+                    <p class="text-sm text-gray-500">The product with the most clicks</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-lg font-bold mb-2">Total Products</h3>
+                    <p class="text-3xl font-bold text-blue-600" id="totalProductsCount">0</p>
+                    <p class="text-sm text-gray-500">Number of products on the platform</p>
+                </div>
+            </div>
+            <div class="mt-8">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/97fd5af6-a88e-43e7-9977-b630ad816abe.png" alt="A modern pharmacy filled with health products, with a pharmacist assisting a customer, bright lighting and clean design with bold colors" class="w-full rounded-lg shadow-lg" onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/4db2e935-ba48-475f-bb7a-124eb84f73a2.png'" />
+            </div>
+
+            <!-- Newsletter Section - New addition -->
+            <div class="mt-16 text-center bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold mb-4">Join Our Mailing List</h2>
+                <p class="text-lg text-gray-600 mb-6">Subscribe to receive updates and exclusive offers!</p>
+                <form id="newsletterForm" class="max-w-md mx-auto">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <input type="email" id="newsletterEmail" class="flex-1 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Enter your email" required>
+                        <button type="submit" class="btn-custom">Subscribe</button>
+                    </div>
+                </form>
+                <div id="newsletterMessage" class="mt-4 text-green-600 hidden"></div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="products" class="section hidden transition-opacity">
+            <h2 class="text-3xl font-bold mb-8 text-center">Our Products from Amazon</h2>
+            <div id="productGrid" class="grid md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+        </section>
+
+        <!-- Login/Register Section -->
+        <section id="login" class="section hidden transition-opacity max-w-md mx-auto">
+            <h2 class="text-3xl font-bold mb-8 text-center">Log In</h2>
+            <form id="loginForm" class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="form-group">
+                    <label class="block text-gray-700 mb-2">Email:</label>
+                    <input type="email" id="loginEmail" class="w-full px-3 py-2 border rounded" placeholder="your.real.email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="block text-gray-700 mb-2">Password:</label>
+                    <input type="password" id="loginPassword" class="w-full px-3 py-2 border rounded" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-custom w-full mb-4">Log In</button>
+            </form>
+        </section>
+
+        <!-- Dashboard Section (Admin Panel) -->
+        <section id="dashboard" class="section hidden transition-opacity">
+            <h2 class="text-3xl font-bold mb-8 text-center">Dashboard</h2>
+            <div class="dashboard-section mb-8">
+                <div class="stat-card">
+                    <h3 class="text-lg font-bold mb-4"><i class="fas fa-eye mr-2"></i>Daily Statistics</h3>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-green-600" id="dashboardClicks">0 Buy Clicks</p>
+                        <p class="text-xl text-purple-600" id="dashboardPopular">Most Popular Product: No Data</p>
+                        <p class="text-xl text-blue-600" id="dashboardTotalProducts">Total Products: 0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-lg font-bold mb-4"><i class="fas fa-users mr-2"></i>Subscribers</h3>
+                    <div id="clientsList" class="space-y-2 max-h-64 overflow-auto"></div>
+                </div>
+            </div>
+            <div class="dashboard-section">
+                <div class="stat-card col-span-2">
+                    <h3 class="text-lg font-bold mb-4"><i class="fas fa-cog mr-2"></i>Product Management</h3>
+                    <button id="addProductBtn" class="btn-custom mb-2 mr-2">Add Product</button>
+                    <button id="deleteProductBtn" class="btn-custom mb-2">Delete Product</button>
+                    <div id="productManagement" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Password Modal for Dashboard -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-4">Enter Password</h2>
+            <div class="form-group">
+                <label for="dashboardPasswordInput">Dashboard Password:</label>
+                <input type="password" id="dashboardPasswordInput" class="w-full px-3 py-2 border rounded" placeholder="Enter password" required>
+            </div>
+            <button id="submitPasswordBtn" class="btn-custom w-full mb-2">Submit</button>
+            <button id="cancelPasswordBtn" class="btn-custom w-full" style="background: #ccc; color: black;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-4">Add a New Product from Amazon</h2>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label>Title (Product Name):</label>
+                    <input type="text" id="newProductName" required>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="newProductDesc" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Price (Optional, $):</label>
+                    <input type="number" id="newProductPrice" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Image (Image URL):</label>
+                    <input type="url" id="newProductImage" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                    <label>Amazon Affiliate Link:</label>
+                    <input type="url" id="newProductAffiliate" placeholder="https://www.amazon.com/...?tag=youraffiliate" required>
+                </div>
+                <div class="flex gap-4">
+                    <button type="submit" class="btn-custom flex-1">Add</button>
+                    <button type="button" id="closeAddProduct" class="btn-custom flex-1" style="background: #ccc; color: black;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Product Modal -->
+    <div id="deleteProductModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-4">Select Products to Delete</h2>
+            <div id="deleteProductList" class="max-h-64 overflow-y-auto mb-4"></div>
+            <div class="flex gap-4">
+                <button id="confirmDeleteBtn" class="btn-custom flex-1" style="background: #ef4444;">Delete Selected</button>
+                <button id="cancelDeleteBtn" class="btn-custom flex-1" style="background: #ccc; color: black;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold mb-4" id="modalTitle"></h2>
+            <p id="modalMessage" class="text-lg text-gray-700 mb-6"></p>
+            <button id="modalCloseBtn" class="btn-custom w-full">Close</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2023 RXstore. All rights reserved.</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="https://www.instagram.com/" target="_blank" class="text-white hover:text-gray-400"><i class="fab fa-instagram text-2xl"></i></a>
+                <a href="https://www.tiktok.com/" target="_blank" class="text-white hover:text-gray-400"><i class="fab fa-tiktok text-2xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, setLogLevel, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Firebase configuration and initialization
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        let app;
+        let db;
+        let auth;
+        let userId;
+
+        setLogLevel('debug'); // For debugging Firebase logs
+
+        function initFirebase() {
+            try {
+                if (!app) {
+                    app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            console.log('Firebase user authenticated:', userId);
+                            loadDataFromFirebase();
+                        } else {
+                            try {
+                                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                                if (initialAuthToken) {
+                                    await signInWithCustomToken(auth, initialAuthToken);
+                                    console.log('Signed in with custom token.');
+                                } else {
+                                    await signInAnonymously(auth);
+                                    console.log('Signed in anonymously.');
+                                }
+                            } catch (error) {
+                                console.error('Firebase Auth error:', error);
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Firebase initialization error: ", error);
+            }
+        }
+        
+        window.initFirebase = initFirebase;
+        
+        // Sample data - will be replaced by Firebase data
+        let products = [];
+        let totalClicks = 0;
+        let newsletterSubscribers = [];
+
+        // Admin password
+        const ADMIN_PASSWORD = '0112452';
+
+        const showMessage = (title, message) => {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('confirmationModal').style.display = 'flex';
+        };
+
+        // Function to load data from Firestore
+        const loadDataFromFirebase = async () => {
+            if (!db || !userId) return;
+
+            // Load clicks and popular products
+            try {
+                const clicksRef = collection(db, `artifacts/${appId}/users/${userId}/clicks`);
+                onSnapshot(clicksRef, (snapshot) => {
+                    const clicksData = snapshot.docs.map(doc => doc.data());
+                    totalClicks = clicksData.reduce((sum, doc) => sum + doc.clicks, 0);
+                    products.forEach(p => {
+                        const clickData = clicksData.find(c => c.productId === p.id);
+                        if (clickData) p.clicks = clickData.clicks;
+                    });
+                    updateAnalytics();
+                });
+            } catch (error) {
+                console.error("Error loading clicks data:", error);
+            }
+
+            // Load products
+            try {
+                const productsRef = collection(db, `artifacts/${appId}/users/${userId}/products`);
+                onSnapshot(productsRef, (snapshot) => {
+                    products = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+                    loadProducts();
+                    updateAnalytics();
+                    loadDashboard();
+                });
+            } catch (error) {
+                console.error("Error loading products data:", error);
+            }
+            
+            // Load newsletter subscribers
+            try {
+                const subscribersRef = collection(db, `artifacts/${appId}/users/${userId}/subscribers`);
+                onSnapshot(subscribersRef, (snapshot) => {
+                    newsletterSubscribers = snapshot.docs.map(doc => doc.data().email);
+                    loadDashboard();
+                });
+            } catch (error) {
+                console.error("Error loading subscribers data:", error);
+            }
+        };
+
+        const updateAnalytics = () => {
+            document.getElementById('clicksCount').textContent = totalClicks;
+            const popular = products.reduce((p, c) => c.clicks > (p.clicks || 0) ? c : p, {});
+            document.getElementById('popularProduct').textContent = popular.name || 'No Data';
+            document.getElementById('totalProductsCount').textContent = products.length;
+
+            document.getElementById('dashboardClicks').textContent = totalClicks + ' Buy Clicks';
+            document.getElementById('dashboardPopular').textContent = 'Most Popular Product: ' + (popular.name || 'No Data');
+            document.getElementById('dashboardTotalProducts').textContent = 'Total Products: ' + products.length;
+        };
+
+        const showSection = (sectionId) => {
+            document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            if (sectionId === 'dashboard') {
+                document.getElementById('passwordModal').style.display = 'flex';
+                document.getElementById('dashboardPasswordInput').value = '';
+                document.getElementById('dashboardPasswordInput').focus();
+            }
+        };
+
+        const productObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove('animate-out');
+                    entry.target.classList.add('animate-in');
+                } else {
+                    entry.target.classList.remove('animate-in');
+                    entry.target.classList.add('animate-out');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        const loadProducts = () => {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card bg-white p-6 rounded-lg shadow-lg';
+                card.innerHTML = `
+                    <img src="${product.image}" alt="${product.desc}" class="w-full h-48 object-cover mb-4 rounded" onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b9d64771-37c6-4368-8122-f76272588b76.png'" />
+                    <h3 class="text-xl font-bold mb-2">${product.name}</h3>
+                    <p class="text-gray-600 mb-4">${product.desc}</p>
+                    <span class="text-2xl font-bold text-blue-600">$${product.price || 'N/A'}</span>
+                    <button class="btn-custom mt-4 block w-full buyBtn" data-product="${product.id}" data-link="${product.affiliate}">Buy Now</button>
+                `;
+                grid.appendChild(card);
+                productObserver.observe(card);
+            });
+        };
+
+        const loadDashboard = () => {
+            const clientsList = document.getElementById('clientsList');
+            clientsList.innerHTML = '';
+            newsletterSubscribers.forEach(email => {
+                const div = document.createElement('div');
+                div.className = 'p-2 bg-gray-100 rounded';
+                div.textContent = email;
+                clientsList.appendChild(div);
+            });
+
+            const productManagement = document.getElementById('productManagement');
+            productManagement.innerHTML = '';
+            products.forEach(product => {
+                const div = document.createElement('div');
+                div.className = 'p-4 bg-gray-50 rounded shadow';
+                div.innerHTML = `
+                    <h4 class="font-bold">${product.name}</h4>
+                    <p class="text-sm text-gray-600">${product.desc}</p>
+                    <p class="text-sm">Clicks: ${product.clicks}</p>
+                    <a href="${product.affiliate}" target="_blank" class="text-blue-600 underline text-sm">Affiliate Link</a>
+                `;
+                productManagement.appendChild(div);
+            });
+            updateAnalytics();
+        };
+
+        // Events
+        document.getElementById('homeBtn').addEventListener('click', () => showSection('home'));
+        document.getElementById('productsBtn').addEventListener('click', () => showSection('products'));
+        document.getElementById('dashboardBtn').addEventListener('click', () => showSection('dashboard'));
+        document.getElementById('loginBtn').addEventListener('click', () => showSection('login'));
+        document.getElementById('startBtn').addEventListener('click', () => showSection('products'));
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showMessage('Login Successful!', 'You have been successfully logged in. You will be redirected to the homepage.');
+            showSection('home');
+        });
+
+        document.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('buyBtn')) {
+                const productId = e.target.dataset.product;
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    try {
+                        const clicksRef = collection(db, `artifacts/${appId}/users/${userId}/clicks`);
+                        const q = query(clicksRef, where("productId", "==", product.id));
+                        const snapshot = await getDocs(q);
+
+                        if (snapshot.empty) {
+                             await addDoc(clicksRef, { productId: product.id, clicks: 1 });
+                        } else {
+                            const docRef = snapshot.docs[0].ref;
+                            await updateDoc(docRef, { clicks: snapshot.docs[0].data().clicks + 1 });
+                        }
+                    } catch (error) {
+                        console.error("Error updating clicks:", error);
+                    }
+                    window.open(product.affiliate, '_blank');
+                    showMessage('Redirecting to Amazon', 'Your commission will be secured if the purchase is completed. Thank you!');
+                }
+            }
+        });
+
+        // Newsletter Form
+        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletterEmail');
+            const email = emailInput.value.trim();
+            if (!email) {
+                showMessage('Error', 'Please enter a valid email address.');
+                return;
+            }
+
+            try {
+                const subscribersRef = collection(db, `artifacts/${appId}/users/${userId}/subscribers`);
+                await addDoc(subscribersRef, { email: email, timestamp: new Date() });
+                showMessage('Thank You!', 'Your email has been successfully added to our mailing list.');
+                emailInput.value = '';
+            } catch (error) {
+                console.error("Error saving email to Firestore:", error);
+                showMessage('Error', 'An error occurred while saving your email. Please try again.');
+            }
+        });
+
+        // Password Modal Logic
+        const passwordModal = document.getElementById('passwordModal');
+        document.getElementById('submitPasswordBtn').addEventListener('click', () => {
+            const passwordInput = document.getElementById('dashboardPasswordInput').value;
+            if (passwordInput === ADMIN_PASSWORD) {
+                passwordModal.style.display = 'none';
+                document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+                document.getElementById('dashboard').classList.remove('hidden');
+                loadDashboard();
+            } else {
+                showMessage('Error', 'Incorrect password. Access denied.');
+                passwordModal.style.display = 'none';
+                showSection('home');
+            }
+        });
+        document.getElementById('cancelPasswordBtn').addEventListener('click', () => {
+            passwordModal.style.display = 'none';
+            showSection('home');
+        });
+
+        // Add Product Modal
+        const addProductModal = document.getElementById('addProductModal');
+        document.getElementById('addProductBtn').addEventListener('click', () => {
+            addProductModal.style.display = 'flex';
+        });
+        document.getElementById('closeAddProduct').addEventListener('click', () => {
+            addProductModal.style.display = 'none';
+        });
+
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('newProductName').value.trim();
+            const desc = document.getElementById('newProductDesc').value.trim();
+            const price = parseFloat(document.getElementById('newProductPrice').value) || null;
+            const image = document.getElementById('newProductImage').value.trim();
+            const affiliate = document.getElementById('newProductAffiliate').value.trim();
+
+            if (!name || !desc || !image || !affiliate) {
+                showMessage('خطأ', 'الرجاء ملء جميع الحقول المطلوبة.');
+                return;
+            }
+
+            try {
+                const productsRef = collection(db, `artifacts/${appId}/users/${userId}/products`);
+                await addDoc(productsRef, { name, desc, price, image, affiliate, clicks: 0 });
+                addProductModal.style.display = 'none';
+                loadProducts();
+                loadDashboard();
+                showMessage('نجاح', 'تمت إضافة المنتج بنجاح!');
+                e.target.reset();
+            } catch (error) {
+                console.error("Error adding product to Firestore:", error);
+                showMessage('خطأ', 'حدث خطأ أثناء إضافة المنتج. الرجاء المحاولة مرة أخرى.');
+            }
+        });
+
+        // Delete Product Modal Logic
+        const deleteProductModal = document.getElementById('deleteProductModal');
+        document.getElementById('deleteProductBtn').addEventListener('click', () => {
+            const productList = document.getElementById('deleteProductList');
+            productList.innerHTML = '';
+            if (products.length === 0) {
+                productList.innerHTML = '<p class="text-center text-gray-500">No products to delete.</p>';
+                document.getElementById('confirmDeleteBtn').disabled = true;
+            } else {
+                document.getElementById('confirmDeleteBtn').disabled = false;
+                products.forEach(product => {
+                    const div = document.createElement('div');
+                    div.className = 'product-list-item cursor-pointer hover:bg-gray-100 rounded';
+                    div.innerHTML = `
+                        <input type="checkbox" data-id="${product.id}" class="mr-3">
+                        <span class="font-bold">${product.name}</span>
+                    `;
+                    productList.appendChild(div);
+                });
+            }
+            deleteProductModal.style.display = 'flex';
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+            const checkboxes = document.querySelectorAll('#deleteProductList input[type="checkbox"]:checked');
+            const productIdsToDelete = Array.from(checkboxes).map(cb => cb.dataset.id);
+
+            if (productIdsToDelete.length === 0) {
+                showMessage('خطأ', 'الرجاء تحديد منتج واحد على الأقل للحذف.');
+                return;
+            }
+            
+            try {
+                for (const productId of productIdsToDelete) {
+                    const docRef = doc(db, `artifacts/${appId}/users/${userId}/products`, productId);
+                    await deleteDoc(docRef);
+                }
+                showMessage('نجاح', 'تم حذف المنتجات المحددة بنجاح!');
+                deleteProductModal.style.display = 'none';
+            } catch (error) {
+                console.error("Error deleting products:", error);
+                showMessage('خطأ', 'حدث خطأ أثناء حذف المنتجات. الرجاء المحاولة مرة أخرى.');
+            }
+        });
+
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+            deleteProductModal.style.display = 'none';
+        });
+
+        // Modal close button
+        document.getElementById('modalCloseBtn').addEventListener('click', () => {
+            document.getElementById('confirmationModal').style.display = 'none';
+        });
+
+        initFirebase();
+        showSection('home');
+    </script>
+</body>
+</html>
