@@ -59,14 +59,14 @@
 <body class="p-6 md:p-12 lg:p-20 transition-all duration-300" dir="ltr">
 
     <header class="mb-12 flex justify-between items-center">
-        
-        <a href="#" class="block">
-            <img src="https://i.ibb.co/XkXMzMLm/IMG.png" alt="RXstore Logo" class="h-12 w-auto">
+        <a href="#" class="flex items-center">
+            <img src="https://i.ibb.co/XkXMzMLm/IMG.png" alt="RXstore Logo" class="h-12 w-auto mr-3">
+            <span class="text-3xl font-extrabold text-white">RXstore</span>
         </a>
     </header>
 
     <div id="content-container">
-    </div>
+        </div>
 
     <script>
         // Array to hold all product data. You can add more products here.
@@ -90,7 +90,7 @@
         function renderHome() {
             contentContainer.innerHTML = `
                 <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    </div>
+                </div>
             `;
             const productList = document.getElementById('product-list');
             
