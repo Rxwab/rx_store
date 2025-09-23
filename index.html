@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RXstore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #e2e8f0;
+        }
+
+        /* Animation for product cards */
+        .product-card-hidden {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .product-card-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Image hover effect */
+        .product-image-container {
+            overflow: hidden;
+            border-radius: 1.5rem; /* rounded-3xl */
+        }
+        
+        .product-image {
+            transition: transform 0.3s ease-in-out;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        
+        .product-image-container:hover .product-image {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12 lg:p-20 transition-all duration-300" dir="ltr">
+
+    <!-- Header -->
+    <header class="mb-12 flex justify-between items-center">
+        <h1 class="text-3xl font-extrabold text-white">RXstore</h1>
+    </header>
+
+    <!-- Main Content Container -->
+    <div id="content-container">
+        <!-- Content will be dynamically injected here -->
+    </div>
+
+    <script>
+        // Array to hold all product data. You can add more products here.
+        const products = [
+            // SANSUI Monitor Product
+            {
+                id: 'monitor',
+                image: 'https://i.ibb.co/0R2gNwHm/Screenshot-20250923-173818.jpg',
+                link: 'https://amzn.to/4gz6BgX',
+                title: 'SANSUI 34-Inch Curved Gaming Monitor UWQHD',
+                description: '3440 x 1440 165Hz Curved 1500R - PIP/PBP, 1ms(MPRT), HDR, 300nits, sRGB 125%, DCI-P3 95%,FreeSync,HDMI x2,DP1.4 x2 (ES-G34C5 DP Cable Included)',
+                price: '$210.99',
+                oldPrice: '$269.99',
+                discount: 'Save 22%'
+            }
+        ];
+
+        const contentContainer = document.getElementById('content-container');
+
+        // Function to render the main product grid
+        function renderHome() {
+            contentContainer.innerHTML = `
+                <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Products will be dynamically injected here -->
+                </div>
+            `;
+            const productList = document.getElementById('product-list');
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = `product-card-hidden bg-slate-800 rounded-3xl p-6 shadow-2xl transition-transform transform hover:scale-105 duration-300 relative overflow-hidden cursor-pointer`;
+                productCard.setAttribute('data-product-id', product.id);
+
+                const priceSection = product.oldPrice && product.discount ? `
+                    <div class="flex items-center gap-4 mt-2">
+                        <span class="text-3xl font-bold text-red-500">${product.price}</span>
+                        <span class="text-xl font-semibold line-through text-slate-500">${product.oldPrice}</span>
+                        <span class="bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-full">${product.discount}</span>
+                    </div>
+                ` : `
+                    <div class="flex items-center gap-4 mt-2">
+                        <span class="text-3xl font-bold text-white">${product.price}</span>
+                    </div>
+                `;
+
+                productCard.innerHTML = `
+                    <div class="product-image-container">
+                        <img src="${product.image}" alt="${product.title}" class="product-image w-full h-auto rounded-2xl mb-4">
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <h2 class="text-2xl font-bold leading-snug text-white">${product.title}</h2>
+                        <p class="text-slate-400 text-sm leading-relaxed">${product.description}</p>
+                        ${priceSection}
+                        <a href="${product.link}" class="mt-4 w-full bg-blue-600 text-white text-center font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200" target="_blank" onclick="event.stopPropagation()">
+                            Buy Now
+                        </a>
+                    </div>
+                `;
+                
+                productCard.addEventListener('click', () => {
+                    window.location.hash = `#product=${product.id}`;
+                });
+                
+                productList.appendChild(productCard);
+            });
+
+            setupIntersectionObserver();
+        }
+
+        // Function to render a single product page
+        function renderProductPage(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                renderNotFound();
+                return;
+            }
+
+            const priceSection = product.oldPrice && product.discount ? `
+                <div class="flex items-center gap-4 mt-4">
+                    <span class="text-4xl font-bold text-red-500">${product.price}</span>
+                    <span class="text-2xl font-semibold line-through text-slate-500">${product.oldPrice}</span>
+                    <span class="bg-red-500 text-sm font-bold py-1 px-3 rounded-full">${product.discount}</span>
+                </div>
+            ` : `
+                <div class="flex items-center gap-4 mt-4">
+                    <span class="text-4xl font-bold text-white">${product.price}</span>
+                </div>
+            `;
+
+            contentContainer.innerHTML = `
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="lg:w-1/2">
+                        <img src="${product.image}" alt="${product.title}" class="w-full h-auto rounded-3xl shadow-lg">
+                    </div>
+                    <div class="lg:w-1/2 flex flex-col justify-center">
+                        <h2 class="text-4xl font-extrabold text-white mb-4">${product.title}</h2>
+                        <p class="text-slate-400 text-lg leading-relaxed mb-6">${product.description}</p>
+                        ${priceSection}
+                        <div class="flex flex-col md:flex-row gap-4 mt-8">
+                            <a href="${product.link}" class="w-full md:w-auto bg-blue-600 text-white text-center font-bold py-4 px-8 rounded-full hover:bg-blue-700 transition-colors duration-200" target="_blank">
+                                Buy Now
+                            </a>
+                            <button id="copy-link-btn" class="w-full md:w-auto bg-slate-700 text-white font-bold py-4 px-8 rounded-full hover:bg-slate-600 transition-colors duration-200">
+                                Copy Product Link
+                            </button>
+                        </div>
+                        <div id="copy-message" class="mt-4 text-green-400 hidden">Link copied!</div>
+                        <a href="#" class="mt-6 text-blue-400 hover:text-blue-300 transition-colors duration-200">
+                            ← Back to home
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('copy-link-btn').addEventListener('click', () => {
+                const url = `${window.location.origin}${window.location.pathname}#product=${product.id}`;
+                const tempInput = document.createElement('input');
+                document.body.appendChild(tempInput);
+                tempInput.value = url;
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+
+                const message = document.getElementById('copy-message');
+                message.classList.remove('hidden');
+                setTimeout(() => {
+                    message.classList.add('hidden');
+                }, 2000);
+            });
+        }
+
+        // Function to handle 404
+        function renderNotFound() {
+            contentContainer.innerHTML = `
+                <div class="text-center py-20">
+                    <h2 class="text-5xl font-bold text-white mb-4">404 - Product Not Found</h2>
+                    <p class="text-slate-400 text-lg">The product you are looking for does not exist.</p>
+                    <a href="#" class="mt-6 inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200">Back to home</a>
+                </div>
+            `;
+        }
+
+        // Routing logic based on URL hash
+        function handleRouting() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#product=')) {
+                const productId = hash.substring(9);
+                renderProductPage(productId);
+            } else {
+                renderHome();
+            }
+        }
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove('product-card-hidden');
+                    entry.target.classList.add('product-card-visible');
+                } else {
+                    entry.target.classList.remove('product-card-visible');
+                    entry.target.classList.add('product-card-hidden');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        function setupIntersectionObserver() {
+            document.querySelectorAll('.product-card-hidden').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        // Listen for hash changes to navigate
+        window.addEventListener('hashchange', handleRouting);
+        
+        // Initial rendering based on URL hash
+        document.addEventListener('DOMContentLoaded', () => {
+            handleRouting();
+        });
+    </script>
+</body>
+</html>
