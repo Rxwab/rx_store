@@ -1,0 +1,20 @@
+{
+  "name": "RXstore",
+  "short_name": "RXstore",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/XkXMzMLm/IMG.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.ibb.co/XkXMzMLm/IMG.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#0d1117",
+  "background_color": "#0d1117",
+  "display": "standalone",
+  "start_url": "/rx_store/" 
+}
