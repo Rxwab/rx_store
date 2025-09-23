@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RXstore</title>
+    <link rel="icon" href="https://i.ibb.co/XkXMzMLm/IMG.png" type="image/png">
+    <meta property="og:image" content="https://i.ibb.co/XkXMzMLm/IMG.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -45,14 +47,13 @@
 </head>
 <body class="p-6 md:p-12 lg:p-20 transition-all duration-300" dir="ltr">
 
-    <!-- Header -->
     <header class="mb-12 flex justify-between items-center">
-        <h1 class="text-3xl font-extrabold text-white">RXstore</h1>
+        <a href="#" class="block">
+            <img src="https://i.ibb.co/XkXMzMLm/IMG.png" alt="RXstore Logo" class="h-12 w-auto">
+        </a>
     </header>
 
-    <!-- Main Content Container -->
     <div id="content-container">
-        <!-- Content will be dynamically injected here -->
     </div>
 
     <script>
@@ -77,8 +78,7 @@
         function renderHome() {
             contentContainer.innerHTML = `
                 <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Products will be dynamically injected here -->
-                </div>
+                    </div>
             `;
             const productList = document.getElementById('product-list');
             
