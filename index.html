@@ -86,34 +86,78 @@
     </header>
 
     <div id="content-container">
-        </div>
+    </div>
 
     <script>
-        // Array to hold all product data. 
-        // NOTE: seoTitle and seoDescription have been added for advanced SEO.
-        const products = [
-            // SANSUI Monitor Product
-            {
-                id: 'monitor',
-                image: 'https://i.ibb.co/0R2gNwHm/Screenshot-20250923-173818.jpg',
-                link: 'https://amzn.to/4gz6BgX',
-                title: 'SANSUI 34-Inch Curved Gaming Monitor UWQHD', // Product Card Title
-                description: '3440 x 1440 165Hz Curved 1500R - PIP/PBP, 1ms(MPRT), HDR, 300nits, sRGB 125%, DCI-P3 95%,FreeSync,HDMI x2,DP1.4 x2 (ES-G34C5 DP Cable Included)', // Product Card Description
-                price: '$210.99',
-                oldPrice: '$269.99',
-                discount: 'Save 22%',
-                // ** SEO fields for better Google visibility **
-                seoTitle: 'Best Deal: SANSUI 34-Inch Curved Gaming Monitor UWQHD | RXstore',
-                seoDescription: 'Shop the SANSUI 34-Inch UWQHD 165Hz Curved Gaming Monitor with FreeSync. Get the best tech deals and electronics on RXstore today!',
-                // ********************************************
-            }
-        ];
+        // ******************************************************
+        // ** Local Storage Management Keys and Initial Data **
+        // ******************************************************
+        const PRODUCTS_KEY = 'RXSTORE_PRODUCTS';
+        const ANALYTICS_KEY = 'RXSTORE_ANALYTICS';
 
+        // 🚨 القائمة الافتراضية للمنتجات. نتركها فارغة. ستستخدم لتهيئة الـ Local Storage في الزيارة الأولى إذا لم تكن هناك بيانات 🚨
+        const defaultProducts = []; 
+        
+        // دالة قراءة المنتجات من Local Storage أو استخدام القائمة الافتراضية
+        function getProducts() {
+            let products = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
+            if (!products) {
+                // تهيئة Local Storage بقائمة فارغة في أول زيارة
+                localStorage.setItem(PRODUCTS_KEY, JSON.stringify(defaultProducts));
+                return defaultProducts;
+            }
+            // إرجاع القائمة المحدثة من Local Storage مباشرة
+            return products;
+        }
+
+        // دالة قراءة الإحصائيات من Local Storage أو تهيئتها
+        function getAnalytics() {
+            let analytics = JSON.parse(localStorage.getItem(ANALYTICS_KEY));
+            if (!analytics) {
+                // تهيئة الإحصائيات في أول زيارة
+                analytics = { visits: 0, clicks: {}, copies: {} };
+                localStorage.setItem(ANALYTICS_KEY, JSON.stringify(analytics));
+            }
+            return analytics;
+        }
+
+        // دالة لتسجيل النقرات والنسخ (Analytics Tracking)
+        function updateAnalytics(type, productId = null) {
+            let analytics = getAnalytics();
+            
+            if (type === 'visit') {
+                // تتبع الزيارات
+                analytics.visits = (analytics.visits || 0) + 1;
+            } else if (type === 'click' && productId) {
+                // تتبع نقرات الشراء
+                analytics.clicks[productId] = (analytics.clicks[productId] || 0) + 1;
+            } else if (type === 'copy' && productId) {
+                // تتبع نسخ الروابط
+                analytics.copies[productId] = (analytics.copies[productId] || 0) + 1;
+            }
+            
+            localStorage.setItem(ANALYTICS_KEY, JSON.stringify(analytics));
+        }
+
+        // دالة يتم استدعاؤها عند النقر على رابط الشراء
+        function handleProductClick(productId) {
+            updateAnalytics('click', productId);
+        }
+        
+        // ******************************************************
+        // ** Application Rendering and Routing **
+        // ******************************************************
+        
         const contentContainer = document.getElementById('content-container');
 
-        // Function to render the main product grid
+        // عرض الصفحة الرئيسية وقائمة المنتجات
         function renderHome() {
-            // Reset page title and description to global defaults when on home page
+            // تسجيل زيارة الموقع
+            updateAnalytics('visit'); 
+
+            // قراءة المنتجات من Local Storage
+            let products = getProducts(); 
+            
             document.title = "RXstore - Your Best Online Shop for Tech Deals";
             document.querySelector('meta[name="description"]').setAttribute('content', "Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.");
             
@@ -122,6 +166,18 @@
                 </div>
             `;
             const productList = document.getElementById('product-list');
+
+            if (products.length === 0) {
+                // رسالة تظهر إذا كانت قائمة المنتجات فارغة
+                productList.innerHTML = `
+                    <div class="col-span-full text-center p-12 bg-slate-800 rounded-3xl">
+                        <h2 class="text-3xl font-bold text-yellow-500 mb-4">No Products Yet!</h2>
+                        <p class="text-slate-400">Please add products using the <a href="dashboard.html" class="text-blue-400 hover:underline font-semibold" target="_blank">Dashboard</a> to start selling.</p>
+                    </div>
+                `;
+                setupIntersectionObserver();
+                return;
+            }
             
             products.forEach(product => {
                 const productCard = document.createElement('div');
@@ -142,13 +198,16 @@
 
                 productCard.innerHTML = `
                     <div class="product-image-container">
-                        <img src="${product.image}" alt="${product.title}" class="product-image w-full h-auto rounded-2xl mb-4">
+                        <img src="${product.image}" onerror="this.onerror=null;this.src='https://placehold.co/400x300/1e293b/a8a8a8?text=Image+Not+Found';" alt="${product.title}" class="product-image w-full h-auto rounded-2xl mb-4">
                     </div>
                     <div class="flex flex-col gap-4">
                         <h2 class="text-2xl font-bold leading-snug text-white">${product.title}</h2>
                         <p class="text-slate-400 text-sm leading-relaxed">${product.description}</p>
                         ${priceSection}
-                        <a href="${product.link}" class="mt-4 w-full bg-blue-600 text-white text-center font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200" target="_blank" onclick="event.stopPropagation()">
+                        <a href="${product.link}" 
+                           class="mt-4 w-full bg-blue-600 text-white text-center font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200" 
+                           target="_blank" 
+                           onclick="handleProductClick('${product.id}'); event.stopPropagation();">
                             Buy Now
                         </a>
                     </div>
@@ -164,24 +223,20 @@
             setupIntersectionObserver();
         }
 
-        // Function to render a single product page
+        // عرض صفحة المنتج الفردي
         function renderProductPage(productId) {
+            let products = getProducts(); 
             const product = products.find(p => p.id === productId);
             if (!product) {
                 renderNotFound();
                 return;
             }
 
-            // ************* ACTIVATE SEO FOR THIS PRODUCT *************
-            // 1. Update Page Title (<title>) using seoTitle
             document.title = product.seoTitle || product.title + ' | RXstore';
-
-            // 2. Update Meta Description (<meta name="description">) using seoDescription
             const metaDescription = document.querySelector('meta[name="description"]');
             if (metaDescription) {
                 metaDescription.setAttribute('content', product.seoDescription || product.description);
             }
-            // *********************************************************
 
             const priceSection = product.oldPrice && product.discount ? `
                 <div class="flex items-center gap-4 mt-4">
@@ -198,14 +253,14 @@
             contentContainer.innerHTML = `
                 <div class="flex flex-col lg:flex-row gap-8">
                     <div class="lg:w-1/2">
-                        <img src="${product.image}" alt="${product.title}" class="w-full h-auto rounded-3xl shadow-lg">
+                        <img src="${product.image}" onerror="this.onerror=null;this.src='https://placehold.co/800x600/1e293b/a8a8a8?text=Image+Not+Found';" alt="${product.title}" class="w-full h-auto rounded-3xl shadow-lg">
                     </div>
                     <div class="lg:w-1/2 flex flex-col justify-center">
                         <h2 class="text-4xl font-extrabold text-white mb-4">${product.title}</h2>
                         <p class="text-slate-400 text-lg leading-relaxed mb-6">${product.description}</p>
                         ${priceSection}
                         <div class="flex flex-col md:flex-row gap-4 mt-8">
-                            <a href="${product.link}" class="w-full md:w-auto bg-blue-600 text-white text-center font-bold py-4 px-8 rounded-full hover:bg-blue-700 transition-colors duration-200" target="_blank">
+                            <a href="${product.link}" class="w-full md:w-auto bg-blue-600 text-white text-center font-bold py-4 px-8 rounded-full hover:bg-blue-700 transition-colors duration-200" target="_blank" onclick="handleProductClick('${product.id}');">
                                 Buy Now
                             </a>
                             <button id="copy-link-btn" class="w-full md:w-auto bg-slate-700 text-white font-bold py-4 px-8 rounded-full hover:bg-slate-600 transition-colors duration-200">
@@ -228,6 +283,9 @@
                 tempInput.select();
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
+                
+                // تسجيل نسخ الرابط
+                updateAnalytics('copy', product.id); 
 
                 const message = document.getElementById('copy-message');
                 message.classList.remove('hidden');
@@ -237,11 +295,10 @@
             });
         }
 
-        // Function to handle 404
+        // عرض صفحة 404
         function renderNotFound() {
-            // Reset SEO to global defaults
-            document.title = "RXstore - Your Best Online Shop for Tech Deals";
-            document.querySelector('meta[name="description"]').setAttribute('content', "Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.");
+            document.title = "404 - Product Not Found";
+            document.querySelector('meta[name="description"]').setAttribute('content', "The product you are looking for does not exist.");
             
             contentContainer.innerHTML = `
                 <div class="text-center py-20">
@@ -252,7 +309,7 @@
             `;
         }
 
-        // Routing logic based on URL hash
+        // لوجيك التوجيه بناءً على الهاش في الرابط
         function handleRouting() {
             const hash = window.location.hash;
             if (hash.startsWith('#product=')) {
@@ -268,12 +325,10 @@
                 if (entry.isIntersecting) {
                     entry.target.classList.remove('product-card-hidden');
                     entry.target.classList.add('product-card-visible');
-                } else {
-                    entry.target.classList.remove('product-card-visible');
-                    entry.target.classList.add('product-card-hidden');
+                    observer.unobserve(entry.target); // Stop observing once visible
                 }
             });
-        }, { threshold: 0.2 });
+        }, { threshold: 0.1 });
 
         function setupIntersectionObserver() {
             document.querySelectorAll('.product-card-hidden').forEach(card => {
@@ -281,13 +336,12 @@
             });
         }
 
-        // Listen for hash changes to navigate
+        // الاستماع لتغيرات الهاش وبدء التشغيل
         window.addEventListener('hashchange', handleRouting);
         
-        // Initial rendering based on URL hash
         document.addEventListener('DOMContentLoaded', () => {
             handleRouting();
         });
     </script>
 </body>
-</html>
+    </html>
