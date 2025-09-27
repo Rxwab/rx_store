@@ -8,7 +8,9 @@
     <meta name="description" content="Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.">
     <meta name="keywords" content="RXstore, tech shop, online store, gaming monitor, electronics, deals, discounts, SANSUI monitor, curved monitor, UWQHD, FreeSync">
     <meta name="author" content="RXstore Team">
-    <meta name="robots" content="index, follow"> <link rel="icon" type="image/png" href="https://i.ibb.co/XkXMzMLm/IMG.png" sizes="16x16">
+    <meta name="robots" content="index, follow"> 
+    
+    <link rel="icon" type="image/png" href="https://i.ibb.co/XkXMzMLm/IMG.png" sizes="16x16">
     <link rel="icon" type="image/png" href="https://i.ibb.co/XkXMzMLm/IMG.png" sizes="32x32">
     <link rel="apple-touch-icon" href="https://i.ibb.co/XkXMzMLm/IMG.png"> 
 
@@ -87,18 +89,23 @@
         </div>
 
     <script>
-        // Array to hold all product data. You can add more products here.
+        // Array to hold all product data. 
+        // NOTE: seoTitle and seoDescription have been added for advanced SEO.
         const products = [
             // SANSUI Monitor Product
             {
                 id: 'monitor',
                 image: 'https://i.ibb.co/0R2gNwHm/Screenshot-20250923-173818.jpg',
                 link: 'https://amzn.to/4gz6BgX',
-                title: 'SANSUI 34-Inch Curved Gaming Monitor UWQHD',
-                description: '3440 x 1440 165Hz Curved 1500R - PIP/PBP, 1ms(MPRT), HDR, 300nits, sRGB 125%, DCI-P3 95%,FreeSync,HDMI x2,DP1.4 x2 (ES-G34C5 DP Cable Included)',
+                title: 'SANSUI 34-Inch Curved Gaming Monitor UWQHD', // Product Card Title
+                description: '3440 x 1440 165Hz Curved 1500R - PIP/PBP, 1ms(MPRT), HDR, 300nits, sRGB 125%, DCI-P3 95%,FreeSync,HDMI x2,DP1.4 x2 (ES-G34C5 DP Cable Included)', // Product Card Description
                 price: '$210.99',
                 oldPrice: '$269.99',
-                discount: 'Save 22%'
+                discount: 'Save 22%',
+                // ** SEO fields for better Google visibility **
+                seoTitle: 'Best Deal: SANSUI 34-Inch Curved Gaming Monitor UWQHD | RXstore',
+                seoDescription: 'Shop the SANSUI 34-Inch UWQHD 165Hz Curved Gaming Monitor with FreeSync. Get the best tech deals and electronics on RXstore today!',
+                // ********************************************
             }
         ];
 
@@ -106,6 +113,10 @@
 
         // Function to render the main product grid
         function renderHome() {
+            // Reset page title and description to global defaults when on home page
+            document.title = "RXstore - Your Best Online Shop for Tech Deals";
+            document.querySelector('meta[name="description"]').setAttribute('content', "Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.");
+            
             contentContainer.innerHTML = `
                 <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 </div>
@@ -160,6 +171,17 @@
                 renderNotFound();
                 return;
             }
+
+            // ************* ACTIVATE SEO FOR THIS PRODUCT *************
+            // 1. Update Page Title (<title>) using seoTitle
+            document.title = product.seoTitle || product.title + ' | RXstore';
+
+            // 2. Update Meta Description (<meta name="description">) using seoDescription
+            const metaDescription = document.querySelector('meta[name="description"]');
+            if (metaDescription) {
+                metaDescription.setAttribute('content', product.seoDescription || product.description);
+            }
+            // *********************************************************
 
             const priceSection = product.oldPrice && product.discount ? `
                 <div class="flex items-center gap-4 mt-4">
@@ -217,6 +239,10 @@
 
         // Function to handle 404
         function renderNotFound() {
+            // Reset SEO to global defaults
+            document.title = "RXstore - Your Best Online Shop for Tech Deals";
+            document.querySelector('meta[name="description"]').setAttribute('content', "Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.");
+            
             contentContainer.innerHTML = `
                 <div class="text-center py-20">
                     <h2 class="text-5xl font-bold text-white mb-4">404 - Product Not Found</h2>
@@ -264,4 +290,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
