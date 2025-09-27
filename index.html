@@ -79,7 +79,7 @@
 <body class="p-6 md:p-12 lg:p-20 transition-all duration-300" dir="ltr">
 
     <header class="mb-12 flex justify-between items-center">
-        <a href="#" class="flex items-center">
+        <a href="." class="flex items-center" onclick="history.pushState(null, '', location.pathname); handleRouting(); return false;">
             <img src="https://i.ibb.co/XkXMzMLm/IMG.png" alt="RXstore Logo" class="h-12 w-auto mr-3">
             <span class="text-3xl font-extrabold text-white">RXstore</span>
         </a>
@@ -213,8 +213,10 @@
                     </div>
                 `;
                 
+                // *** التعديل: استخدام history.pushState بدلاً من window.location.hash ***
                 productCard.addEventListener('click', () => {
-                    window.location.hash = `#product=${product.id}`;
+                    history.pushState(null, '', `?product=${product.id}`); // تغيير الرابط إلى ?product=ID
+                    handleRouting(); // استدعاء التوجيه مباشرة
                 });
                 
                 productList.appendChild(productCard);
@@ -268,7 +270,7 @@
                             </button>
                         </div>
                         <div id="copy-message" class="mt-4 text-green-400 hidden">Link copied!</div>
-                        <a href="#" class="mt-6 text-blue-400 hover:text-blue-300 transition-colors duration-200">
+                        <a href="javascript:void(0)" id="back-to-home-link" class="mt-6 text-blue-400 hover:text-blue-300 transition-colors duration-200">
                             ← Back to home
                         </a>
                     </div>
@@ -276,7 +278,8 @@
             `;
 
             document.getElementById('copy-link-btn').addEventListener('click', () => {
-                const url = `${window.location.origin}${window.location.pathname}#product=${product.id}`;
+                // *** التعديل: استخدام ?product=ID في رابط النسخ ***
+                const url = `${window.location.origin}${window.location.pathname}?product=${product.id}`; 
                 const tempInput = document.createElement('input');
                 document.body.appendChild(tempInput);
                 tempInput.value = url;
@@ -293,6 +296,12 @@
                     message.classList.add('hidden');
                 }, 2000);
             });
+            
+            // إضافة مستمع لزر العودة للرئيسية
+            document.getElementById('back-to-home-link').addEventListener('click', () => {
+                history.pushState(null, '', location.pathname); // يرجع الرابط للرابط الأساسي
+                handleRouting();
+            });
         }
 
         // عرض صفحة 404
@@ -304,16 +313,17 @@
                 <div class="text-center py-20">
                     <h2 class="text-5xl font-bold text-white mb-4">404 - Product Not Found</h2>
                     <p class="text-slate-400 text-lg">The product you are looking for does not exist.</p>
-                    <a href="#" class="mt-6 inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200">Back to home</a>
+                    <a href="." class="mt-6 inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200" onclick="history.pushState(null, '', location.pathname); handleRouting(); return false;">Back to home</a>
                 </div>
             `;
         }
 
-        // لوجيك التوجيه بناءً على الهاش في الرابط
+        // *** التعديل: لوجيك التوجيه بناءً على Query Parameter بدلاً من الـ Hash ***
         function handleRouting() {
-            const hash = window.location.hash;
-            if (hash.startsWith('#product=')) {
-                const productId = hash.substring(9);
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product'); // البحث عن ?product=ID
+
+            if (productId) {
                 renderProductPage(productId);
             } else {
                 renderHome();
@@ -336,8 +346,8 @@
             });
         }
 
-        // الاستماع لتغيرات الهاش وبدء التشغيل
-        window.addEventListener('hashchange', handleRouting);
+        // *** التعديل: الاستماع لتغيرات الـ history (زر الرجوع/الأمام) بدلاً من الهاش ***
+        window.addEventListener('popstate', handleRouting);
         
         document.addEventListener('DOMContentLoaded', () => {
             handleRouting();
@@ -345,4 +355,3 @@
     </script>
 </body>
     </html>
-
