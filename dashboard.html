@@ -1,203 +1,322 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RXstore - Admin Dashboard (Secret Access)</title>
+    <title>RXstore - لوحة التحكم والإدارة</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         body {
-            font-family: 'Inter', sans-serif; /* أو أي خط تفضله للوحة التحكم */
+            font-family: 'Tajawal', sans-serif;
             background-color: #0d1117;
             color: #e2e8f0;
+        }
+        .scroll-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .product-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto; /* العنوان / زر الحذف / زر التعديل */
+            gap: 1rem;
+            align-items: center;
+        }
+        /* تصميم مخصص لأزرار الحذف/التعديل لضمان المظهر الجيد */
+        .action-btn {
+             width: 48px;
+             height: 48px;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+        }
+        input, textarea {
+            text-align: right; /* محاذاة النص لليمين للغة العربية */
         }
     </style>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, onSnapshot, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        // يمكنك إضافة Storage إذا كنت تنوي تحميل صور جديدة مباشرة من هنا
         
-        // ** (1) قم بوضع إعدادات Firebase الخاصة بك هنا **
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+        // ******************************************************
+        // ** Local Storage Keys & Helpers **
+        // ******************************************************
+        const ADMIN_PASSWORD = '0112452'; 
+        const PRODUCTS_KEY = 'RXSTORE_PRODUCTS';
+        const ANALYTICS_KEY = 'RXSTORE_ANALYTICS';
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        
-        let userId = null;
-        const ADMIN_PASSWORD = '0112452'; // كلمة المرور السرية
+        // دالة مساعدة لإنشاء معرف فريد للمنتجات الجديدة
+        function generateUniqueId(prefix = 'p') {
+            // استخدام الوقت العشوائي والجزء العشوائي لضمان التفرد
+            return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
+        }
 
-        // دالة لعرض رسائل بسيطة (يمكنك تطويرها لاحقاً)
+        function getProducts() {
+            const products = localStorage.getItem(PRODUCTS_KEY);
+            return products ? JSON.parse(products) : [];
+        }
+
+        function saveProducts(products) {
+            localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+        }
+
+        function getAnalytics() {
+            const analytics = localStorage.getItem(ANALYTICS_KEY);
+            // التأكد من تهيئة الهياكل الداخلية بشكل صحيح
+            const defaultAnalytics = { visits: 0, clicks: {}, copies: {} };
+            return analytics ? { ...defaultAnalytics, ...JSON.parse(analytics) } : defaultAnalytics;
+        }
+
+        // دالة عرض رسالة مؤقتة (لا تستخدم alert())
         function showMessage(type, message) {
-            console.log(`${type}: ${message}`);
-            alert(message);
+            const msgBox = document.getElementById('message-box');
+            msgBox.textContent = message;
+            msgBox.className = `p-3 rounded-lg text-center font-bold fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${type === 'Error' ? 'bg-red-600' : 'bg-green-600'}`;
+            msgBox.classList.remove('hidden');
+            setTimeout(() => {
+                msgBox.classList.add('hidden');
+            }, 3000);
         }
 
         // ====== منطق التحقق من كلمة المرور ======
-        async function handleAdminLogin() {
+        function handleAdminLogin() {
             const passwordInput = document.getElementById('adminPassword');
             if (passwordInput.value === ADMIN_PASSWORD) {
-                try {
-                    // تسجيل الدخول المجهول لربط الجلسة بمعلومات Firebase
-                    const userCredential = await signInAnonymously(auth);
-                    userId = userCredential.user.uid;
-                    
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('dashboard-content').classList.remove('hidden');
-                    
-                    // بعد تسجيل الدخول بنجاح، ابدأ بتحميل البيانات الإدارية
-                    loadAdminData(); 
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard-content').classList.remove('hidden');
+                
+                loadAdminData(); 
 
-                } catch (error) {
-                    showMessage('Error', 'Firebase Login Failed.');
-                    console.error('Firebase Auth Error:', error);
-                }
             } else {
-                showMessage('Error', 'Access Denied. Incorrect Password.');
-                passwordInput.value = ''; // مسح الحقل بعد محاولة فاشلة
+                showMessage('Error', 'كلمة المرور غير صحيحة. حاول مرة أخرى.');
+                passwordInput.value = ''; 
             }
         }
         
-        // ====== وظائف الإدارة (Analytics & CRUD) ======
+        // ====== وظائف الإدارة والتحليل ======
         
         function loadAdminData() {
-            // 1. تتبع الإحصائيات المباشرة (النقرات، المشتركين، الدعم)
-            // (الآن يمكنك نقل أكواد onSnapshot المعقدة من index.html إلى هنا)
+            const products = getProducts();
+            const analytics = getAnalytics();
+            
+            // 1. حساب الإحصائيات وعرضها
+            let totalClicks = 0;
+            let totalCopies = 0;
 
-            // مثال: قراءة عدد النقرات الكلي
-            const clicksRef = collection(db, 'clicks');
-            onSnapshot(clicksRef, (snapshot) => {
-                let totalClicks = 0;
-                snapshot.forEach(doc => {
-                    totalClicks += doc.data().count; // حسب هيكل قاعدة بياناتك
-                });
-                document.getElementById('totalClicks').textContent = totalClicks.toLocaleString();
+            const combinedProducts = products.map(product => {
+                const clicks = analytics.clicks[product.id] || 0;
+                const copies = analytics.copies[product.id] || 0;
+                totalClicks += clicks;
+                totalCopies += copies;
+                // إضافة الإحصائيات للمنتج لسهولة الترتيب والعرض
+                return { ...product, clicks, copies }; 
+            });
+
+            // عرض الإحصائيات الملخصة
+            document.getElementById('totalVisits').textContent = (analytics.visits || 0).toLocaleString('ar-EG');
+            document.getElementById('totalClicks').textContent = totalClicks.toLocaleString('ar-EG');
+            document.getElementById('totalProducts').textContent = products.length.toLocaleString('ar-EG');
+            document.getElementById('totalCopies').textContent = totalCopies.toLocaleString('ar-EG');
+            
+            // 2. تحليل المنتجات (نقرات العمولة) - ترتيب تنازلي حسب النقرات
+            combinedProducts.sort((a, b) => b.clicks - a.clicks); 
+
+            const productClicksList = document.getElementById('productClicksList');
+            productClicksList.innerHTML = ''; 
+
+            if (combinedProducts.length === 0) {
+                 productClicksList.innerHTML = '<li class="text-center py-4 text-gray-500">لا توجد منتجات للعرض.</li>';
+            }
+
+            combinedProducts.forEach((product, index) => {
+                const listItem = document.createElement('li');
+                const bgColor = index === 0 ? 'bg-green-700' : 'bg-gray-700'; 
+                
+                listItem.className = `p-4 ${bgColor} rounded-lg mb-2 flex justify-between items-center transition duration-200 hover:bg-gray-600`;
+                listItem.innerHTML = `
+                    <p class="text-white font-medium">${index + 1}. ${product.title}</p>
+                    <span class="text-2xl font-bold text-yellow-300">${product.clicks.toLocaleString('ar-EG')} نقرة</span>
+                `;
+                productClicksList.appendChild(listItem);
             });
             
-            // مثال: قراءة طلبات الدعم
-            const supportRef = collection(db, `artifacts/${firebaseConfig.appId}/users/${userId}/supportRequests`);
-            onSnapshot(supportRef, (snapshot) => {
-                const supportList = document.getElementById('supportRequestsList');
-                supportList.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const listItem = document.createElement('li');
-                    listItem.className = 'p-3 bg-gray-700 rounded-lg mb-2';
-                    listItem.textContent = `Email: ${data.email} - Issue: ${data.issue}`;
-                    supportList.appendChild(listItem);
-                });
-                document.getElementById('supportCount').textContent = snapshot.size;
-            });
-
-            // 2. تفعيل نماذج الإدارة
+            // 3. عرض قائمة المنتجات لإدارتها
+            renderProductManagementList(combinedProducts);
+            
+            // 4. تفعيل مستمع الحدث لإضافة المنتج
+            document.getElementById('addProductForm').removeEventListener('submit', handleAddProduct);
             document.getElementById('addProductForm').addEventListener('submit', handleAddProduct);
-            // ... أضف مستمعي الأحداث لـ deleteProductForm هنا
         }
+        
+        // دالة لعرض قائمة المنتجات مع زر الحذف
+        function renderProductManagementList(products) {
+            const productManageList = document.getElementById('productManageList');
+            productManageList.innerHTML = '';
 
-        // دالة إضافة منتج جديد (هذه الدالة يجب أن تكون هنا فقط)
-        async function handleAddProduct(e) {
-            e.preventDefault();
-            const title = document.getElementById('newProductTitle').value;
-            const price = document.getElementById('newProductPrice').value;
-            const affiliateLink = document.getElementById('newProductAffiliateLink').value;
-            // ... استخراج الحقول الجديدة للـ SEO هنا ...
-
-            if (!title || !price || !affiliateLink) {
-                showMessage('Error', 'Please fill in all required fields.');
+            if (products.length === 0) {
+                productManageList.innerHTML = '<li class="text-center py-4 text-gray-500">لا توجد منتجات لإدارتها.</li>';
                 return;
             }
 
-            try {
-                const productsRef = collection(db, 'products'); // حسب اسم الكوليكشن الخاص بك
-                await addDoc(productsRef, {
-                    title: title,
-                    price: price,
-                    affiliate: affiliateLink,
-                    // ... أضف باقي الحقول مثل images, description, seoTitle, seoDescription ...
-                    clicks: 0, // يبدأ بـ 0 نقرات
-                    createdAt: new Date()
-                });
-                showMessage('Success', 'Product added successfully!');
-                e.target.reset();
-            } catch (error) {
-                showMessage('Error', 'Failed to add product.');
-                console.error('Error adding product:', error);
+            products.forEach(product => {
+                const listItem = document.createElement('li');
+                listItem.className = 'product-item p-3 bg-gray-700 rounded-lg mb-2 items-center';
+                listItem.innerHTML = `
+                    <div class="overflow-hidden">
+                        <p class="font-bold text-white truncate">${product.title}</p>
+                        <p class="text-sm text-gray-400">السعر: ${product.price} | النسخ: ${product.copies.toLocaleString('ar-EG')}</p>
+                    </div>
+                    <button onclick="handleDeleteProduct('${product.id}')" class="action-btn bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition duration-200" title="حذف المنتج">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="action-btn bg-blue-600/50 text-white/50 font-bold rounded-lg cursor-not-allowed" title="التعديل غير مدعوم في هذا الحل">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                `;
+                productManageList.appendChild(listItem);
+            });
+        }
+        
+        // دالة إضافة منتج جديد
+        function handleAddProduct(e) {
+             e.preventDefault();
+             
+             const newProduct = {
+                id: generateUniqueId('p'),
+                title: document.getElementById('newProductTitle').value.trim(),
+                image: document.getElementById('newProductImage').value.trim(),
+                link: document.getElementById('newProductAffiliateLink').value.trim(),
+                price: document.getElementById('newProductPrice').value.trim(),
+                oldPrice: document.getElementById('newProductOldPrice').value.trim() || null,
+                discount: document.getElementById('newProductDiscount').value.trim() || null,
+                description: document.getElementById('newProductDescription').value.trim() || 'وصف منتج مميز من RXstore.',
+                seoTitle: document.getElementById('newProductSeoTitle').value.trim() || null,
+                seoDescription: document.getElementById('newProductSeoDesc').value.trim() || null,
+             };
+
+             if (!newProduct.title || !newProduct.image || !newProduct.link || !newProduct.price) {
+                showMessage('Error', 'الرجاء ملء جميع الحقول المطلوبة (العنوان، رابط الصورة، رابط الشراء، السعر).');
+                return;
+             }
+             
+             const products = getProducts();
+             products.push(newProduct);
+             saveProducts(products); // حفظ القائمة الجديدة
+             
+             showMessage('Success', 'تم إضافة المنتج بنجاح! يتم تحديث لوحة التحكم...');
+             e.target.reset(); // تفريغ النموذج
+             loadAdminData(); // إعادة تحميل لوحة التحكم
+        }
+
+        // دالة حذف منتج (متاحة عالمياً للزر)
+        window.handleDeleteProduct = function(productId) {
+            // استخدام نموذج بسيط للتأكيد بدلاً من alert/confirm
+            if (!confirm('هل أنت متأكد من رغبتك في حذف هذا المنتج؟')) {
+                return;
             }
+            
+            const products = getProducts();
+            const newProducts = products.filter(p => p.id !== productId);
+            saveProducts(newProducts);
+            
+            showMessage('Success', `تم حذف المنتج بنجاح.`);
+            loadAdminData();
         }
         
         // ====== استماع الأحداث بعد تحميل الصفحة ======
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('loginBtn').addEventListener('click', handleAdminLogin);
+            
+            // عرض إجمالي الزيارات قبل تسجيل الدخول
+            document.getElementById('totalVisitsPreLogin').textContent = (getAnalytics().visits || 0).toLocaleString('ar-EG');
         });
-
     </script>
 </head>
 <body class="p-6 md:p-12 lg:p-20 transition-all duration-300">
 
-    <div id="login-screen" class="max-w-md mx-auto p-8 bg-gray-800 rounded-2xl shadow-2xl mt-20">
-        <h2 class="text-3xl font-bold mb-6 text-center text-red-400">ADMIN ACCESS</h2>
-        <p class="text-gray-400 mb-4 text-center">Enter the secret password to continue.</p>
-        <input type="password" id="adminPassword" placeholder="Secret Password" class="w-full p-4 mb-6 rounded-xl bg-gray-700 text-white border-none focus:ring-red-500 focus:ring-2 placeholder-gray-500">
-        <button id="loginBtn" class="w-full bg-red-600 text-white font-bold py-4 rounded-xl hover:bg-red-700 transition duration-200">LOGIN</button>
+    <div id="message-box" class="hidden"></div>
+
+    <div id="login-screen" class="max-w-md mx-auto p-8 bg-gray-800 rounded-2xl shadow-2xl mt-20 text-right">
+        <h2 class="text-3xl font-extrabold mb-6 text-center text-red-400">لوحة تحكم RXstore</h2>
+        <p class="text-gray-400 mb-4 text-center">أدخل كلمة المرور السرية للمتابعة.</p>
+        <div class="p-3 bg-gray-700 rounded-xl mb-4 text-center">
+            <p class="text-sm text-gray-400">إجمالي الزيارات المتتبعة محلياً: <span id="totalVisitsPreLogin" class="font-bold text-yellow-300">0</span></p>
+        </div>
+        <input type="password" id="adminPassword" placeholder="كلمة المرور السرية (0112452)" class="w-full p-4 mb-6 rounded-xl bg-gray-700 text-white border-none focus:ring-red-500 focus:ring-2 placeholder-gray-500 text-left" dir="ltr">
+        <button id="loginBtn" class="w-full bg-red-600 text-white font-bold py-4 rounded-xl hover:bg-red-700 transition duration-200">تسجيل الدخول</button>
     </div>
 
-    <div id="dashboard-content" class="hidden">
-        <h1 class="text-4xl font-extrabold mb-10 text-blue-400">RXstore Dashboard</h1>
+    <div id="dashboard-content" class="hidden text-right">
+        <h1 class="text-4xl font-extrabold mb-10 text-blue-400">لوحة التحكم (بيانات محلية)</h1>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="p-4 mb-8 bg-yellow-900/50 rounded-xl border border-yellow-500/50 text-yellow-300">
+            <p class="font-extrabold">⚠️ تذكير هام حول تثبيت التغييرات:</p>
+            <p class="text-sm">هذه البيانات والإدارة تعمل على متصفحك الحالي (Local Storage). لتثبيت إضافة/حذف المنتجات بشكل دائم لجميع الزوار، يجب **نسخ** قائمة المنتجات المحدثة من الـ Local Storage و**لصقها** يدوياً في ملف `index.html` الأصلي ثم رفعه للموقع.</p>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
-                <p class="text-lg font-semibold text-gray-400">Total Clicks (Affiliate)</p>
-                <p id="totalClicks" class="text-5xl font-extrabold text-green-400 mt-2">...</p>
+                <p class="text-lg font-semibold text-gray-400">إجمالي الزيارات</p>
+                <p id="totalVisits" class="text-5xl font-extrabold text-blue-400 mt-2">0</p>
             </div>
             <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
-                <p class="text-lg font-semibold text-gray-400">Total Subscribers</p>
-                <p id="subscriberCount" class="text-5xl font-extrabold text-yellow-400 mt-2">...</p>
+                <p class="text-lg font-semibold text-gray-400">إجمالي نقرات الشراء</p>
+                <p id="totalClicks" class="text-5xl font-extrabold text-green-400 mt-2">0</p>
             </div>
             <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
-                <p class="text-lg font-semibold text-gray-400">New Support Requests</p>
-                <p id="supportCount" class="text-5xl font-extrabold text-red-400 mt-2">...</p>
+                <p class="text-lg font-semibold text-gray-400">إجمالي المنتجات</p>
+                <p id="totalProducts" class="text-5xl font-extrabold text-yellow-400 mt-2">0</p>
+            </div>
+             <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
+                <p class="text-lg font-semibold text-gray-400">إجمالي نسخ الروابط</p>
+                <p id="totalCopies" class="text-5xl font-extrabold text-red-400 mt-2">0</p>
             </div>
         </div>
 
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl mb-12">
+            <h2 class="text-3xl font-extrabold mb-6 text-yellow-300 flex items-center justify-end">
+                أداء المنتجات (من الأعلى إلى الأقل نقراً) <i class="fas fa-chart-bar ml-3"></i>
+            </h2>
+            <ul id="productClicksList" class="scroll-list divide-y divide-gray-700">
+                <li class="text-center py-4 text-gray-500">جاري تحميل بيانات المنتجات...</li>
+            </ul>
+        </div>
+        
         <div class="bg-gray-800 p-8 rounded-xl shadow-lg mb-12">
-            <h2 class="text-3xl font-bold mb-6 text-blue-300">Add New Product</h2>
+            <h2 class="text-3xl font-extrabold mb-6 text-blue-300 flex items-center justify-end">
+                <i class="fas fa-plus-circle ml-3"></i> إضافة منتج جديد
+            </h2>
             <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="newProductTitle" placeholder="عنوان المنتج (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
+                <input type="text" id="newProductPrice" placeholder="السعر (مثال: $99.99) (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
                 
-                <input type="text" id="newProductTitle" placeholder="Product Title" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
-                <input type="text" id="newProductPrice" placeholder="Price (e.g., $99.99)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
-                <input type="url" id="newProductAffiliateLink" placeholder="Amazon Affiliate Link" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2">
+                <input type="url" id="newProductImage" placeholder="رابط الصورة (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
+                <input type="url" id="newProductAffiliateLink" placeholder="رابط الشراء / العمولة (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
                 
-                <textarea id="newProductDescription" placeholder="Detailed Product Description" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2 h-24"></textarea>
+                <input type="text" id="newProductOldPrice" placeholder="السعر القديم (اختياري)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
+                <input type="text" id="newProductDiscount" placeholder="نص الخصم (مثال: وفر 20%) (اختياري)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
+                
+                <textarea id="newProductDescription" placeholder="وصف المنتج" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2"></textarea>
 
-                <div class="col-span-1 md:col-span-2">
-                    <h3 class="text-xl font-semibold mt-4 mb-2 text-yellow-400">SEO Fields (for Google)</h3>
-                </div>
-                <input type="text" id="newProductSeoTitle" placeholder="SEO Title (for Google Search Results)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-yellow-500 focus:ring-2">
-                <input type="text" id="newProductSeoDescription" placeholder="SEO Description (Meta Description)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-yellow-500 focus:ring-2 col-span-1 md:col-span-2">
+                <input type="text" id="newProductSeoTitle" placeholder="عنوان SEO (اختياري لتحسين البحث)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2">
+                <input type="text" id="newProductSeoDesc" placeholder="وصف SEO (اختياري لتحسين البحث)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2">
 
-                <button type="submit" class="col-span-1 md:col-span-2 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition duration-200 mt-4">Add Product</button>
+                <button type="submit" class="col-span-1 md:col-span-2 bg-green-600 text-white font-extrabold py-3 rounded-lg hover:bg-green-700 transition duration-200 mt-4">إضافة المنتج</button>
             </form>
         </div>
         
         <div class="bg-gray-800 p-8 rounded-xl shadow-lg">
-            <h2 class="text-3xl font-bold mb-6 text-red-300">Pending Support Requests</h2>
-            <ul id="supportRequestsList" class="divide-y divide-gray-700">
-                <li class="text-center py-4 text-gray-400">Loading support requests...</li>
+            <h2 class="text-3xl font-extrabold mb-6 text-red-300 flex items-center justify-end">
+                 <i class="fas fa-trash-alt ml-3"></i> إدارة المنتجات (حذف)
+            </h2>
+            <ul id="productManageList" class="scroll-list divide-y divide-gray-700">
+                <li class="text-center py-4 text-gray-500">جاري تحميل المنتجات...</li>
             </ul>
         </div>
         
     </div>
 
 </body>
-</html>
+    </html>
