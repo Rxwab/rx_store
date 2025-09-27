@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RXstore - Admin Dashboard (Secret Access)</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; /* أو أي خط تفضله للوحة التحكم */
+            background-color: #0d1117;
+            color: #e2e8f0;
+        }
+    </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, onSnapshot, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        // يمكنك إضافة Storage إذا كنت تنوي تحميل صور جديدة مباشرة من هنا
+        
+        // ** (1) قم بوضع إعدادات Firebase الخاصة بك هنا **
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        let userId = null;
+        const ADMIN_PASSWORD = '0112452'; // كلمة المرور السرية
+
+        // دالة لعرض رسائل بسيطة (يمكنك تطويرها لاحقاً)
+        function showMessage(type, message) {
+            console.log(`${type}: ${message}`);
+            alert(message);
+        }
+
+        // ====== منطق التحقق من كلمة المرور ======
+        async function handleAdminLogin() {
+            const passwordInput = document.getElementById('adminPassword');
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                try {
+                    // تسجيل الدخول المجهول لربط الجلسة بمعلومات Firebase
+                    const userCredential = await signInAnonymously(auth);
+                    userId = userCredential.user.uid;
+                    
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('dashboard-content').classList.remove('hidden');
+                    
+                    // بعد تسجيل الدخول بنجاح، ابدأ بتحميل البيانات الإدارية
+                    loadAdminData(); 
+
+                } catch (error) {
+                    showMessage('Error', 'Firebase Login Failed.');
+                    console.error('Firebase Auth Error:', error);
+                }
+            } else {
+                showMessage('Error', 'Access Denied. Incorrect Password.');
+                passwordInput.value = ''; // مسح الحقل بعد محاولة فاشلة
+            }
+        }
+        
+        // ====== وظائف الإدارة (Analytics & CRUD) ======
+        
+        function loadAdminData() {
+            // 1. تتبع الإحصائيات المباشرة (النقرات، المشتركين، الدعم)
+            // (الآن يمكنك نقل أكواد onSnapshot المعقدة من index.html إلى هنا)
+
+            // مثال: قراءة عدد النقرات الكلي
+            const clicksRef = collection(db, 'clicks');
+            onSnapshot(clicksRef, (snapshot) => {
+                let totalClicks = 0;
+                snapshot.forEach(doc => {
+                    totalClicks += doc.data().count; // حسب هيكل قاعدة بياناتك
+                });
+                document.getElementById('totalClicks').textContent = totalClicks.toLocaleString();
+            });
+            
+            // مثال: قراءة طلبات الدعم
+            const supportRef = collection(db, `artifacts/${firebaseConfig.appId}/users/${userId}/supportRequests`);
+            onSnapshot(supportRef, (snapshot) => {
+                const supportList = document.getElementById('supportRequestsList');
+                supportList.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const listItem = document.createElement('li');
+                    listItem.className = 'p-3 bg-gray-700 rounded-lg mb-2';
+                    listItem.textContent = `Email: ${data.email} - Issue: ${data.issue}`;
+                    supportList.appendChild(listItem);
+                });
+                document.getElementById('supportCount').textContent = snapshot.size;
+            });
+
+            // 2. تفعيل نماذج الإدارة
+            document.getElementById('addProductForm').addEventListener('submit', handleAddProduct);
+            // ... أضف مستمعي الأحداث لـ deleteProductForm هنا
+        }
+
+        // دالة إضافة منتج جديد (هذه الدالة يجب أن تكون هنا فقط)
+        async function handleAddProduct(e) {
+            e.preventDefault();
+            const title = document.getElementById('newProductTitle').value;
+            const price = document.getElementById('newProductPrice').value;
+            const affiliateLink = document.getElementById('newProductAffiliateLink').value;
+            // ... استخراج الحقول الجديدة للـ SEO هنا ...
+
+            if (!title || !price || !affiliateLink) {
+                showMessage('Error', 'Please fill in all required fields.');
+                return;
+            }
+
+            try {
+                const productsRef = collection(db, 'products'); // حسب اسم الكوليكشن الخاص بك
+                await addDoc(productsRef, {
+                    title: title,
+                    price: price,
+                    affiliate: affiliateLink,
+                    // ... أضف باقي الحقول مثل images, description, seoTitle, seoDescription ...
+                    clicks: 0, // يبدأ بـ 0 نقرات
+                    createdAt: new Date()
+                });
+                showMessage('Success', 'Product added successfully!');
+                e.target.reset();
+            } catch (error) {
+                showMessage('Error', 'Failed to add product.');
+                console.error('Error adding product:', error);
+            }
+        }
+        
+        // ====== استماع الأحداث بعد تحميل الصفحة ======
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('loginBtn').addEventListener('click', handleAdminLogin);
+        });
+
+    </script>
+</head>
+<body class="p-6 md:p-12 lg:p-20 transition-all duration-300">
+
+    <div id="login-screen" class="max-w-md mx-auto p-8 bg-gray-800 rounded-2xl shadow-2xl mt-20">
+        <h2 class="text-3xl font-bold mb-6 text-center text-red-400">ADMIN ACCESS</h2>
+        <p class="text-gray-400 mb-4 text-center">Enter the secret password to continue.</p>
+        <input type="password" id="adminPassword" placeholder="Secret Password" class="w-full p-4 mb-6 rounded-xl bg-gray-700 text-white border-none focus:ring-red-500 focus:ring-2 placeholder-gray-500">
+        <button id="loginBtn" class="w-full bg-red-600 text-white font-bold py-4 rounded-xl hover:bg-red-700 transition duration-200">LOGIN</button>
+    </div>
+
+    <div id="dashboard-content" class="hidden">
+        <h1 class="text-4xl font-extrabold mb-10 text-blue-400">RXstore Dashboard</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
+                <p class="text-lg font-semibold text-gray-400">Total Clicks (Affiliate)</p>
+                <p id="totalClicks" class="text-5xl font-extrabold text-green-400 mt-2">...</p>
+            </div>
+            <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
+                <p class="text-lg font-semibold text-gray-400">Total Subscribers</p>
+                <p id="subscriberCount" class="text-5xl font-extrabold text-yellow-400 mt-2">...</p>
+            </div>
+            <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
+                <p class="text-lg font-semibold text-gray-400">New Support Requests</p>
+                <p id="supportCount" class="text-5xl font-extrabold text-red-400 mt-2">...</p>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 p-8 rounded-xl shadow-lg mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-blue-300">Add New Product</h2>
+            <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <input type="text" id="newProductTitle" placeholder="Product Title" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
+                <input type="text" id="newProductPrice" placeholder="Price (e.g., $99.99)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
+                <input type="url" id="newProductAffiliateLink" placeholder="Amazon Affiliate Link" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2">
+                
+                <textarea id="newProductDescription" placeholder="Detailed Product Description" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2 h-24"></textarea>
+
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-xl font-semibold mt-4 mb-2 text-yellow-400">SEO Fields (for Google)</h3>
+                </div>
+                <input type="text" id="newProductSeoTitle" placeholder="SEO Title (for Google Search Results)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-yellow-500 focus:ring-2">
+                <input type="text" id="newProductSeoDescription" placeholder="SEO Description (Meta Description)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-yellow-500 focus:ring-2 col-span-1 md:col-span-2">
+
+                <button type="submit" class="col-span-1 md:col-span-2 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition duration-200 mt-4">Add Product</button>
+            </form>
+        </div>
+        
+        <div class="bg-gray-800 p-8 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold mb-6 text-red-300">Pending Support Requests</h2>
+            <ul id="supportRequestsList" class="divide-y divide-gray-700">
+                <li class="text-center py-4 text-gray-400">Loading support requests...</li>
+            </ul>
+        </div>
+        
+    </div>
+
+</body>
+</html>
