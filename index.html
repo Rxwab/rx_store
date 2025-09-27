@@ -278,7 +278,7 @@
             `;
 
             document.getElementById('copy-link-btn').addEventListener('click', () => {
-                // *** التعديل: استخدام ?product=ID في رابط النسخ ***
+                // *** استخدام ?product=ID في رابط النسخ ***
                 const url = `${window.location.origin}${window.location.pathname}?product=${product.id}`; 
                 const tempInput = document.createElement('input');
                 document.body.appendChild(tempInput);
@@ -318,7 +318,7 @@
             `;
         }
 
-        // *** التعديل: لوجيك التوجيه بناءً على Query Parameter بدلاً من الـ Hash ***
+        // *** لوجيك التوجيه بناءً على Query Parameter بدلاً من الـ Hash ***
         function handleRouting() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('product'); // البحث عن ?product=ID
@@ -346,7 +346,7 @@
             });
         }
 
-        // *** التعديل: الاستماع لتغيرات الـ history (زر الرجوع/الأمام) بدلاً من الهاش ***
+        // *** الاستماع لتغيرات الـ history (زر الرجوع/الأمام) بدلاً من الهاش ***
         window.addEventListener('popstate', handleRouting);
         
         document.addEventListener('DOMContentLoaded', () => {
