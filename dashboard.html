@@ -126,6 +126,7 @@
                 listContainer.appendChild(item);
             });
 
+            // ربط أزرار الحذف والتعديل بعد كل تحديث للقائمة
             document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDeleteProduct));
             document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', handleEditProduct));
         }
@@ -145,6 +146,7 @@
                 price: form.price.value,
                 oldPrice: form.oldPrice.value || null,
                 discount: form.discount.value || null,
+                // حقول SEO موجودة هنا
                 seoTitle: form.seoTitle.value || form.title.value,
                 seoDescription: form.seoDescription.value || form.description.value,
             };
@@ -155,11 +157,11 @@
                 const index = products.findIndex(p => p.id === productId);
                 if (index !== -1) {
                     products[index] = product;
-                    showMessage('Success', `تم تعديل المنتج ${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**`);
+                    showMessage('Success', `تم تعديل المنتج ${product.title} بنجاح. **اضغط زر التحميل الأخضر!**`);
                 }
             } else {
                 products.push(product);
-                showMessage('Success', `تم إضافة المنتج ${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**`);
+                showMessage('Success', `تم إضافة المنتج ${product.title} بنجاح. **اضغط زر التحميل الأخضر!**`);
             }
 
             saveProducts(products);
@@ -172,7 +174,7 @@
                 let products = getProducts();
                 products = products.filter(p => p.id !== productId);
                 saveProducts(products);
-                showMessage('Success', 'تم حذف المنتج بنجاح. **لا تنس تحميل الملف ورفعه!**');
+                showMessage('Success', 'تم حذف المنتج بنجاح. **اضغط زر التحميل الأخضر!**');
                 loadAdminData();
             }
         }
@@ -206,6 +208,11 @@
             const products = getProducts();
             const jsonText = JSON.stringify(products, null, 4); 
             
+            if (products.length === 0) {
+                 showMessage('Error', 'لا يمكن تحميل الملف وهو فارغ! أضف منتجاً واحداً على الأقل.');
+                 return;
+            }
+
             const blob = new Blob([jsonText], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -225,9 +232,7 @@
 
         // ====== ربط الأزرار ======
         document.addEventListener('DOMContentLoaded', () => {
-            // هذا هو ربط زر تسجيل الدخول الذي يجب أن يعمل
-            document.getElementById('login-btn').addEventListener('click', handleAdminLogin);
-            
+            // زر تسجيل الدخول تم ربطه في HTML باستخدام onclick
             document.getElementById('product-form').addEventListener('submit', handleFormSubmit);
             document.getElementById('download-json-btn').addEventListener('click', downloadProductsJson);
         });
@@ -242,7 +247,8 @@
         <div class="bg-slate-800 p-8 rounded-xl shadow-2xl w-full max-w-md text-center">
             <h1 class="text-3xl font-extrabold text-white mb-6">لوحة المشرف (التخزين المحلي)</h1>
             <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور السرية" class="w-full p-3 rounded-lg bg-slate-700 text-white placeholder-slate-400 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <button id="login-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+            
+            <button onclick="handleAdminLogin()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                 تسجيل الدخول
             </button>
         </div>
@@ -300,6 +306,7 @@
                         <div><label for="oldPrice" class="block text-slate-400 mb-1">السعر القديم (اختياري)</label><input type="text" id="oldPrice" name="oldPrice" class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
                         <div><label for="discount" class="block text-slate-400 mb-1">الخصم (مثال: 20% OFF)</label><input type="text" id="discount" name="discount" class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
                     </div>
+                    
                     <h3 class="text-xl font-bold text-white pt-4">تحسينات SEO (اختياري)</h3>
                     <div><label for="seoTitle" class="block text-slate-400 mb-1">عنوان SEO (<title>)</label><input type="text" id="seoTitle" name="seoTitle" class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
                     <div><label for="seoDescription" class="block text-slate-400 mb-1">وصف SEO (<meta description>)</label><textarea id="seoDescription" name="seoDescription" class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea></div>
