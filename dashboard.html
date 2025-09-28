@@ -43,9 +43,8 @@
         // ** Local Storage Keys & Helpers **
         // ******************************************************
         const ADMIN_PASSWORD = '0112452'; // 🔑 كلمة المرور السرية - غيّرها هنا
-        const PRODUCTS_KEY = 'RXSTORE_PRODUCTS_LOCAL'; // تخزين المنتجات محلياً
+        const PRODUCTS_KEY = 'RXSTORE_PRODUCTS_LOCAL'; 
 
-        // دالة مساعدة لإنشاء معرف فريد
         function generateUniqueId(prefix = 'p') {
             return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
         }
@@ -59,11 +58,10 @@
             localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
         }
 
-        // دالة عرض رسالة مؤقتة
         function showMessage(type, message) {
             const msgBox = document.getElementById('message-box');
             msgBox.textContent = message;
-            msgBox.className = `p-3 rounded-lg text-center font-bold fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${type === 'Error' ? 'bg-red-600' : 'bg-green-600'}`;
+            msgBox.className = \`p-3 rounded-lg text-center font-bold fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 \${type === 'Error' ? 'bg-red-600' : 'bg-green-600'}\`;
             msgBox.classList.remove('hidden');
             setTimeout(() => {
                 msgBox.classList.add('hidden');
@@ -90,13 +88,10 @@
         function loadAdminData() {
             const products = getProducts();
             
-            // تحديث عدد المنتجات
             document.getElementById('total-products').textContent = products.length;
 
-            // عرض قائمة المنتجات
             renderProductList(products);
             
-            // تهيئة حقل الإضافة
             document.getElementById('product-form').reset();
             document.getElementById('product-id-field').value = '';
             document.getElementById('form-submit-btn').textContent = 'إضافة منتج جديد';
@@ -115,17 +110,17 @@
             products.forEach(product => {
                 const item = document.createElement('div');
                 item.className = 'product-item bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition-colors duration-200';
-                item.innerHTML = `
+                item.innerHTML = \`
                     <div class="truncate font-semibold text-white">
-                        ${product.title} 
+                        \${product.title} 
                     </div>
-                    <button data-id="${product.id}" class="edit-btn action-btn bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200">
+                    <button data-id="\${product.id}" class="edit-btn action-btn bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button data-id="${product.id}" class="delete-btn action-btn bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-200">
+                    <button data-id="\${product.id}" class="delete-btn action-btn bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-200">
                         <i class="fas fa-trash"></i>
                     </button>
-                `;
+                \`;
                 listContainer.appendChild(item);
             });
 
@@ -155,16 +150,14 @@
             let products = getProducts();
             
             if (productId) {
-                // تعديل منتج موجود
                 const index = products.findIndex(p => p.id === productId);
                 if (index !== -1) {
                     products[index] = product;
-                    showMessage('Success', `تم تعديل المنتج ${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**`);
+                    showMessage('Success', \`تم تعديل المنتج \${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**\`);
                 }
             } else {
-                // إضافة منتج جديد
                 products.push(product);
-                showMessage('Success', `تم إضافة المنتج ${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**`);
+                showMessage('Success', \`تم إضافة المنتج \${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**\`);
             }
 
             saveProducts(products);
@@ -202,28 +195,25 @@
                 form.seoDescription.value = product.seoDescription || '';
                 
                 document.getElementById('form-submit-btn').textContent = 'حفظ التعديلات';
-                showMessage('Success', `جاري تعديل المنتج ${product.title}.`);
+                showMessage('Success', \`جاري تعديل المنتج \${product.title}.\`);
             }
         }
         
         // ====== وظيفة تحميل ملف JSON ======
         function downloadProductsJson() {
             const products = getProducts();
-            // تحويل مصفوفة المنتجات إلى نص JSON منسق
             const jsonText = JSON.stringify(products, null, 4); 
             
-            // إنشاء blob وتنزيل الملف
             const blob = new Blob([jsonText], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'products.json'; // اسم الملف الذي سيتم تنزيله
+            a.download = 'products.json'; 
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            // عرض رسالة النجاح
             const message = document.getElementById('download-message-json');
             message.classList.remove('hidden');
             setTimeout(() => {
@@ -320,4 +310,4 @@
 
     </div>
 </body>
-                                                                                                                </html>
+</html>
