@@ -37,12 +37,13 @@
         }
     </style>
 
-    <script type="module">
+    <script>
         
         // ******************************************************
         // ** Local Storage Keys & Helpers **
         // ******************************************************
-        const ADMIN_PASSWORD = '0112452'; // 🔑 كلمة المرور السرية - تم تعيينها حسب طلبك
+        // 🔑 كلمة المرور السرية - تم تعيينها حسب طلبك
+        const ADMIN_PASSWORD = '0112452'; 
         const PRODUCTS_KEY = 'RXSTORE_PRODUCTS_LOCAL'; 
 
         function generateUniqueId(prefix = 'p') {
@@ -224,7 +225,9 @@
 
         // ====== ربط الأزرار ======
         document.addEventListener('DOMContentLoaded', () => {
+            // هذا هو ربط زر تسجيل الدخول الذي يجب أن يعمل
             document.getElementById('login-btn').addEventListener('click', handleAdminLogin);
+            
             document.getElementById('product-form').addEventListener('submit', handleFormSubmit);
             document.getElementById('download-json-btn').addEventListener('click', downloadProductsJson);
         });
