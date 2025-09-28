@@ -42,7 +42,7 @@
         // ******************************************************
         // ** Local Storage Keys & Helpers **
         // ******************************************************
-        // 🔑 كلمة المرور السرية - تم تعيينها حسب طلبك
+        // 🔑 كلمة المرور السرية
         const ADMIN_PASSWORD = '0112452'; 
         const PRODUCTS_KEY = 'RXSTORE_PRODUCTS_LOCAL'; 
 
@@ -126,7 +126,7 @@
                 listContainer.appendChild(item);
             });
 
-            // ربط أزرار الحذف والتعديل بعد كل تحديث للقائمة
+            // ربط أزرار الحذف والتعديل بعد كل تحديث للقائمة لضمان عملها
             document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDeleteProduct));
             document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', handleEditProduct));
         }
@@ -209,7 +209,7 @@
             const jsonText = JSON.stringify(products, null, 4); 
             
             if (products.length === 0) {
-                 showMessage('Error', 'لا يمكن تحميل الملف وهو فارغ! أضف منتجاً واحداً على الأقل.');
+                 showMessage('Error', 'لا يمكن تحميل الملف وهو فارغ! أضف منتجاً واحداً على الأقل أولاً.');
                  return;
             }
 
