@@ -19,7 +19,6 @@
             max-height: 400px;
             overflow-y: auto;
         }
-        /* تعديل Grid ليناسب 3 أعمدة (العنوان / الحذف / التعديل) */
         .product-item {
             display: grid;
             grid-template-columns: 1fr auto auto; 
@@ -27,14 +26,14 @@
             align-items: center;
         }
         .action-btn {
-             width: 40px; /* أصغر قليلاً لتوفير المساحة */
+             width: 40px; 
              height: 40px; 
              display: flex;
              justify-content: center;
              align-items: center;
         }
         input, textarea {
-            text-align: right; /* محاذاة النص لليمين للغة العربية */
+            text-align: right; 
         }
     </style>
 
@@ -44,10 +43,9 @@
         // ** Local Storage Keys & Helpers **
         // ******************************************************
         const ADMIN_PASSWORD = '0112452'; // 🔑 كلمة المرور السرية - غيّرها هنا
-        const PRODUCTS_KEY = 'RXSTORE_PRODUCTS';
-        const ANALYTICS_KEY = 'RXSTORE_ANALYTICS';
+        const PRODUCTS_KEY = 'RXSTORE_PRODUCTS_LOCAL'; // تخزين المنتجات محلياً
 
-        // دالة مساعدة لإنشاء معرف فريد للمنتجات الجديدة
+        // دالة مساعدة لإنشاء معرف فريد
         function generateUniqueId(prefix = 'p') {
             return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
         }
@@ -59,12 +57,6 @@
 
         function saveProducts(products) {
             localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
-        }
-
-        function getAnalytics() {
-            const analytics = localStorage.getItem(ANALYTICS_KEY);
-            const defaultAnalytics = { visits: 0, clicks: {}, copies: {} };
-            return analytics ? { ...defaultAnalytics, ...JSON.parse(analytics) } : defaultAnalytics;
         }
 
         // دالة عرض رسالة مؤقتة
@@ -93,347 +85,239 @@
             }
         }
         
-        // ====== وظائف الإدارة والتحليل ======
+        // ====== وظائف الإدارة ======
         
         function loadAdminData() {
             const products = getProducts();
-            const analytics = getAnalytics();
             
-            // 1. حساب الإحصائيات وعرضها
-            let totalClicks = 0;
-            let totalCopies = 0;
+            // تحديث عدد المنتجات
+            document.getElementById('total-products').textContent = products.length;
 
-            const combinedProducts = products.map(product => {
-                const clicks = analytics.clicks[product.id] || 0;
-                const copies = analytics.copies[product.id] || 0;
-                totalClicks += clicks;
-                totalCopies += copies;
-                return { ...product, clicks, copies }; 
-            });
-
-            // عرض الإحصائيات الملخصة
-            document.getElementById('totalVisits').textContent = (analytics.visits || 0).toLocaleString('ar-EG');
-            document.getElementById('totalClicks').textContent = totalClicks.toLocaleString('ar-EG');
-            document.getElementById('totalProducts').textContent = products.length.toLocaleString('ar-EG');
-            document.getElementById('totalCopies').textContent = totalCopies.toLocaleString('ar-EG');
+            // عرض قائمة المنتجات
+            renderProductList(products);
             
-            // 2. تحليل المنتجات (نقرات العمولة)
-            combinedProducts.sort((a, b) => b.clicks - a.clicks); 
-
-            const productClicksList = document.getElementById('productClicksList');
-            productClicksList.innerHTML = ''; 
-
-            if (combinedProducts.length === 0) {
-                 productClicksList.innerHTML = '<li class="text-center py-4 text-gray-500">لا توجد منتجات للعرض.</li>';
-            }
-
-            combinedProducts.forEach((product, index) => {
-                const listItem = document.createElement('li');
-                const bgColor = index === 0 ? 'bg-green-700' : 'bg-gray-700'; 
-                
-                listItem.className = `p-4 ${bgColor} rounded-lg mb-2 flex justify-between items-center transition duration-200 hover:bg-gray-600`;
-                listItem.innerHTML = `
-                    <p class="font-bold text-white truncate">${index + 1}. ${product.title}</p>
-                    <span class="text-2xl font-bold text-yellow-300">${product.clicks.toLocaleString('ar-EG')} نقرة</span>
-                `;
-                productClicksList.appendChild(listItem);
-            });
+            // تهيئة حقل الإضافة
+            document.getElementById('product-form').reset();
+            document.getElementById('product-id-field').value = '';
+            document.getElementById('form-submit-btn').textContent = 'إضافة منتج جديد';
             
-            // 3. عرض قائمة المنتجات لإدارتها
-            renderProductManagementList(combinedProducts);
-            
-            // 4. تفعيل مستمع الحدث لإضافة المنتج
-            document.getElementById('addProductForm').removeEventListener('submit', handleAddProduct);
-            document.getElementById('addProductForm').addEventListener('submit', handleAddProduct);
         }
-        
-        // دالة لعرض قائمة المنتجات مع زر الحذف والتعديل
-        function renderProductManagementList(products) {
-            const productManageList = document.getElementById('productManageList');
-            productManageList.innerHTML = '';
+
+        function renderProductList(products) {
+            const listContainer = document.getElementById('products-list-container');
+            listContainer.innerHTML = ''; 
 
             if (products.length === 0) {
-                productManageList.innerHTML = '<li class="text-center py-4 text-gray-500">لا توجد منتجات لإدارتها.</li>';
+                listContainer.innerHTML = '<p class="text-center text-slate-500 p-4">لا توجد منتجات حالياً في الذاكرة المحلية للجهاز.</p>';
                 return;
             }
 
             products.forEach(product => {
-                const listItem = document.createElement('li');
-                listItem.className = 'product-item p-3 bg-gray-700 rounded-lg mb-2 items-center';
-                listItem.innerHTML = `
-                    <div class="overflow-hidden">
-                        <p class="font-bold text-white truncate">${product.title}</p>
-                        <p class="text-sm text-gray-400">السعر: ${product.price} | النسخ: ${product.copies.toLocaleString('ar-EG')}</p>
+                const item = document.createElement('div');
+                item.className = 'product-item bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition-colors duration-200';
+                item.innerHTML = `
+                    <div class="truncate font-semibold text-white">
+                        ${product.title} 
                     </div>
-                    <button onclick="window.handleDeleteProduct('${product.id}')" class="action-btn bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition duration-200" title="حذف المنتج">
+                    <button data-id="${product.id}" class="edit-btn action-btn bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button data-id="${product.id}" class="delete-btn action-btn bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-200">
                         <i class="fas fa-trash"></i>
                     </button>
-                    <button onclick="window.showEditModal('${product.id}')" class="action-btn bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-200" title="تعديل المنتج">
-                        <i class="fas fa-pen"></i>
-                    </button>
                 `;
-                productManageList.appendChild(listItem);
+                listContainer.appendChild(item);
             });
-        }
-        
-        // دالة إضافة منتج جديد
-        function handleAddProduct(e) {
-             e.preventDefault();
-             
-             const newProduct = {
-                id: generateUniqueId('p'),
-                title: document.getElementById('newProductTitle').value.trim(),
-                image: document.getElementById('newProductImage').value.trim(),
-                link: document.getElementById('newProductAffiliateLink').value.trim(),
-                price: document.getElementById('newProductPrice').value.trim(),
-                oldPrice: document.getElementById('newProductOldPrice').value.trim() || null,
-                discount: document.getElementById('newProductDiscount').value.trim() || null,
-                description: document.getElementById('newProductDescription').value.trim() || 'وصف منتج مميز من RXstore.',
-                seoTitle: document.getElementById('newProductSeoTitle').value.trim() || null,
-                seoDescription: document.getElementById('newProductSeoDesc').value.trim() || null,
-             };
 
-             if (!newProduct.title || !newProduct.image || !newProduct.link || !newProduct.price) {
-                showMessage('Error', 'الرجاء ملء جميع الحقول المطلوبة (العنوان، رابط الصورة، رابط الشراء، السعر).');
-                return;
-             }
-             
-             const products = getProducts();
-             products.push(newProduct);
-             saveProducts(products); // حفظ القائمة الجديدة
-             
-             showMessage('Success', 'تم إضافة المنتج بنجاح! يتم تحديث لوحة التحكم...');
-             e.target.reset(); // تفريغ النموذج
-             loadAdminData(); // إعادة تحميل لوحة التحكم
+            document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDeleteProduct));
+            document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', handleEditProduct));
         }
 
-        // دالة حذف منتج (متاحة عالمياً للزر)
-        window.handleDeleteProduct = function(productId) {
-            if (!confirm('هل أنت متأكد من رغبتك في حذف هذا المنتج؟')) {
-                return;
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const productId = document.getElementById('product-id-field').value;
+            
+            const product = {
+                id: productId || generateUniqueId(),
+                title: form.title.value,
+                description: form.description.value,
+                image: form.image.value,
+                link: form.link.value,
+                price: form.price.value,
+                oldPrice: form.oldPrice.value || null,
+                discount: form.discount.value || null,
+                seoTitle: form.seoTitle.value || form.title.value,
+                seoDescription: form.seoDescription.value || form.description.value,
+            };
+
+            let products = getProducts();
+            
+            if (productId) {
+                // تعديل منتج موجود
+                const index = products.findIndex(p => p.id === productId);
+                if (index !== -1) {
+                    products[index] = product;
+                    showMessage('Success', `تم تعديل المنتج ${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**`);
+                }
+            } else {
+                // إضافة منتج جديد
+                products.push(product);
+                showMessage('Success', `تم إضافة المنتج ${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**`);
             }
-            
-            const products = getProducts();
-            const newProducts = products.filter(p => p.id !== productId);
-            saveProducts(newProducts);
-            
-            showMessage('Success', `تم حذف المنتج بنجاح.`);
+
+            saveProducts(products);
             loadAdminData();
         }
-        
-        // ====== وظائف التعديل (New) ======
 
-        window.showEditModal = function(productId) {
+        function handleDeleteProduct(event) {
+            const productId = event.currentTarget.dataset.id;
+            if (confirm('هل أنت متأكد من حذف هذا المنتج؟ سيتم حذفه محلياً.')) {
+                let products = getProducts();
+                products = products.filter(p => p.id !== productId);
+                saveProducts(products);
+                showMessage('Success', 'تم حذف المنتج بنجاح. **لا تنس تحميل الملف ورفعه!**');
+                loadAdminData();
+            }
+        }
+
+        function handleEditProduct(event) {
+            const productId = event.currentTarget.dataset.id;
             const products = getProducts();
             const product = products.find(p => p.id === productId);
 
-            if (!product) {
-                showMessage('Error', 'المنتج غير موجود.');
-                return;
-            }
-
-            // تعبئة النموذج ببيانات المنتج الحالي
-            document.getElementById('editProductId').value = product.id;
-            document.getElementById('editProductTitle').value = product.title;
-            document.getElementById('editProductImage').value = product.image;
-            document.getElementById('editProductAffiliateLink').value = product.link;
-            document.getElementById('editProductPrice').value = product.price;
-            document.getElementById('editProductOldPrice').value = product.oldPrice || '';
-            document.getElementById('editProductDiscount').value = product.discount || '';
-            document.getElementById('editProductDescription').value = product.description || '';
-            document.getElementById('editProductSeoTitle').value = product.seoTitle || '';
-            document.getElementById('editProductSeoDesc').value = product.seoDescription || '';
-
-            // عرض المودال مع تأثير انتقال
-            const modal = document.getElementById('editProductModal');
-            const content = document.getElementById('editModalContent');
-            modal.classList.remove('hidden');
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                content.classList.remove('opacity-0', 'scale-95');
-            }, 10);
-        }
-
-        function handleSaveEdit(e) {
-            e.preventDefault();
-            
-            const productId = document.getElementById('editProductId').value;
-            const updatedData = {
-                id: productId,
-                title: document.getElementById('editProductTitle').value.trim(),
-                image: document.getElementById('editProductImage').value.trim(),
-                link: document.getElementById('editProductAffiliateLink').value.trim(),
-                price: document.getElementById('editProductPrice').value.trim(),
-                oldPrice: document.getElementById('editProductOldPrice').value.trim() || null,
-                discount: document.getElementById('editProductDiscount').value.trim() || null,
-                description: document.getElementById('editProductDescription').value.trim() || 'وصف منتج مميز من RXstore.',
-                seoTitle: document.getElementById('editProductSeoTitle').value.trim() || null,
-                seoDescription: document.getElementById('editProductSeoDesc').value.trim() || null,
-            };
-
-            if (!updatedData.title || !updatedData.image || !updatedData.link || !updatedData.price) {
-                showMessage('Error', 'الرجاء ملء جميع الحقول المطلوبة (العنوان، رابط الصورة، رابط الشراء، السعر).');
-                return;
-            }
-            
-            let products = getProducts();
-            const index = products.findIndex(p => p.id === productId);
-
-            if (index !== -1) {
-                // دمج البيانات المحدثة مع البيانات القديمة (للحفاظ على حقول مثل النقرات والنسخ)
-                products[index] = { ...products[index], ...updatedData };
-                saveProducts(products); 
+            if (product) {
+                const form = document.getElementById('product-form');
                 
-                showMessage('Success', 'تم تحديث المنتج بنجاح!');
-                loadAdminData(); // إعادة تحميل لوحة التحكم
-            } else {
-                showMessage('Error', 'فشل في حفظ التعديلات. المنتج غير موجود.');
+                document.getElementById('product-id-field').value = product.id;
+                form.title.value = product.title;
+                form.description.value = product.description;
+                form.image.value = product.image;
+                form.link.value = product.link;
+                form.price.value = product.price;
+                form.oldPrice.value = product.oldPrice || '';
+                form.discount.value = product.discount || '';
+                form.seoTitle.value = product.seoTitle || '';
+                form.seoDescription.value = product.seoDescription || '';
+                
+                document.getElementById('form-submit-btn').textContent = 'حفظ التعديلات';
+                showMessage('Success', `جاري تعديل المنتج ${product.title}.`);
             }
-
-            // إخفاء المودال
-            const modal = document.getElementById('editProductModal');
-            const content = document.getElementById('editModalContent');
-            content.classList.add('opacity-0', 'scale-95');
+        }
+        
+        // ====== وظيفة تحميل ملف JSON ======
+        function downloadProductsJson() {
+            const products = getProducts();
+            // تحويل مصفوفة المنتجات إلى نص JSON منسق
+            const jsonText = JSON.stringify(products, null, 4); 
+            
+            // إنشاء blob وتنزيل الملف
+            const blob = new Blob([jsonText], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'products.json'; // اسم الملف الذي سيتم تنزيله
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // عرض رسالة النجاح
+            const message = document.getElementById('download-message-json');
+            message.classList.remove('hidden');
             setTimeout(() => {
-                modal.style.display = 'none';
-                modal.classList.add('hidden');
-            }, 300);
+                message.classList.add('hidden');
+            }, 4000);
         }
 
-        
-        // ====== استماع الأحداث بعد تحميل الصفحة ======
+        // ====== ربط الأزرار ======
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('loginBtn').addEventListener('click', handleAdminLogin);
-            
-            // إضافة مستمع لزر إغلاق مودال التعديل
-            document.getElementById('closeEditModal').addEventListener('click', () => {
-                const modal = document.getElementById('editProductModal');
-                const content = document.getElementById('editModalContent');
-                content.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    modal.classList.add('hidden');
-                }, 300);
-            });
-
-            // إضافة مستمع لنموذج حفظ التعديلات
-            document.getElementById('editProductForm').addEventListener('submit', handleSaveEdit);
-
-            // عرض إجمالي الزيارات قبل تسجيل الدخول
-            document.getElementById('totalVisitsPreLogin').textContent = (getAnalytics().visits || 0).toLocaleString('ar-EG');
+            document.getElementById('login-btn').addEventListener('click', handleAdminLogin);
+            document.getElementById('product-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('download-json-btn').addEventListener('click', downloadProductsJson);
         });
+
     </script>
 </head>
 <body class="p-6 md:p-12 lg:p-20 transition-all duration-300">
-
+    
     <div id="message-box" class="hidden"></div>
 
-    <div id="login-screen" class="max-w-md mx-auto p-8 bg-gray-800 rounded-2xl shadow-2xl mt-20 text-right">
-        <h2 class="text-3xl font-extrabold mb-6 text-center text-red-400">لوحة تحكم RXstore</h2>
-        <p class="text-gray-400 mb-4 text-center">أدخل كلمة المرور السرية للمتابعة.</p>
-        <div class="p-3 bg-gray-700 rounded-xl mb-4 text-center">
-            <p class="text-sm text-gray-400">إجمالي الزيارات المتتبعة محلياً: <span id="totalVisitsPreLogin" class="font-bold text-yellow-300">0</span></p>
-        </div>
-        <input type="password" id="adminPassword" placeholder="كلمة المرور السرية (0112452)" class="w-full p-4 mb-6 rounded-xl bg-gray-700 text-white border-none focus:ring-red-500 focus:ring-2 placeholder-gray-500 text-left" dir="ltr">
-        <button id="loginBtn" class="w-full bg-red-600 text-white font-bold py-4 rounded-xl hover:bg-red-700 transition duration-200">تسجيل الدخول</button>
-    </div>
-
-    <div id="dashboard-content" class="hidden text-right">
-        <h1 class="text-4xl font-extrabold mb-10 text-blue-400">لوحة التحكم (بيانات محلية)</h1>
-        
-        <div class="p-4 mb-8 bg-yellow-900/50 rounded-xl border border-yellow-500/50 text-yellow-300">
-            <p class="font-extrabold">⚠️ تذكير هام حول تثبيت التغييرات:</p>
-            <p class="text-sm">هذه البيانات والإدارة تعمل على متصفحك الحالي (Local Storage). المتجر (`index.html`) يقرأ هذه البيانات مباشرة من Local Storage، لذلك التغييرات تظهر **فورا** بمجرد حفظها في هذه اللوحة.</p>
-        </div>
-
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
-                <p class="text-lg font-semibold text-gray-400">إجمالي الزيارات</p>
-                <p id="totalVisits" class="text-5xl font-extrabold text-blue-400 mt-2">0</p>
-            </div>
-            <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
-                <p class="text-lg font-semibold text-gray-400">إجمالي نقرات الشراء</p>
-                <p id="totalClicks" class="text-5xl font-extrabold text-green-400 mt-2">0</p>
-            </div>
-            <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
-                <p class="text-lg font-semibold text-gray-400">إجمالي المنتجات</p>
-                <p id="totalProducts" class="text-5xl font-extrabold text-yellow-400 mt-2">0</p>
-            </div>
-             <div class="p-6 bg-gray-800 rounded-xl shadow-lg">
-                <p class="text-lg font-semibold text-gray-400">إجمالي نسخ الروابط</p>
-                <p id="totalCopies" class="text-5xl font-extrabold text-red-400 mt-2">0</p>
-            </div>
-        </div>
-
-        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl mb-12">
-            <h2 class="text-3xl font-extrabold mb-6 text-yellow-300 flex items-center justify-end">
-                أداء المنتجات (من الأعلى إلى الأقل نقراً) <i class="fas fa-chart-bar ml-3"></i>
-            </h2>
-            <ul id="productClicksList" class="scroll-list divide-y divide-gray-700">
-                <li class="text-center py-4 text-gray-500">جاري تحميل بيانات المنتجات...</li>
-            </ul>
-        </div>
-        
-        <div class="bg-gray-800 p-8 rounded-xl shadow-lg mb-12">
-            <h2 class="text-3xl font-extrabold mb-6 text-green-400 flex items-center justify-end">
-                <i class="fas fa-plus-circle ml-3"></i> إضافة منتج جديد
-            </h2>
-            <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="newProductTitle" placeholder="عنوان المنتج (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2">
-                <input type="text" id="newProductPrice" placeholder="السعر (مثال: $99.99) (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2">
-                
-                <input type="url" id="newProductImage" placeholder="رابط الصورة (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2">
-                <input type="url" id="newProductAffiliateLink" placeholder="رابط الشراء / العمولة (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2">
-                
-                <input type="text" id="newProductOldPrice" placeholder="السعر القديم (اختياري)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2">
-                <input type="text" id="newProductDiscount" placeholder="نص الخصم (مثال: وفر 20%) (اختياري)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2">
-                
-                <textarea id="newProductDescription" placeholder="وصف المنتج" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2 col-span-1 md:col-span-2"></textarea>
-
-                <input type="text" id="newProductSeoTitle" placeholder="عنوان SEO (اختياري لتحسين البحث)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2 col-span-1 md:col-span-2">
-                <input type="text" id="newProductSeoDesc" placeholder="وصف SEO (اختياري لتحسين البحث)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-green-500 focus:ring-2 col-span-1 md:col-span-2">
-
-                <button type="submit" class="col-span-1 md:col-span-2 bg-green-600 text-white font-extrabold py-3 rounded-lg hover:bg-green-700 transition duration-200 mt-4">إضافة المنتج</button>
-            </form>
-        </div>
-        
-        <div class="bg-gray-800 p-8 rounded-xl shadow-lg">
-            <h2 class="text-3xl font-extrabold mb-6 text-blue-300 flex items-center justify-end">
-                 <i class="fas fa-edit ml-3"></i> إدارة المنتجات (تعديل وحذف)
-            </h2>
-            <ul id="productManageList" class="scroll-list divide-y divide-gray-700">
-                <li class="text-center py-4 text-gray-500">جاري تحميل المنتجات...</li>
-            </ul>
-        </div>
-        
-    </div>
-    
-    <div id="editProductModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
-        <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl max-w-xl w-full text-right transform transition-all duration-300 scale-95 opacity-0" id="editModalContent">
-            <h2 class="text-3xl font-extrabold mb-6 text-blue-400 flex justify-between items-center">
-                تعديل المنتج <button id="closeEditModal" class="text-red-500 hover:text-red-400"><i class="fas fa-times"></i></button>
-            </h2>
-            <form id="editProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="hidden" id="editProductId"> 
-                
-                <input type="text" id="editProductTitle" placeholder="عنوان المنتج (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
-                <input type="text" id="editProductPrice" placeholder="السعر (مثال: $99.99) (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
-                
-                <input type="url" id="editProductImage" placeholder="رابط الصورة (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
-                <input type="url" id="editProductAffiliateLink" placeholder="رابط الشراء / العمولة (مطلوب)" required class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
-                
-                <input type="text" id="editProductOldPrice" placeholder="السعر القديم (اختياري)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
-                <input type="text" id="editProductDiscount" placeholder="نص الخصم (مثال: وفر 20%) (اختياري)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2">
-                
-                <textarea id="editProductDescription" placeholder="وصف المنتج" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2"></textarea>
-
-                <input type="text" id="editProductSeoTitle" placeholder="عنوان SEO (اختياري لتحسين البحث)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2">
-                <input type="text" id="editProductSeoDesc" placeholder="وصف SEO (اختياري لتحسين البحث)" class="p-3 rounded-lg bg-gray-700 text-white border-none focus:ring-blue-500 focus:ring-2 col-span-1 md:col-span-2">
-
-                <button type="submit" class="col-span-1 md:col-span-2 bg-blue-600 text-white font-extrabold py-3 rounded-lg hover:bg-blue-700 transition duration-200 mt-4">حفظ التعديلات</button>
-            </form>
+    <div id="login-screen" class="flex justify-center items-center h-screen">
+        <div class="bg-slate-800 p-8 rounded-xl shadow-2xl w-full max-w-md text-center">
+            <h1 class="text-3xl font-extrabold text-white mb-6">لوحة المشرف (التخزين المحلي)</h1>
+            <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور السرية" class="w-full p-3 rounded-lg bg-slate-700 text-white placeholder-slate-400 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button id="login-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                تسجيل الدخول
+            </button>
         </div>
     </div>
 
+    <div id="dashboard-content" class="hidden">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-white mb-2">إدارة متجر RXstore</h1>
+            <p class="text-slate-400">الإدارة تتم محلياً ثم تُنشر على GitHub.</p>
+            <a href="." class="text-blue-400 hover:underline">العودة للمتجر</a>
+        </header>
+
+        <div class="grid grid-cols-2 gap-6 mb-12 max-w-md mx-auto">
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg text-center">
+                <p class="text-3xl font-bold text-yellow-400" id="total-products">0</p>
+                <p class="text-slate-400 mt-1">عدد المنتجات</p>
+            </div>
+            <div class="bg-slate-800 p-6 rounded-xl shadow-lg text-center">
+                <p class="text-3xl font-bold text-green-400">مجاني 100%</p>
+                <p class="text-slate-400 mt-1">لا يتطلب خادم أو دفع</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            
+            <div class="lg:col-span-1 bg-slate-900 p-8 rounded-xl shadow-2xl h-fit">
+                <h2 class="text-2xl font-bold text-white mb-6">قائمة المنتجات (جهازك الحالي)</h2>
+                
+                <p class="text-sm text-yellow-400 mb-4 font-bold">⚠️ خطوة حاسمة: بعد كل تعديل، اضغط الزر و **ارفع الملف** على GitHub.</p>
+                
+                <button id="download-json-btn" class="w-full mb-4 bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors duration-200">
+                    <i class="fas fa-download ml-2"></i> تحميل ملف products.json
+                </button>
+                <div id="download-message-json" class="mt-2 text-green-400 text-center hidden mb-6 font-bold">تم تنزيل الملف! الآن ارفعه يدوياً على GitHub.</div>
+
+                <div id="products-list-container" class="scroll-list space-y-3 pr-2">
+                    </div>
+            </div>
+
+            <div class="lg:col-span-2 bg-slate-900 p-8 rounded-xl shadow-2xl">
+                <h2 class="text-2xl font-bold text-white mb-6">إضافة / تعديل منتج</h2>
+                
+                <form id="product-form" class="space-y-4">
+                    <input type="hidden" id="product-id-field" />
+
+                    <div><label for="title" class="block text-slate-400 mb-1">عنوان المنتج *</label><input type="text" id="title" name="title" required class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    <div><label for="description" class="block text-slate-400 mb-1">الوصف المختصر *</label><textarea id="description" name="description" required class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label for="image" class="block text-slate-400 mb-1">رابط الصورة (URL) *</label><input type="url" id="image" name="image" required class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                        <div><label for="link" class="block text-slate-400 mb-1">رابط الشراء (URL) *</label><input type="url" id="link" name="link" required class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div><label for="price" class="block text-slate-400 mb-1">السعر الحالي *</label><input type="text" id="price" name="price" required class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                        <div><label for="oldPrice" class="block text-slate-400 mb-1">السعر القديم (اختياري)</label><input type="text" id="oldPrice" name="oldPrice" class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                        <div><label for="discount" class="block text-slate-400 mb-1">الخصم (مثال: 20% OFF)</label><input type="text" id="discount" name="discount" class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white pt-4">تحسينات SEO (اختياري)</h3>
+                    <div><label for="seoTitle" class="block text-slate-400 mb-1">عنوان SEO (<title>)</label><input type="text" id="seoTitle" name="seoTitle" class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    <div><label for="seoDescription" class="block text-slate-400 mb-1">وصف SEO (<meta description>)</label><textarea id="seoDescription" name="seoDescription" class="w-full p-3 rounded-lg bg-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea></div>
+
+                    <button type="submit" id="form-submit-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 mt-6">
+                        إضافة منتج جديد
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
 </body>
-                    </html>
+                                                                                                                </html>
