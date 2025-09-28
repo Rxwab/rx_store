@@ -6,36 +6,11 @@
     <title>RXstore - Your Best Online Shop for Tech Deals</title>
     
     <meta name="description" content="Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.">
-    <meta name="keywords" content="RXstore, tech shop, online store, gaming monitor, electronics, deals, discounts, SANSUI monitor, curved monitor, UWQHD, FreeSync">
+    <meta name="keywords" content="RXstore, tech shop, online store, gaming monitor, electronics, deals, discounts">
     <meta name="author" content="RXstore Team">
     <meta name="robots" content="index, follow"> 
     
     <link rel="icon" type="image/png" href="https://i.ibb.co/XkXMzMLm/IMG.png" sizes="16x16">
-    <link rel="icon" type="image/png" href="https://i.ibb.co/XkXMzMLm/IMG.png" sizes="32x32">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/XkXMzMLm/IMG.png"> 
-
-    <link rel="manifest" href="/rx_store/manifest.json"> 
-    <meta name="theme-color" content="#0d1117"> 
-
-    <meta property="og:image" content="https://i.ibb.co/XkXMzMLm/IMG.png">
-    <meta property="og:title" content="RXstore - Tech Gadgets & Gaming Deals">
-    <meta property="og:description" content="Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.">
-    <meta property="og:url" content="https://rwxab.github.io/rx_store/">
-    <meta property="og:type" content="website">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "RXstore",
-      "url": "https://rwxab.github.io/rx_store/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://rwxab.github.io/rx_store/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -46,7 +21,6 @@
             color: #e2e8f0;
         }
 
-        /* Animation for product cards */
         .product-card-hidden {
             opacity: 0;
             transform: translateX(50px);
@@ -58,10 +32,9 @@
             transform: translateX(0);
         }
 
-        /* Image hover effect */
         .product-image-container {
             overflow: hidden;
-            border-radius: 1.5rem; /* rounded-3xl */
+            border-radius: 1.5rem; 
         }
         
         .product-image {
@@ -86,45 +59,46 @@
     </header>
 
     <div id="content-container">
+        <div id="loading-message" class="text-center py-20 text-xl font-semibold text-blue-400">Loading products...</div>
     </div>
 
     <script>
         // ******************************************************
-        // ** Product Data - يتم قراءة المنتجات من هنا مباشرة **
-        // ******************************************************
-
-        // 🚨🚨🚨 هام جداً: الصق بيانات منتجاتك الحقيقية هنا بدلاً من هذا المنتج التجريبي 🚨🚨🚨
-        const productsData = [
-            {
-                "id": "p_mg26indfq0y",
-                "title": "SANSUI 34-inch Ultrawide 144Hz Monitor",
-                "description": "A curved UWQHD monitor with FreeSync, perfect for gaming and multitasking...",
-                "image": "https://i.ibb.co/3w5rT3S/monitor.jpg",
-                "link": "https://rxwab.github.io/rx_store/",
-                "price": "$399.99",
-                "oldPrice": "$499.99",
-                "discount": "20% OFF",
-                "seoTitle": "SANSUI 34-inch 144Hz Gaming Monitor Deal",
-                "seoDescription": "Buy the SANSUI 34-inch curved UWQHD monitor with 144Hz refresh rate at a 20% discount. Perfect for immersive gaming."
-            }
-            // ألصق بقية منتجاتك الحقيقية هنا...
-        ];
-        // 🚨🚨🚨 نهاية مكان لصق بيانات المنتجات 🚨🚨🚨
-
-
-        // ** تم إزالة جميع وظائف Local Storage من هنا لضمان ظهور المنتجات للجميع **
-
-
-        // ******************************************************
-        // ** Application Rendering and Routing **
+        // ** Product Data & Routing Logic **
         // ******************************************************
         
         const contentContainer = document.getElementById('content-container');
+        let productsData = []; 
 
-        // عرض الصفحة الرئيسية وقائمة المنتجات
+        // تحميل المنتجات من ملف products.json
+        async function fetchProductsAndRender() {
+            try {
+                // جلب ملف JSON من مسار الموقع
+                const response = await fetch('products.json'); 
+                if (!response.ok) {
+                    throw new Error('products.json not found or network error.');
+                }
+                productsData = await response.json();
+                
+                document.getElementById('loading-message').classList.add('hidden');
+                
+                handleRouting(); 
+            } catch (error) {
+                console.error("Error fetching products from JSON file:", error);
+                
+                // رسالة واضحة للمستخدم عند الفشل
+                contentContainer.innerHTML = `
+                    <div class="text-center py-20">
+                        <h2 class="text-3xl font-bold text-red-500 mb-4">Error Loading Products</h2>
+                        <p class="text-slate-400 text-lg">Please ensure the <strong>products.json</strong> file is uploaded to your GitHub repository.</p>
+                        <p class="text-sm text-yellow-400 mt-4">(${error.message})</p>
+                    </div>
+                `;
+            }
+        }
+
         function renderHome() {
-            // الآن نستخدم قائمة productsData مباشرة
-            let products = productsData; 
+            // ... (باقي وظيفة renderHome لم تتغير، تستخدم productsData لإنشاء البطاقات) ...
             
             document.title = "RXstore - Your Best Online Shop for Tech Deals";
             document.querySelector('meta[name="description"]').setAttribute('content', "Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.");
@@ -135,18 +109,18 @@
             `;
             const productList = document.getElementById('product-list');
 
-            if (products.length === 0) {
+            if (productsData.length === 0) {
                 productList.innerHTML = `
                     <div class="col-span-full text-center p-12 bg-slate-800 rounded-3xl">
                         <h2 class="text-3xl font-bold text-yellow-500 mb-4">No Products Yet!</h2>
-                        <p class="text-slate-400">Products are currently loaded from the main code file (index.html). Please update the 'productsData' array inside the code.</p>
+                        <p class="text-slate-400">The <strong>products.json</strong> file is empty. Please add products using the dashboard and upload the new file.</p>
                     </div>
                 `;
                 setupIntersectionObserver();
                 return;
             }
             
-            products.forEach(product => {
+            productsData.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = `product-card-hidden bg-slate-800 rounded-3xl p-6 shadow-2xl transition-transform transform hover:scale-105 duration-300 relative overflow-hidden cursor-pointer`;
                 productCard.setAttribute('data-product-id', product.id);
@@ -180,10 +154,9 @@
                     </div>
                 `;
                 
-                // *** التعديل: استخدام history.pushState بدلاً من window.location.hash ***
                 productCard.addEventListener('click', () => {
-                    history.pushState(null, '', `?product=${product.id}`); // تغيير الرابط إلى ?product=ID
-                    handleRouting(); // استدعاء التوجيه مباشرة
+                    history.pushState(null, '', `?product=${product.id}`); 
+                    handleRouting(); 
                 });
                 
                 productList.appendChild(productCard);
@@ -192,9 +165,8 @@
             setupIntersectionObserver();
         }
 
-        // عرض صفحة المنتج الفردي
+
         function renderProductPage(productId) {
-            // البحث مباشرة في قائمة المنتجات الثابتة
             const product = productsData.find(p => p.id === productId); 
             if (!product) {
                 renderNotFound();
@@ -252,7 +224,7 @@
                 tempInput.select();
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
-                
+                                
                 const message = document.getElementById('copy-message');
                 message.classList.remove('hidden');
                 setTimeout(() => {
@@ -260,14 +232,13 @@
                 }, 2000);
             });
             
-            // إضافة مستمع لزر العودة للرئيسية
             document.getElementById('back-to-home-link').addEventListener('click', () => {
-                history.pushState(null, '', location.pathname); // يرجع الرابط للرابط الأساسي
+                history.pushState(null, '', location.pathname); 
                 handleRouting();
             });
         }
 
-        // عرض صفحة 404
+
         function renderNotFound() {
             document.title = "404 - Product Not Found";
             document.querySelector('meta[name="description"]').setAttribute('content', "The product you are looking for does not exist.");
@@ -281,10 +252,13 @@
             `;
         }
 
-        // *** لوجيك التوجيه بناءً على Query Parameter بدلاً من الـ Hash ***
         function handleRouting() {
             const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('product'); // البحث عن ?product=ID
+            const productId = urlParams.get('product');
+
+            if (productsData.length === 0 && !document.getElementById('loading-message')) {
+                return;
+            }
 
             if (productId) {
                 renderProductPage(productId);
@@ -298,7 +272,7 @@
                 if (entry.isIntersecting) {
                     entry.target.classList.remove('product-card-hidden');
                     entry.target.classList.add('product-card-visible');
-                    observer.unobserve(entry.target); // Stop observing once visible
+                    observer.unobserve(entry.target); 
                 }
             });
         }, { threshold: 0.1 });
@@ -308,12 +282,11 @@
                 observer.observe(card);
             });
         }
-
-        // *** الاستماع لتغيرات الـ history (زر الرجوع/الأمام) بدلاً من الهاش ***
+        
         window.addEventListener('popstate', handleRouting);
         
         document.addEventListener('DOMContentLoaded', () => {
-            handleRouting();
+            fetchProductsAndRender();
         });
     </script>
 </body>
