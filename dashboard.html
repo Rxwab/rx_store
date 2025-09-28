@@ -42,7 +42,7 @@
         // ******************************************************
         // ** Local Storage Keys & Helpers **
         // ******************************************************
-        const ADMIN_PASSWORD = '0112452'; // 🔑 كلمة المرور السرية - غيّرها هنا
+        const ADMIN_PASSWORD = '0112452'; // 🔑 كلمة المرور السرية - تم تعيينها حسب طلبك
         const PRODUCTS_KEY = 'RXSTORE_PRODUCTS_LOCAL'; 
 
         function generateUniqueId(prefix = 'p') {
@@ -61,7 +61,7 @@
         function showMessage(type, message) {
             const msgBox = document.getElementById('message-box');
             msgBox.textContent = message;
-            msgBox.className = \`p-3 rounded-lg text-center font-bold fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 \${type === 'Error' ? 'bg-red-600' : 'bg-green-600'}\`;
+            msgBox.className = `p-3 rounded-lg text-center font-bold fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${type === 'Error' ? 'bg-red-600' : 'bg-green-600'}`;
             msgBox.classList.remove('hidden');
             setTimeout(() => {
                 msgBox.classList.add('hidden');
@@ -71,7 +71,8 @@
         // ====== منطق التحقق من كلمة المرور ======
         function handleAdminLogin() {
             const passwordInput = document.getElementById('adminPassword');
-            if (passwordInput.value === ADMIN_PASSWORD) {
+            // مقارنة القيمة المدخلة مع الثابت
+            if (passwordInput.value === ADMIN_PASSWORD) { 
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('dashboard-content').classList.remove('hidden');
                 
@@ -110,17 +111,17 @@
             products.forEach(product => {
                 const item = document.createElement('div');
                 item.className = 'product-item bg-slate-700 p-4 rounded-lg hover:bg-slate-600 transition-colors duration-200';
-                item.innerHTML = \`
+                item.innerHTML = `
                     <div class="truncate font-semibold text-white">
-                        \${product.title} 
+                        ${product.title} 
                     </div>
-                    <button data-id="\${product.id}" class="edit-btn action-btn bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200">
+                    <button data-id="${product.id}" class="edit-btn action-btn bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button data-id="\${product.id}" class="delete-btn action-btn bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-200">
+                    <button data-id="${product.id}" class="delete-btn action-btn bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-200">
                         <i class="fas fa-trash"></i>
                     </button>
-                \`;
+                `;
                 listContainer.appendChild(item);
             });
 
@@ -153,11 +154,11 @@
                 const index = products.findIndex(p => p.id === productId);
                 if (index !== -1) {
                     products[index] = product;
-                    showMessage('Success', \`تم تعديل المنتج \${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**\`);
+                    showMessage('Success', `تم تعديل المنتج ${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**`);
                 }
             } else {
                 products.push(product);
-                showMessage('Success', \`تم إضافة المنتج \${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**\`);
+                showMessage('Success', `تم إضافة المنتج ${product.title} بنجاح. **لا تنس تحميل الملف ورفعه!**`);
             }
 
             saveProducts(products);
@@ -195,7 +196,7 @@
                 form.seoDescription.value = product.seoDescription || '';
                 
                 document.getElementById('form-submit-btn').textContent = 'حفظ التعديلات';
-                showMessage('Success', \`جاري تعديل المنتج \${product.title}.\`);
+                showMessage('Success', `جاري تعديل المنتج ${product.title}.`);
             }
         }
         
