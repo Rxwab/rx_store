@@ -91,6 +91,7 @@
                 <a href="#books" class="text-primary-dark hover:text-primary-yellow transition duration-300">Books</a>
                 <a href="#tech" class="text-primary-dark hover:text-primary-yellow transition duration-300">Electronics</a>
                 <a href="#services" class="text-primary-dark hover:text-primary-yellow transition duration-300">Our Services</a>
+                <a href="additional-services.html" class="text-primary-dark hover:text-primary-yellow transition duration-300 font-bold">Additional Services</a>
                 <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Blog</a>
             </nav>
 
@@ -107,10 +108,12 @@
             <a href="#books" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Books</a>
             <a href="#tech" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Electronics</a>
             <a href="#services" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Our Services</a>
+            <a href="additional-services.html" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300 font-bold">Additional Services</a>
             <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Blog</a>
-            <a href="services.html" class="w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
+            
+            <button id="mobile-publish-service-btn" class="w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
                 Publish Your Service
-            </a>
+            </button>
         </div>
     </header>
 
@@ -150,7 +153,7 @@
                 </a>
                 <a href="#screens" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
                     <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25M7 16h10a2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v7a2 2 0 002 2z"></path></svg>
+                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25M7 16h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v7a2 2 0 002 2z"></path></svg>
                     </div>
                     <span class="text-sm font-medium">PC Monitors</span>
                 </a>
@@ -160,11 +163,11 @@
                     </div>
                     <span class="text-sm font-medium">Headphones</span>
                 </a>
-                <a href="services.html" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                <a href="additional-services.html" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
                     <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 10v-4m0 0l4 4m-4-4l-4 4m4-4L6 4"></path></svg>
                     </div>
-                    <span class="text-sm font-medium">Get a Service</span>
+                    <span class="text-sm font-medium">Additional Services</span>
                 </a>
             </div>
         </div>
@@ -177,64 +180,52 @@
             
             <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
                 
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="book-1" data-image="https://placehold.co/400x400/3B82F6/ffffff?text=AI+Power+Book" data-title="قوة الذكاء الاصطناعي" data-full-desc="هذا الكتاب الشامل يوضح أحدث التطورات في مجال الذكاء الاصطناعي وكيف سيؤثر على مستقبل العمل والحياة اليومية. مناسب للمبتدئين والمحترفين." data-price="99 SAR" data-affiliate-link="#">
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/3B82F6/ffffff?text=AI+Power+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
                         <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Offer</span>
                     </div>
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">The Power of AI</h3>
                     <p class="text-sm text-gray-500 mb-3">Author: Ahmed Mohamed</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.5)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="book-1">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
                 
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="book-2" data-image="https://placehold.co/400x400/F97316/ffffff?text=Entrepreneurship+Book" data-title="أسرار ريادة الأعمال" data-full-desc="دليل مفصل لرواد الأعمال الطموحين، يغطي استراتيجيات التخطيط، والتمويل، والتسويق الرقمي لبناء عمل ناجح من الصفر." data-price="120 SAR" data-affiliate-link="#">
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/F97316/ffffff?text=Entrepreneurship+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
                         <span class="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">Best Seller</span>
                     </div>
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Secrets of Entrepreneurship</h3>
                     <p class="text-sm text-gray-500 mb-3">Author: Khaled Ali</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★★</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.9)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="book-2">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
 
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="book-3" data-image="https://placehold.co/400x400/8B5CF6/ffffff?text=Self+Dev+Book" data-title="خمس عادات صباحية" data-full-desc="خمسة عادات صباحية بسيطة لكنها فعالة للغاية لزيادة الإنتاجية وتحسين الصحة العقلية والجسدية وبدء يومك بطاقة إيجابية." data-price="75 SAR" data-affiliate-link="#">
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/8B5CF6/ffffff?text=Self+Dev+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
                         <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Exclusive</span>
                     </div>
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Five Morning Habits</h3>
                     <p class="text-sm text-gray-500 mb-3">Author: Sarah Fouad</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.1)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="book-3">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="book-4" data-image="https://placehold.co/400x400/D97706/ffffff?text=Money+Book" data-title="فن إدارة الأموال" data-full-desc="تعلم أساسيات إدارة أموالك الشخصية، وتخطيط الميزانية، واستراتيجيات الاستثمار الذكية لتحقيق الحرية المالية على المدى الطويل." data-price="85 SAR" data-affiliate-link="#">
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/D97706/ffffff?text=Money+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">The Art of Money Management</h3>
                     <p class="text-sm text-gray-500 mb-3">Author: Ibrahim Ali</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.7)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="book-4">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
             </div>
         </div>
@@ -247,61 +238,49 @@
             
             <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
                 
-                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="monitor-1" data-image="https://placehold.co/400x400/4B5563/ffffff?text=Gaming+Monitor" data-title="شاشة UltraView Pro" data-full-desc="شاشة ألعاب 4K احترافية بحجم 32 بوصة ومعدل تحديث 144 هرتز. مثالية لتجربة لعب سلسة وغامرة." data-price="1500 SAR" data-affiliate-link="#">
+                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/4B5563/ffffff?text=Gaming+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
                         <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">4K</span>
                     </div>
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">UltraView Pro Monitor</h3>
                     <p class="text-sm text-gray-500 mb-3">32 Inch, 144 Hz</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★★</span>
-                        <span class="text-gray-500 text-sm ml-2">(5.0)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="monitor-1">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
 
-                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="monitor-2" data-image="https://placehold.co/400x400/9CA3AF/ffffff?text=Work+Monitor" data-title="شاشة FlexiScreen 27" data-full-desc="شاشة 27 بوصة بدقة عالية، مثالية للمبرمجين والمصممين. تتميز بألوان دقيقة وتقنية حماية العين." data-price="950 SAR" data-affiliate-link="#">
+                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/9CA3AF/ffffff?text=Work+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
                         <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">New</span>
                     </div>
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">FlexiScreen 27 Monitor</h3>
                     <p class="text-sm text-gray-500 mb-3">Ideal for Programming and Design</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.7)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="monitor-2">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
                 
-                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="monitor-3" data-image="https://placehold.co/400x400/6B7280/ffffff?text=Curved+Monitor" data-title="شاشة Curved G50" data-full-desc="شاشة منحنية للألعاب توفر زاوية رؤية واسعة لتجربة لعب لا مثيل لها. تصميم عصري وأداء قوي." data-price="1300 SAR" data-affiliate-link="#">
+                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/6B7280/ffffff?text=Curved+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Curved G50 Monitor</h3>
                     <p class="text-sm text-gray-500 mb-3">Curved Gaming Monitor</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.4)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="monitor-3">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
-                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="monitor-4" data-image="https://placehold.co/400x400/1F2937/ffffff?text=Budget+Monitor" data-title="شاشة EcoView 24" data-full-desc="شاشة اقتصادية بحجم 24 بوصة، توفر أداء جيداً للاستخدام اليومي والعمل المكتبي بسعر مناسب." data-price="450 SAR" data-affiliate-link="#">
+                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/1F2937/ffffff?text=Budget+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">EcoView 24 Monitor</h3>
                     <p class="text-sm text-gray-500 mb-3">Good performance at an economical price</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★☆☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(3.9)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="monitor-4">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
             </div>
         </div>
@@ -314,58 +293,46 @@
             
             <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
                 
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="audio-1" data-image="https://placehold.co/400x400/10B981/ffffff?text=Headphones" data-title="سماعات AeroSounds" data-full-desc="سماعات رأس لاسلكية بتقنية إلغاء الضوضاء الفعال. توفر جودة صوت نقية ومريحة للاستخدام الطويل." data-price="350 SAR" data-affiliate-link="#">
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/10B981/ffffff?text=Headphones" alt="Wireless Headphones" class="w-full h-48 object-cover rounded-lg mb-4">
                         <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Discounted</span>
                     </div>
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">AeroSounds Headphones</h3>
                     <p class="text-sm text-gray-500 mb-3">Effective Noise Cancellation</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.2)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="audio-1">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
                 
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="audio-2" data-image="https://placehold.co/400x400/4F46E5/ffffff?text=Wireless+Charger" data-title="شاحن MagCharge X" data-full-desc="شاحن لاسلكي فائق السرعة يدعم تقنية MagSafe. تصميم أنيق وحجم صغير، مثالي للسفر." data-price="150 SAR" data-affiliate-link="#">
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/4F46E5/ffffff?text=Wireless+Charger" alt="Wireless Charger" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">MagCharge X Charger</h3>
                     <p class="text-sm text-gray-500 mb-3">Super Fast Charging</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★★</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.8)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="audio-2">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
 
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="audio-3" data-image="https://placehold.co/400x400/D946EF/ffffff?text=Webcam" data-title="كاميرا WebCam 1080P" data-full-desc="كاميرا ويب عالية الدقة (1080P) وميكروفون مدمج. مثالية للاجتماعات عبر الإنترنت والبث المباشر." data-price="200 SAR" data-affiliate-link="#">
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/D946EF/ffffff?text=Webcam" alt="Webcam" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">WebCam 1080P Camera</h3>
                     <p class="text-sm text-gray-500 mb-3">High Quality for Calls</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.5)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="audio-3">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="audio-4" data-image="https://placehold.co/400x400/94A3B8/ffffff?text=Smartwatch" data-title="ساعة ChronoTech" data-full-desc="ساعة ذكية لتتبع اللياقة البدنية والأنشطة اليومية. تتميز بعمر بطارية طويل وتصميم مقاوم للماء." data-price="400 SAR" data-affiliate-link="#">
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/94A3B8/ffffff?text=Smartwatch" alt="Smartwatch" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">ChronoTech Watch</h3>
                     <p class="text-sm text-gray-500 mb-3">Fitness Tracking</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.1)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="audio-4">
-                        شاهد المزيد
-                    </button>
+                    
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
                 </div>
             </div>
         </div>
@@ -389,7 +356,7 @@
                         <li>Fully Responsive Design</li>
                         <li>Search Engine Optimization (SEO)</li>
                     </ul>
-                    <a href="#" id="order-website-service" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center cursor-pointer">
+                    <a href="additional-services.html" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center">
                         Order the Service Now
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
@@ -404,13 +371,13 @@
                         <li>Logo Design and Visual Identity</li>
                         <li>Impactful Digital Ads</li>
                     </ul>
-                    <a href="#" id="order-design-service" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center cursor-pointer">
+                    <a href="additional-services.html" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center">
                         Order the Service Now
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
                 </div>
                 
-                <div id="open-contact-modal" class="cursor-pointer text-left bg-primary-yellow p-6 rounded-xl shadow-2xl hover:shadow-3xl transition duration-300 border-t-4 border-primary-dark flex flex-col justify-between text-primary-dark">
+                <div id="open-contact-modal-desktop" class="cursor-pointer text-left bg-primary-yellow p-6 rounded-xl shadow-2xl hover:shadow-3xl transition duration-300 border-t-4 border-primary-dark flex flex-col justify-between text-primary-dark">
                     <div>
                         <svg class="w-10 h-10 mb-3 text-primary-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <h3 class="text-2xl font-bold mb-3">Want to Offer Your Own Service?</h3>
@@ -441,6 +408,7 @@
                         <li><a href="#" class="hover:text-primary-yellow transition duration-300">Home</a></li>
                         <li><a href="#products" class="hover:text-primary-yellow transition duration-300">Products</a></li>
                         <li><a href="#services" class="hover:text-primary-yellow transition duration-300">Our Services</a></li>
+                        <li><a href="additional-services.html" class="hover:text-primary-yellow transition duration-300">Additional Services</a></li>
                         </ul>
                 </div>
                 <div>
@@ -477,10 +445,9 @@
 
             <div class="space-y-4">
                 <a href="https://wa.me/qr/GJG7SGKGIODTE1" target="_blank" class="flex items-center justify-center bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition duration-300 shadow-md">
-                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.001 0C6.113 0 1.341 4.773 1.341 10.66c0 1.948.51 3.834 1.487 5.518L1.084 23.416l7.464-2.433a9.23 9.23 0 003.454.677c5.887 0 10.66-4.773 10.66-10.66S17.888 0 12.001 0zM17 15.17c-.204.34-.413.43-.687.43-.274 0-.49-.09-.7-.43l-1.373-2.228c-.204-.34-.407-.406-.687-.406-.274 0-.52.094-.748.406l-.7.94c-.18.243-.377.29-.687.29-.31 0-.616-.08-.94-.377a7.6 7.6 0 01-3.615-3.084c-.31-.48-.49-.7-.49-1.077 0-.31.094-.52.274-.707l.9-.844c.243-.2.34-.377.34-.687 0-.31-.1-.52-.31-.69l-2.03-3.136c-.204-.31-.48-.377-.7-.377-.243 0-.48.094-.707.377l-.7.94c-.204.31-.407.43-.687.43-.274 0-.49-.09-.7-.43l-1.373-2.228c-.204-.34-.407-.406-.687-.406-.274 0-.52.094-.748.406L9 12.67c.243.2 4.49 4.887 4.965 4.887.476 0 .844-.1.844-.456v-.29c0-.243.094-.48.274-.69l1.467-.624c.243-.1.49-.03.7.17l.7.94c.204.31.407.43.687.43.274 0 .49-.09.7-.43l.42-1.12c.204-.31.407-.43.687-.43.274 0 .52.094.748.406l1.373 2.228c.204.34.413.43.687.43.274 0 .49-.09.7-.43l.42-1.12c.204-.31.407-.43.687-.43.274 0 .52.094.748.406l-1.373 2.228z"/></svg>
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.001 0C6.113 0 1.341 4.773 1.341 10.66c0 1.948.51 3.834 1.487 5.518L1.084 23.416l7.464-2.433a9.23 9.23 0 003.454.677c5.887 0 10.66-4.773 10.66-10.66S17.888 0 12.001 0zM17 15.17c-.204.34-.413.43-.687.43-.274 0-.49-.09-.7-.43l-1.373-2.228c-.204-.34-.407-.406-.687-.406-.274 0-.52.094-.748.406l-.7.94c-.18.243-.377.29-.687.29-.31 0-.616-.08-.94-.377a7.6 7.6 0 01-3.615-3.084c-.31-.48-.49-.7-.49-1.077 0-.31.094-.52.274-.707l.9-.844c.243-.2.34-.377.34-.687 0-.31-.1-.52-.31-.69l-2.03-3.136c-.204-.31-.48-.377-.7-.377-.243 0-.48.094-.707.377l-.7.94c-.204.31-.407.43-.687.43-.274 0-.49-.09-.7-.43l-1.373-2.228c-.204-.34-.407-.406-.687-.406-.274 0-.52.094-.748.406L9 12.67c.243.2 4.49 4.887 4.965 4.887.476 0 .844-.1.844-.456v-.29c0-.243.094-.48.274-.69l1.467-.624c.243-.1.49-.03.7.17l.7.94c.204.31.407.43.687.43.274 0 .49-.09.7-.43l.42-1.12c.204-.31.407-.43.687-.43.274 0 .52.094.748.406l.42-1.12c.204-.31.407-.43.687-.43.274 0 .52.094.748.406l-1.373 2.228z"/></svg>
                     تواصل عبر واتساب
                 </a>
-
                 <a href="https://t.me/yonzzc" target="_blank" class="flex items-center justify-center bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300 shadow-md">
                     <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.3L9.6 14.7c-.5.5-.9.4-1.2.1-.3-.3-.4-.7-.1-1.2l5.7-4.2c.4-.3.9-.2 1.2.1.3.3.4.7.1 1.2zM12 11.2l-3.3 2.4c-.2.1-.4 0-.6-.2-.2-.2-.1-.4.1-.6l3.3-2.4c.2-.1.4 0 .6.2.2.2.1.4-.1.6zm4.3-1.6l-5.7 4.2c-.4.3-.9.2-1.2-.1-.3-.3-.4-.7-.1-1.2l5.7-4.2c.4-.3.9-.2 1.2.1.3.3.4.7.1 1.2z"/></svg>
                     تواصل عبر تليجرام
@@ -488,111 +455,21 @@
             </div>
         </div>
     </div>
-    
-    <div id="product-detail-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl p-6 md:p-8 shadow-2xl max-w-lg w-full relative transform transition-all duration-300 scale-100 opacity-100">
-            <button id="close-product-modal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-
-            <div id="product-content">
-                <img id="modal-product-image" src="" alt="صورة المنتج" class="w-full h-56 object-cover rounded-lg mb-4">
-                <h3 id="modal-product-title" class="text-2xl font-bold text-primary-dark mb-2"></h3>
-                <p id="modal-product-price" class="text-xl font-extrabold text-primary-yellow mb-4"></p>
-                <p id="modal-product-description" class="text-gray-700 mb-6"></p>
-
-                <div class="space-y-3">
-                    <a id="modal-buy-link" href="#" target="_blank" class="flex items-center justify-center bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition duration-300 shadow-md">
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.2 4.4a2 2 0 002.1 2.6H17a2 2 0 001.9-1.4l1.4-4.2"></path></svg>
-                        اشترِ الآن (رابط خارجي)
-                    </a>
-                    <button id="copy-product-link" class="flex items-center justify-center w-full bg-gray-200 text-primary-dark font-bold py-3 rounded-lg hover:bg-gray-300 transition duration-300 shadow-sm">
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-3m-1-4l4-4m-4 4l-4-4m4 4v7M14 4h7v7"></path></svg>
-                        نسخ رابط المنتج
-                    </button>
-                    <p id="copy-message" class="text-sm text-center text-green-600 hidden mt-2">تم نسخ الرابط بنجاح!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <script>
-        // دالة مساعدة للحصول على قيمة parameter من الـ URL
-        function getQueryParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        // دالة لفتح وتعبئة نافذة تفاصيل المنتج
-        function openProductModal(productElement) {
-            const modal = document.getElementById('product-detail-modal');
-            const productId = productElement.dataset.productId;
-            const image = productElement.dataset.image;
-            const title = productElement.dataset.title;
-            const description = productElement.dataset.fullDesc;
-            const price = productElement.dataset.price;
-            const affiliateLink = productElement.dataset.affiliateLink;
-
-            // تعبئة البيانات في النافذة المنبثقة
-            document.getElementById('modal-product-image').src = image;
-            document.getElementById('modal-product-title').textContent = title;
-            document.getElementById('modal-product-description').textContent = description;
-            document.getElementById('modal-product-price').textContent = price;
-            document.getElementById('modal-buy-link').href = affiliateLink;
-
-            // إظهار النافذة
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            
-            // إخفاء رسالة "تم النسخ" عند فتح النافذة
-            document.getElementById('copy-message').classList.add('hidden');
-            
-            // تحديث رابط النسخ (Deep Link)
-            const currentUrl = window.location.origin + window.location.pathname;
-            const linkToCopy = `${currentUrl}?product_id=${productId}`;
-            
-            document.getElementById('copy-product-link').dataset.linkToCopy = linkToCopy;
-        }
-
-        // دالة لإغلاق نافذة تفاصيل المنتج
-        function closeProductModal() {
-            const modal = document.getElementById('product-detail-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-
-            // إزالة الـ parameter من الـ URL دون إعادة تحميل الصفحة
-            if (getQueryParameter('product_id')) {
-                const currentUrl = window.location.origin + window.location.pathname;
-                window.history.pushState({}, '', currentUrl);
-            }
-        }
-        
-        // دالة لفحص الروابط العميقة (Deep Links) عند تحميل الصفحة
-        function checkDeepLink() {
-            const productId = getQueryParameter('product_id');
-            if (productId) {
-                // البحث عن بطاقة المنتج المطابقة باستخدام data-product-id
-                const productElement = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-                if (productElement) {
-                    // فتح النافذة المنبثقة مباشرةً بالبيانات
-                    openProductModal(productElement);
-                }
-            }
-        }
-        
         document.addEventListener('DOMContentLoaded', () => {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
+            const button = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
             
             // 1. Toggle Mobile Menu
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
+            button.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
             });
             
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
+                    // Check if the link is a page anchor and not an external link like additional-services.html
                     if (this.getAttribute('href').startsWith('#')) {
                         e.preventDefault();
                         document.querySelector(this.getAttribute('href')).scrollIntoView({
@@ -602,86 +479,45 @@
                 });
             });
 
-            // 2. Contact Modal Logic (Services)
-            const openServiceModalButtons = document.querySelectorAll('#open-contact-modal, #order-website-service, #order-design-service');
+            // 2. Modal Logic for "Want to Offer Your Own Service?" card
+            const openModalButtonDesktop = document.getElementById('open-contact-modal-desktop');
+            const openModalButtonMobile = document.getElementById('mobile-publish-service-btn'); // الزر الجديد في القائمة الجانبية
             const closeModalButton = document.getElementById('close-modal');
-            const contactModal = document.getElementById('contact-modal');
+            const modal = document.getElementById('contact-modal');
             
-            const openContactModal = (e) => {
-                if (e.currentTarget.tagName === 'A') {
-                    e.preventDefault();
-                }
-                contactModal.classList.remove('hidden');
-                contactModal.classList.add('flex');
-            };
+            if (openModalButtonDesktop && closeModalButton && modal && openModalButtonMobile) {
+                // Function to open the modal
+                const openContactModal = () => {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex'); // Add flex to center content
+                    menu.classList.add('hidden'); // إخفاء القائمة الجانبية عند فتح المودال
+                };
 
-            const closeContactModal = () => {
-                contactModal.classList.add('hidden');
-                contactModal.classList.remove('flex');
-            };
+                openModalButtonDesktop.addEventListener('click', openContactModal);
+                openModalButtonMobile.addEventListener('click', openContactModal); // ربط الزر الجديد
+                
+                // Function to close the modal
+                const closeContactModal = () => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                };
 
-            openServiceModalButtons.forEach(button => {
-                button.addEventListener('click', openContactModal);
-            });
-            
-            if (closeModalButton) closeModalButton.addEventListener('click', closeContactModal);
-            if (contactModal) contactModal.addEventListener('click', (e) => {
-                if (e.target === contactModal) closeContactModal();
-            });
+                closeModalButton.addEventListener('click', closeContactModal);
 
-            // 3. Product Detail Modal Logic (NEW)
-            const viewDetailButtons = document.querySelectorAll('.view-product-details');
-            const closeProductModalButton = document.getElementById('close-product-modal');
-            const productModal = document.getElementById('product-detail-modal');
-            const copyLinkButton = document.getElementById('copy-product-link');
-            const copyMessage = document.getElementById('copy-message');
-
-            viewDetailButtons.forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const productCard = e.currentTarget.closest('.product-card');
-                    if (productCard) {
-                        openProductModal(productCard);
+                // Close modal if user clicks outside of the modal content
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeContactModal();
                     }
                 });
-            });
-
-            if (closeProductModalButton) closeProductModalButton.addEventListener('click', closeProductModal);
-            if (productModal) productModal.addEventListener('click', (e) => {
-                if (e.target === productModal) closeProductModal();
-            });
-
-            // Copy Link Functionality
-            if (copyLinkButton) {
-                copyLinkButton.addEventListener('click', () => {
-                    const linkToCopy = copyLinkButton.dataset.linkToCopy;
-                    if (linkToCopy) {
-                        navigator.clipboard.writeText(linkToCopy).then(() => {
-                            copyMessage.classList.remove('hidden');
-                            setTimeout(() => {
-                                copyMessage.classList.add('hidden');
-                            }, 2000);
-                        }).catch(err => {
-                            console.error('Could not copy text: ', err);
-                            alert('تعذر نسخ الرابط. يرجى النسخ يدوياً: ' + linkToCopy);
-                        });
+                
+                // Close modal on Escape key press
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                        closeContactModal();
                     }
                 });
             }
-
-            // 4. Check for Deep Links on Load (NEW)
-            checkDeepLink();
-
-            // Universal Escape key close
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    if (!contactModal.classList.contains('hidden')) {
-                        closeContactModal();
-                    }
-                    if (!productModal.classList.contains('hidden')) {
-                        closeProductModal();
-                    }
-                }
-            });
         });
     </script>
 </body>
