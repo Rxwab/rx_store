@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rx Store - Your Gateway to Knowledge, Tech, and Digital Services</title>
+    <title>Rx Store - Community Services Showcase</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
+        // Tailwind Configuration for consistent branding
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         'primary-yellow': '#FFD700', // Primary Gold/Yellow Accent
-                        'primary-dark': '#1C1C1C', // Header Color
+                        'primary-dark': '#1C1C1C', // Header Color (Dark Gray)
                         'secondary-gray': '#F5F5F5', // Light Background Color
+                        'dark-bg': '#2C2C2C', // Dark background for the new header/sections
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -23,664 +26,481 @@
         }
     </script>
     <style>
-        /* Custom Styles for Modern Design */
+        /* Custom Styles for Service Cards and Filters */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #ffffff;
+            color: #1C1C1C;
         }
-        .hero-section {
-            background-color: #FAFAFA;
-            min-height: 500px;
-            padding: 4rem 0;
-            display: flex;
-            align-items: center;
-        }
-        .product-card {
+        .service-card {
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            flex: 0 0 280px;
         }
-        .product-card:hover {
+        .service-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
         }
-
-        .carousel-container {
+        .filter-button {
+            @apply px-4 py-2 rounded-full text-sm font-medium transition duration-300 whitespace-nowrap;
+        }
+        .filter-button.active {
+            @apply bg-primary-yellow text-primary-dark shadow-md;
+        }
+        .filter-button:not(.active) {
+            @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+        }
+        .filter-carousel {
             overflow-x: scroll;
-            scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
-            padding-bottom: 1rem;
+            padding-bottom: 5px;
         }
-
-        .carousel-container::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .carousel-container::-webkit-scrollbar-thumb {
-            background-color: #d1d5db;
-            border-radius: 10px;
-        }
-
-        /* Responsive card sizing */
-        @media (max-width: 640px) {
-            .product-card {
-                flex: 0 0 45%;
-            }
-        }
-        @media (min-width: 641px) and (max-width: 1024px) {
-            .product-card {
-                flex: 0 0 300px;
-            }
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
         }
     </style>
-    <meta property="og:title" content="Rx Store - Your Gateway to Knowledge, Tech, and Services" />
-    <meta property="og:description" content="Explore, discover, and create. The best books, electronics, and design/website services." />
-    <meta property="og:image" content="https://placehold.co/1200x630/E5E7EB/5C5E60?text=Rx+Store+Cover" />
-    <meta property="og:url" content="https://your-rxstore-url.github.io/" />
 </head>
-<body class="text-primary-dark">
+<body class="bg-secondary-gray">
 
-    <header class="bg-white shadow-md">
+    <header class="bg-dark-bg text-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
-            <div class="text-2xl font-bold text-primary-dark flex items-center">
+            <div class="text-2xl font-bold flex items-center">
                 <span class="text-primary-yellow text-3xl mr-1">Rx</span> Store
             </div>
-
             <nav class="hidden md:flex space-x-6 text-lg font-medium">
-                <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Home</a>
-                <a href="#books" class="text-primary-dark hover:text-primary-yellow transition duration-300">Books</a>
-                <a href="#tech" class="text-primary-dark hover:text-primary-yellow transition duration-300">Electronics</a>
-                <a href="#services" class="text-primary-dark hover:text-primary-yellow transition duration-300">Our Services</a>
-                <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Blog</a>
+                <a href="index.html" class="hover:text-primary-yellow transition duration-300">Home</a>
+                <a href="index.html#books" class="hover:text-primary-yellow transition duration-300">Books</a>
+                <a href="index.html#screens" class="hover:text-primary-yellow transition duration-300">Electronics</a>
+                <a href="index.html#services" class="hover:text-primary-yellow transition duration-300">Our Services</a> 
             </nav>
-
-            <div class="hidden md:block w-24">
-                </div>
-
-            <button id="mobile-menu-button" class="md:hidden p-2 text-primary-dark">
+            <button id="mobile-menu-button" class="md:hidden p-2 text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
         </div>
-
-        <div id="mobile-menu" class="hidden md:hidden shadow-lg">
-            <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300 border-t">Home</a>
-            <a href="#books" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Books</a>
-            <a href="#tech" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Electronics</a>
-            <a href="#services" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Our Services</a>
-            <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Blog</a>
-            <a href="services.html" class="w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-bg text-white shadow-lg">
+            <a href="index.html" class="block px-4 py-2 hover:bg-gray-700 transition duration-300 border-t border-gray-700">Home</a>
+            <a href="index.html#books" class="block px-4 py-2 hover:bg-gray-700 transition duration-300">Books</a>
+            <a href="index.html#screens" class="block px-4 py-2 hover:bg-gray-700 transition duration-300">Electronics</a>
+            <a href="index.html#services" class="block px-4 py-2 hover:bg-gray-700 transition duration-300">Our Services</a>
+            <a href="#" class="w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
                 Publish Your Service
             </a>
         </div>
     </header>
 
-    <section class="hero-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
-            <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0 order-2 md:order-1">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-primary-dark mb-4">
-                    Explore. Discover. Create.
-                </h1>
-                <p class="text-xl text-gray-600 mb-8">
-                    Your gateway to integrated knowledge, technology, and digital services.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#books" class="bg-primary-yellow text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300 text-lg">
-                        Browse Products
-                    </a>
-                    <a href="#services" class="bg-primary-dark text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-700 transition duration-300 text-lg">
-                        Explore Our Services
-                    </a>
-                </div>
-            </div>
-
-            <div class="md:w-1/2 flex justify-center md:justify-end order-1 md:order-2">
-                <img src="https://i.ibb.co/mVkT9J6h/Screenshot-20251010-212631.jpg" alt="Screenshot 20251010 212631" class="rounded-lg shadow-xl max-w-full h-auto">
-            </div>
-        </div>
-    </section>
-
-    <section class="py-12 bg-white">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <a href="#books" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
-                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.208 5 7.5 5A6.5 6.5 0 003 11.5c0 1.615.477 3.111 1.253 4.331M12 6.253c1.168.776 2.792 1.253 4.5 1.253a6.5 6.5 0 014.5-6.747M12 19.253C13.168 18.477 14.792 18 16.5 18a6.5 6.5 0 004.5-6.747M12 19.253c-1.168.776-2.792 1.253-4.5 1.253a6.5 6.5 0 01-4.5-6.747"></path></svg>
-                    </div>
-                    <span class="text-sm font-medium">Books</span>
-                </a>
-                <a href="#screens" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
-                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25M7 16h10a2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v7a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <span class="text-sm font-medium">PC Monitors</span>
-                </a>
-                <a href="#headphones" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
-                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v14l-12 3zm0 0l-4-1m4 1v-5m0 5l4 1m-4-1h-5v-10h9v5"></path></svg>
-                    </div>
-                    <span class="text-sm font-medium">Headphones</span>
-                </a>
-                <a href="services.html" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
-                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 10v-4m0 0l4 4m-4-4l-4 4m4-4L6 4"></path></svg>
-                    </div>
-                    <span class="text-sm font-medium">Get a Service</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="books" class="py-16 bg-secondary-gray">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">📚 Top Selling Books</h2>
-            <p class="text-gray-600 mb-8 text-left">A curated selection of the most important books in technology and self-development.</p>
+    <main class="py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
             
-            <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
-                
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="book-1" data-image="https://placehold.co/400x400/3B82F6/ffffff?text=AI+Power+Book" data-title="قوة الذكاء الاصطناعي" data-full-desc="هذا الكتاب الشامل يوضح أحدث التطورات في مجال الذكاء الاصطناعي وكيف سيؤثر على مستقبل العمل والحياة اليومية. مناسب للمبتدئين والمحترفين." data-price="99 SAR" data-affiliate-link="#">
-                    <div class="relative">
-                        <img src="https://placehold.co/400x400/3B82F6/ffffff?text=AI+Power+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
-                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Offer</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">The Power of AI</h3>
-                    <p class="text-sm text-gray-500 mb-3">Author: Ahmed Mohamed</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.5)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="book-1">
-                        شاهد المزيد
-                    </button>
-                </div>
-                
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="book-2" data-image="https://placehold.co/400x400/F97316/ffffff?text=Entrepreneurship+Book" data-title="أسرار ريادة الأعمال" data-full-desc="دليل مفصل لرواد الأعمال الطموحين، يغطي استراتيجيات التخطيط، والتمويل، والتسويق الرقمي لبناء عمل ناجح من الصفر." data-price="120 SAR" data-affiliate-link="#">
-                    <div class="relative">
-                        <img src="https://placehold.co/400x400/F97316/ffffff?text=Entrepreneurship+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
-                        <span class="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">Best Seller</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Secrets of Entrepreneurship</h3>
-                    <p class="text-sm text-gray-500 mb-3">Author: Khaled Ali</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★★</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.9)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="book-2">
-                        شاهد المزيد
-                    </button>
-                </div>
-
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="book-3" data-image="https://placehold.co/400x400/8B5CF6/ffffff?text=Self+Dev+Book" data-title="خمس عادات صباحية" data-full-desc="خمسة عادات صباحية بسيطة لكنها فعالة للغاية لزيادة الإنتاجية وتحسين الصحة العقلية والجسدية وبدء يومك بطاقة إيجابية." data-price="75 SAR" data-affiliate-link="#">
-                    <div class="relative">
-                        <img src="https://placehold.co/400x400/8B5CF6/ffffff?text=Self+Dev+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
-                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Exclusive</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Five Morning Habits</h3>
-                    <p class="text-sm text-gray-500 mb-3">Author: Sarah Fouad</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.1)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="book-3">
-                        شاهد المزيد
-                    </button>
-                </div>
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="book-4" data-image="https://placehold.co/400x400/D97706/ffffff?text=Money+Book" data-title="فن إدارة الأموال" data-full-desc="تعلم أساسيات إدارة أموالك الشخصية، وتخطيط الميزانية، واستراتيجيات الاستثمار الذكية لتحقيق الحرية المالية على المدى الطويل." data-price="85 SAR" data-affiliate-link="#">
-                    <img src="https://placehold.co/400x400/D97706/ffffff?text=Money+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">The Art of Money Management</h3>
-                    <p class="text-sm text-gray-500 mb-3">Author: Ibrahim Ali</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.7)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="book-4">
-                        شاهد المزيد
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="screens" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">💻 Latest PC Monitors</h2>
-            <p class="text-gray-600 mb-8 text-left">High-resolution displays dedicated to gaming and professional work.</p>
-            
-            <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
-                
-                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="monitor-1" data-image="https://placehold.co/400x400/4B5563/ffffff?text=Gaming+Monitor" data-title="شاشة UltraView Pro" data-full-desc="شاشة ألعاب 4K احترافية بحجم 32 بوصة ومعدل تحديث 144 هرتز. مثالية لتجربة لعب سلسة وغامرة." data-price="1500 SAR" data-affiliate-link="#">
-                    <div class="relative">
-                        <img src="https://placehold.co/400x400/4B5563/ffffff?text=Gaming+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
-                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">4K</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">UltraView Pro Monitor</h3>
-                    <p class="text-sm text-gray-500 mb-3">32 Inch, 144 Hz</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★★</span>
-                        <span class="text-gray-500 text-sm ml-2">(5.0)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="monitor-1">
-                        شاهد المزيد
-                    </button>
-                </div>
-
-                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="monitor-2" data-image="https://placehold.co/400x400/9CA3AF/ffffff?text=Work+Monitor" data-title="شاشة FlexiScreen 27" data-full-desc="شاشة 27 بوصة بدقة عالية، مثالية للمبرمجين والمصممين. تتميز بألوان دقيقة وتقنية حماية العين." data-price="950 SAR" data-affiliate-link="#">
-                    <div class="relative">
-                        <img src="https://placehold.co/400x400/9CA3AF/ffffff?text=Work+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
-                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">New</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">FlexiScreen 27 Monitor</h3>
-                    <p class="text-sm text-gray-500 mb-3">Ideal for Programming and Design</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.7)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="monitor-2">
-                        شاهد المزيد
-                    </button>
-                </div>
-                
-                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="monitor-3" data-image="https://placehold.co/400x400/6B7280/ffffff?text=Curved+Monitor" data-title="شاشة Curved G50" data-full-desc="شاشة منحنية للألعاب توفر زاوية رؤية واسعة لتجربة لعب لا مثيل لها. تصميم عصري وأداء قوي." data-price="1300 SAR" data-affiliate-link="#">
-                    <img src="https://placehold.co/400x400/6B7280/ffffff?text=Curved+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Curved G50 Monitor</h3>
-                    <p class="text-sm text-gray-500 mb-3">Curved Gaming Monitor</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.4)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="monitor-3">
-                        شاهد المزيد
-                    </button>
-                </div>
-                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="monitor-4" data-image="https://placehold.co/400x400/1F2937/ffffff?text=Budget+Monitor" data-title="شاشة EcoView 24" data-full-desc="شاشة اقتصادية بحجم 24 بوصة، توفر أداء جيداً للاستخدام اليومي والعمل المكتبي بسعر مناسب." data-price="450 SAR" data-affiliate-link="#">
-                    <img src="https://placehold.co/400x400/1F2937/ffffff?text=Budget+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">EcoView 24 Monitor</h3>
-                    <p class="text-sm text-gray-500 mb-3">Good performance at an economical price</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★☆☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(3.9)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="monitor-4">
-                        شاهد المزيد
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="headphones" class="py-16 bg-secondary-gray">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">🎧 Headphones & Other Electronics</h2>
-            <p class="text-gray-600 mb-8 text-left">The best audio devices and smart accessories to boost your productivity.</p>
-            
-            <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
-                
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="audio-1" data-image="https://placehold.co/400x400/10B981/ffffff?text=Headphones" data-title="سماعات AeroSounds" data-full-desc="سماعات رأس لاسلكية بتقنية إلغاء الضوضاء الفعال. توفر جودة صوت نقية ومريحة للاستخدام الطويل." data-price="350 SAR" data-affiliate-link="#">
-                    <div class="relative">
-                        <img src="https://placehold.co/400x400/10B981/ffffff?text=Headphones" alt="Wireless Headphones" class="w-full h-48 object-cover rounded-lg mb-4">
-                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Discounted</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">AeroSounds Headphones</h3>
-                    <p class="text-sm text-gray-500 mb-3">Effective Noise Cancellation</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.2)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="audio-1">
-                        شاهد المزيد
-                    </button>
-                </div>
-                
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="audio-2" data-image="https://placehold.co/400x400/4F46E5/ffffff?text=Wireless+Charger" data-title="شاحن MagCharge X" data-full-desc="شاحن لاسلكي فائق السرعة يدعم تقنية MagSafe. تصميم أنيق وحجم صغير، مثالي للسفر." data-price="150 SAR" data-affiliate-link="#">
-                    <img src="https://placehold.co/400x400/4F46E5/ffffff?text=Wireless+Charger" alt="Wireless Charger" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">MagCharge X Charger</h3>
-                    <p class="text-sm text-gray-500 mb-3">Super Fast Charging</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★★</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.8)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="audio-2">
-                        شاهد المزيد
-                    </button>
-                </div>
-
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="audio-3" data-image="https://placehold.co/400x400/D946EF/ffffff?text=Webcam" data-title="كاميرا WebCam 1080P" data-full-desc="كاميرا ويب عالية الدقة (1080P) وميكروفون مدمج. مثالية للاجتماعات عبر الإنترنت والبث المباشر." data-price="200 SAR" data-affiliate-link="#">
-                    <img src="https://placehold.co/400x400/D946EF/ffffff?text=Webcam" alt="Webcam" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">WebCam 1080P Camera</h3>
-                    <p class="text-sm text-gray-500 mb-3">High Quality for Calls</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.5)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="audio-3">
-                        شاهد المزيد
-                    </button>
-                </div>
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4" data-product-id="audio-4" data-image="https://placehold.co/400x400/94A3B8/ffffff?text=Smartwatch" data-title="ساعة ChronoTech" data-full-desc="ساعة ذكية لتتبع اللياقة البدنية والأنشطة اليومية. تتميز بعمر بطارية طويل وتصميم مقاوم للماء." data-price="400 SAR" data-affiliate-link="#">
-                    <img src="https://placehold.co/400x400/94A3B8/ffffff?text=Smartwatch" alt="Smartwatch" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">ChronoTech Watch</h3>
-                    <p class="text-sm text-gray-500 mb-3">Fitness Tracking</p>
-                    <div class="flex items-center mb-3">
-                        <span class="text-yellow-500 text-xl">★★★★☆</span>
-                        <span class="text-gray-500 text-sm ml-2">(4.1)</span>
-                    </div>
-                    <button class="view-product-details block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300" data-product-id="audio-4">
-                        شاهد المزيد
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="services" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-10 text-primary-dark">Our Core Digital Services</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-                In addition to products, we offer integrated services to help you build your online brand.
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-primary-dark mb-4 text-center md:text-left">Community Services Showcase</h1>
+            <p class="text-xl text-gray-600 mb-12 text-center md:text-left max-w-3xl mx-auto md:mx-0">
+                Discover services offered by talented members of our community, spanning web development, design, content creation, and more.
             </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                 <div class="bg-secondary-gray p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-primary-yellow">
-                    <h3 class="text-2xl font-bold mb-3 text-primary-dark">Website Creation Service</h3>
-                    <p class="text-gray-600 mb-4">
-                        We offer integrated solutions to build your own website using the latest technologies.
-                    </p>
-                    <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4 pl-5">
-                        <li>Fully Responsive Design</li>
-                        <li>Search Engine Optimization (SEO)</li>
-                    </ul>
-                    <a href="#" id="order-website-service" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center cursor-pointer">
-                        Order the Service Now
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </a>
-                </div>
-
-                <div class="bg-secondary-gray p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-primary-dark">
-                    <h3 class="text-2xl font-bold mb-3 text-primary-dark">Creative Graphic Design Service</h3>
-                    <p class="text-gray-600 mb-4">
-                        Professional product images, ads, and social media covers that boost your content appeal.
-                    </p>
-                    <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4 pl-5">
-                        <li>Logo Design and Visual Identity</li>
-                        <li>Impactful Digital Ads</li>
-                    </ul>
-                    <a href="#" id="order-design-service" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center cursor-pointer">
-                        Order the Service Now
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </a>
-                </div>
-                
-                <div id="open-contact-modal" class="cursor-pointer text-left bg-primary-yellow p-6 rounded-xl shadow-2xl hover:shadow-3xl transition duration-300 border-t-4 border-primary-dark flex flex-col justify-between text-primary-dark">
-                    <div>
-                        <svg class="w-10 h-10 mb-3 text-primary-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <h3 class="text-2xl font-bold mb-3">Want to Offer Your Own Service?</h3>
-                        <p class="text-gray-800 mb-4 font-semibold">
-                            Become a service provider on Rx Store. Click to see contact options!
-                        </p>
+            <div class="bg-white p-6 rounded-xl shadow-lg mb-10">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                    <div class="relative w-full sm:flex-1">
+                        <input type="text" id="search-input" placeholder="Search for services (e.g., 'Logo Design')..." class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-yellow">
+                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
-                    <span class="text-primary-dark font-bold py-2 px-4 bg-white rounded-full text-center block hover:bg-gray-100 transition duration-300">
-                        Publish Your Service 🚀
-                    </span>
+                    <button id="search-button" class="bg-primary-dark text-white px-6 py-3 rounded-full hover:bg-gray-700 transition duration-300 w-full sm:w-auto font-bold">Search</button>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <footer class="bg-primary-dark text-white py-10 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-gray-700 pb-8 mb-8">
-                <div>
-                    <h3 class="text-2xl font-bold text-primary-yellow mb-3">Rx Store</h3>
-                    <p class="text-sm text-gray-400">
-                        A selection of the best books, electronics, and digital services you need for growth and innovation.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Home</a></li>
-                        <li><a href="#products" class="hover:text-primary-yellow transition duration-300">Products</a></li>
-                        <li><a href="#services" class="hover:text-primary-yellow transition duration-300">Our Services</a></li>
-                        </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-3">Support and Help</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Terms of Use</a></li>
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-3">Connect With Us</h4>
-                    <p class="text-sm text-gray-400">
-                        For inquiries and special requests
-                    </p>
-                    <a href="mailto:info@rxstore.com" class="text-primary-yellow block mt-2 hover:text-yellow-400">info@rxstore.com</a>
+                <div class="filter-carousel flex gap-3 pb-2">
+                    <button class="filter-button active" data-filter="all">All</button>
+                    <button class="filter-button" data-filter="web-dev">Web Development</button>
+                    <button class="filter-button" data-filter="design">Graphic Design</button>
+                    <button class="filter-button" data-filter="writing">Writing & Content</button>
+                    <button class="filter-button" data-filter="marketing">Digital Marketing</button>
+                    <button class="filter-button" data-filter="video">Video & Animation</button>
+                    <button class="filter-button" data-filter="consulting">Consulting</button>
                 </div>
             </div>
+
+            <div id="services-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                
+                <div class="service-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-5" 
+                     data-category="web-dev" data-name="Full-Stack Website Development" 
+                     data-service-id="1">
+                    <img src="https://placehold.co/400x250/FCD34D/3B4452?text=Web+Dev" alt="Full-Stack Web Development" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold text-primary-dark truncate mb-1">Full-Stack Website Development</h3>
+                    <p class="text-sm text-gray-500 mb-2">By: Jane Doe</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-lg">★★★★★</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.9)</span>
+                    </div>
+                    <p class="text-lg font-bold text-primary-dark mb-4">From $299</p>
+                    <button data-service-id="1" class="open-details-modal block w-full text-center bg-primary-dark text-white font-bold py-2 rounded-full hover:bg-gray-700 transition duration-300">
+                        More Details
+                    </button>
+                </div>
+
+                <div class="service-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-5" 
+                     data-category="design" data-name="Mobile UI/UX Design"
+                     data-service-id="2">
+                    <img src="https://placehold.co/400x250/A78BFA/3B4452?text=UI/UX" alt="Mobile UI/UX Design" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold text-primary-dark truncate mb-1">Mobile UI/UX Design</h3>
+                    <p class="text-sm text-gray-500 mb-2">By: John Smith</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-lg">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.7)</span>
+                    </div>
+                    <p class="text-lg font-bold text-primary-dark mb-4">From $150</p>
+                    <button data-service-id="2" class="open-details-modal block w-full text-center bg-primary-dark text-white font-bold py-2 rounded-full hover:bg-gray-700 transition duration-300">
+                        More Details
+                    </button>
+                </div>
+
+                <div class="service-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-5" 
+                     data-category="marketing" data-name="Advanced SEO Optimization"
+                     data-service-id="3">
+                    <img src="https://placehold.co/400x250/34D399/3B4452?text=SEO" alt="Advanced SEO Optimization" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold text-primary-dark truncate mb-1">Advanced SEO Optimization</h3>
+                    <p class="text-sm text-gray-500 mb-2">By: Emily White</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-lg">★★★★★</span>
+                        <span class="text-gray-500 text-sm ml-2">(5.0)</span>
+                    </div>
+                    <p class="text-lg font-bold text-primary-dark mb-4">From $200</p>
+                    <button data-service-id="3" class="open-details-modal block w-full text-center bg-primary-dark text-white font-bold py-2 rounded-full hover:bg-gray-700 transition duration-300">
+                        More Details
+                    </button>
+                </div>
+                
+                <div class="service-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-5" 
+                     data-category="writing" data-name="Creative Content Creation"
+                     data-service-id="4">
+                    <img src="https://placehold.co/400x250/F472B6/3B4452?text=Content" alt="Creative Content Creation" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold text-primary-dark truncate mb-1">Creative Content Creation</h3>
+                    <p class="text-sm text-gray-500 mb-2">By: David Lee</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-lg">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.6)</span>
+                    </div>
+                    <p class="text-lg font-bold text-primary-dark mb-4">From $80</p>
+                    <button data-service-id="4" class="open-details-modal block w-full text-center bg-primary-dark text-white font-bold py-2 rounded-full hover:bg-gray-700 transition duration-300">
+                        More Details
+                    </button>
+                </div>
+
+                <div class="service-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-5" 
+                     data-category="video" data-name="Professional Video Editing"
+                     data-service-id="5">
+                    <img src="https://placehold.co/400x250/60A5FA/3B4452?text=Video" alt="Professional Video Editing" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold text-primary-dark truncate mb-1">Professional Video Editing</h3>
+                    <p class="text-sm text-gray-500 mb-2">By: Mia Chen</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-lg">★★★★★</span>
+                        <span class="text-gray-500 text-sm ml-2">(5.0)</span>
+                    </div>
+                    <p class="text-lg font-bold text-primary-dark mb-4">From $350</p>
+                    <button data-service-id="5" class="open-details-modal block w-full text-center bg-primary-dark text-white font-bold py-2 rounded-full hover:bg-gray-700 transition duration-300">
+                        More Details
+                    </button>
+                </div>
+            </div> 
+
+        </div>
+    </main>
+
+    <div id="service-details-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300">
             
-            <div class="text-center text-sm text-gray-500">
-                &copy; 2024 Rx Store. All rights reserved.
+            <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center z-10">
+                <h2 id="modal-service-title" class="text-3xl font-bold text-primary-dark"></h2>
+                <button class="close-modal-button text-gray-500 hover:text-gray-900">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
-        </div>
-    </footer>
 
-    <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl p-8 shadow-2xl max-w-sm w-full relative transform transition-all duration-300 scale-100 opacity-100">
-            <button id="close-modal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <div class="p-6 md:p-8">
+                
+                <div class="mb-8">
+                    <img id="modal-service-cover" src="https://placehold.co/800x300/FCD34D/3B4452?text=Service+Cover" alt="Service Cover" class="w-full h-56 object-cover rounded-xl mb-4 shadow-lg">
+                    <div class="flex items-center justify-between mt-4">
+                        <p class="text-lg text-gray-600">Offered By: <span id="modal-service-provider" class="font-semibold text-primary-dark"></span></p>
+                        <div class="flex items-center">
+                            <span id="modal-service-rating" class="text-yellow-500 text-xl mr-2"></span>
+                            <span id="modal-service-reviews" class="text-gray-500 text-sm"></span>
+                        </div>
+                    </div>
+                </div>
 
-            <h3 class="text-2xl font-bold text-primary-dark mb-4 text-center">تواصل معنا لنشر خدمتك</h3>
-            <p class="text-gray-600 mb-6 text-center">يرجى اختيار طريقة التواصل المفضلة لديك لبدء عملية نشر الخدمة:</p>
+                <h3 class="text-2xl font-bold text-primary-dark mb-3">Service Description</h3>
+                <p id="modal-service-description" class="text-gray-700 leading-relaxed mb-8">
+                    This is the detailed description of the service. It covers the scope of work, what the client receives, and why this provider is the best choice.
+                </p>
 
-            <div class="space-y-4">
-                <a href="https://wa.me/qr/GJG7SGKGIODTE1" target="_blank" class="flex items-center justify-center bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition duration-300 shadow-md">
-                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.001 0C6.113 0 1.341 4.773 1.341 10.66c0 1.948.51 3.834 1.487 5.518L1.084 23.416l7.464-2.433a9.23 9.23 0 003.454.677c5.887 0 10.66-4.773 10.66-10.66S17.888 0 12.001 0zM17 15.17c-.204.34-.413.43-.687.43-.274 0-.49-.09-.7-.43l-1.373-2.228c-.204-.34-.407-.406-.687-.406-.274 0-.52.094-.748.406l-.7.94c-.18.243-.377.29-.687.29-.31 0-.616-.08-.94-.377a7.6 7.6 0 01-3.615-3.084c-.31-.48-.49-.7-.49-1.077 0-.31.094-.52.274-.707l.9-.844c.243-.2.34-.377.34-.687 0-.31-.1-.52-.31-.69l-2.03-3.136c-.204-.31-.48-.377-.7-.377-.243 0-.48.094-.707.377l-.7.94c-.204.31-.407.43-.687.43-.274 0-.49-.09-.7-.43l-1.373-2.228c-.204-.34-.407-.406-.687-.406-.274 0-.52.094-.748.406L9 12.67c.243.2 4.49 4.887 4.965 4.887.476 0 .844-.1.844-.456v-.29c0-.243.094-.48.274-.69l1.467-.624c.243-.1.49-.03.7.17l.7.94c.204.31.407.43.687.43.274 0 .49-.09.7-.43l.42-1.12c.204-.31.407-.43.687-.43.274 0 .52.094.748.406l1.373 2.228c.204.34.413.43.687.43.274 0 .49-.09.7-.43l.42-1.12c.204-.31.407-.43.687-.43.274 0 .52.094.748.406l-1.373 2.228z"/></svg>
-                    تواصل عبر واتساب
-                </a>
+                <h3 class="text-2xl font-bold text-primary-dark mb-3">Work Samples</h3>
+                <div id="modal-service-gallery" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                    <img src="https://placehold.co/300x200/60A5FA/ffffff?text=Sample+1" class="w-full h-auto rounded-lg object-cover shadow-sm">
+                    <img src="https://placehold.co/300x200/F472B6/ffffff?text=Sample+2" class="w-full h-auto rounded-lg object-cover shadow-sm">
+                    <img src="https://placehold.co/300x200/34D399/ffffff?text=Sample+3" class="w-full h-auto rounded-lg object-cover shadow-sm">
+                </div>
 
-                <a href="https://t.me/yonzzc" target="_blank" class="flex items-center justify-center bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300 shadow-md">
-                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.3L9.6 14.7c-.5.5-.9.4-1.2.1-.3-.3-.4-.7-.1-1.2l5.7-4.2c.4-.3.9-.2 1.2.1.3.3.4.7.1 1.2zM12 11.2l-3.3 2.4c-.2.1-.4 0-.6-.2-.2-.2-.1-.4.1-.6l3.3-2.4c.2-.1.4 0 .6.2.2.2.1.4-.1.6zm4.3-1.6l-5.7 4.2c-.4.3-.9.2-1.2-.1-.3-.3-.4-.7-.1-1.2l5.7-4.2c.4-.3.9-.2 1.2.1.3.3.4.7.1 1.2z"/></svg>
-                    تواصل عبر تليجرام
-                </a>
+                <h3 class="text-2xl font-bold text-primary-dark mb-4">Pricing & Packages</h3>
+                <div id="modal-service-pricing" class="space-y-4 mb-8">
+                    <div class="bg-secondary-gray p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <span class="font-semibold text-lg">Basic Package (5 days)</span>
+                        <span class="text-xl font-bold text-green-600">$299</span>
+                    </div>
+                    <div class="bg-secondary-gray p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <span class="font-semibold text-lg">Premium Package (14 days)</span>
+                        <span class="text-xl font-bold text-green-600">$699</span>
+                    </div>
+                </div>
+
+                <button id="open-contact-modal-btn" class="w-full text-center bg-primary-yellow text-primary-dark font-extrabold text-xl py-3 rounded-full hover:bg-yellow-400 transition duration-300 shadow-md">
+                    Order Service Now
+                </button>
             </div>
         </div>
     </div>
-    
-    <div id="product-detail-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl p-6 md:p-8 shadow-2xl max-w-lg w-full relative transform transition-all duration-300 scale-100 opacity-100">
-            <button id="close-product-modal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
 
-            <div id="product-content">
-                <img id="modal-product-image" src="" alt="صورة المنتج" class="w-full h-56 object-cover rounded-lg mb-4">
-                <h3 id="modal-product-title" class="text-2xl font-bold text-primary-dark mb-2"></h3>
-                <p id="modal-product-price" class="text-xl font-extrabold text-primary-yellow mb-4"></p>
-                <p id="modal-product-description" class="text-gray-700 mb-6"></p>
+    <div id="contact-links-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform transition-all duration-300">
+            
+            <div class="sticky top-0 bg-primary-dark text-white p-6 flex justify-between items-center z-10 rounded-t-xl">
+                <h2 class="text-3xl font-bold">Contact Provider</h2>
+                <button class="close-modal-button text-gray-300 hover:text-white">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
 
-                <div class="space-y-3">
-                    <a id="modal-buy-link" href="#" target="_blank" class="flex items-center justify-center bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition duration-300 shadow-md">
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.2 4.4a2 2 0 002.1 2.6H17a2 2 0 001.9-1.4l1.4-4.2"></path></svg>
-                        اشترِ الآن (رابط خارجي)
+            <div class="p-8 text-center">
+                <p class="text-lg text-gray-700 mb-6">
+                    Connect with **<span id="contact-provider-name" class="font-bold text-primary-dark"></span>** directly via their preferred channels to discuss your project and place an order.
+                </p>
+                
+                <div id="contact-links-container" class="space-y-4">
+                    <a href="#" target="_blank" class="flex items-center justify-center bg-blue-500 text-white font-bold py-3 rounded-full shadow-md hover:bg-blue-600 transition duration-300">
+                        <i class="fab fa-telegram-plane w-6 h-6 mr-3"></i>
+                        Contact via Telegram
                     </a>
-                    <button id="copy-product-link" class="flex items-center justify-center w-full bg-gray-200 text-primary-dark font-bold py-3 rounded-lg hover:bg-gray-300 transition duration-300 shadow-sm">
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-3m-1-4l4-4m-4 4l-4-4m4 4v7M14 4h7v7"></path></svg>
-                        نسخ رابط المنتج
-                    </button>
-                    <p id="copy-message" class="text-sm text-center text-green-600 hidden mt-2">تم نسخ الرابط بنجاح!</p>
+
+                    <a href="#" target="_blank" class="flex items-center justify-center bg-green-500 text-white font-bold py-3 rounded-full shadow-md hover:bg-green-600 transition duration-300">
+                        <i class="fab fa-whatsapp w-6 h-6 mr-3"></i>
+                        Contact via WhatsApp
+                    </a>
+
+                    <a href="#" target="_blank" class="flex items-center justify-center bg-pink-500 text-white font-bold py-3 rounded-full shadow-md hover:bg-pink-600 transition duration-300">
+                        <i class="fab fa-instagram w-6 h-6 mr-3"></i>
+                        Contact via Instagram
+                    </a>
                 </div>
+
+                <p class="text-sm text-gray-500 mt-6">
+                    We recommend discussing the details of the service before making any payment.
+                </p>
             </div>
         </div>
     </div>
 
 
     <script>
-        // دالة مساعدة للحصول على قيمة parameter من الـ URL
-        function getQueryParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        // دالة لفتح وتعبئة نافذة تفاصيل المنتج
-        function openProductModal(productElement) {
-            const modal = document.getElementById('product-detail-modal');
-            const productId = productElement.dataset.productId;
-            const image = productElement.dataset.image;
-            const title = productElement.dataset.title;
-            const description = productElement.dataset.fullDesc;
-            const price = productElement.dataset.price;
-            const affiliateLink = productElement.dataset.affiliateLink;
-
-            // تعبئة البيانات في النافذة المنبثقة
-            document.getElementById('modal-product-image').src = image;
-            document.getElementById('modal-product-title').textContent = title;
-            document.getElementById('modal-product-description').textContent = description;
-            document.getElementById('modal-product-price').textContent = price;
-            document.getElementById('modal-buy-link').href = affiliateLink;
-
-            // إظهار النافذة
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            
-            // إخفاء رسالة "تم النسخ" عند فتح النافذة
-            document.getElementById('copy-message').classList.add('hidden');
-            
-            // تحديث رابط النسخ (Deep Link)
-            const currentUrl = window.location.origin + window.location.pathname;
-            const linkToCopy = `${currentUrl}?product_id=${productId}`;
-            
-            document.getElementById('copy-product-link').dataset.linkToCopy = linkToCopy;
-        }
-
-        // دالة لإغلاق نافذة تفاصيل المنتج
-        function closeProductModal() {
-            const modal = document.getElementById('product-detail-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-
-            // إزالة الـ parameter من الـ URL دون إعادة تحميل الصفحة
-            if (getQueryParameter('product_id')) {
-                const currentUrl = window.location.origin + window.location.pathname;
-                window.history.pushState({}, '', currentUrl);
-            }
-        }
-        
-        // دالة لفحص الروابط العميقة (Deep Links) عند تحميل الصفحة
-        function checkDeepLink() {
-            const productId = getQueryParameter('product_id');
-            if (productId) {
-                // البحث عن بطاقة المنتج المطابقة باستخدام data-product-id
-                const productElement = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-                if (productElement) {
-                    // فتح النافذة المنبثقة مباشرةً بالبيانات
-                    openProductModal(productElement);
-                }
-            }
-        }
-        
         document.addEventListener('DOMContentLoaded', () => {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
+            // --- DATA DUMMY (Replace with actual data fetch) ---
+            const servicesData = {
+                1: { 
+                    name: "Full-Stack Website Development", 
+                    provider: "Jane Doe", 
+                    rating: "★★★★★", 
+                    reviews: "(4.9 / 24 Reviews)",
+                    description: "Highly professional service covering all aspects of website development, from front-end design using Tailwind CSS to back-end logic with Node.js and MongoDB. We deliver scalable, high-performance, and visually stunning websites.",
+                    price: "From $299",
+                    contact: {
+                        telegram: "https://t.me/janedoe_dev",
+                        whatsapp: "https://wa.me/1234567890",
+                        instagram: "https://instagram.com/janedoe_dev"
+                    }
+                },
+                2: { 
+                    name: "Mobile UI/UX Design", 
+                    provider: "John Smith", 
+                    rating: "★★★★☆", 
+                    reviews: "(4.7 / 15 Reviews)",
+                    description: "Creating intuitive and user-friendly mobile application interfaces (UI/UX) based on the latest design trends. Services include wireframing, prototyping, and high-fidelity mockups for iOS and Android.",
+                    price: "From $150",
+                    contact: {
+                        telegram: "https://t.me/johnsmith_design",
+                        whatsapp: "https://wa.me/1122334455",
+                        instagram: "https://instagram.com/johnsmith_design"
+                    }
+                },
+                3: { 
+                    name: "Advanced SEO Optimization", 
+                    provider: "Emily White", 
+                    rating: "★★★★★", 
+                    reviews: "(5.0 / 30 Reviews)",
+                    description: "Comprehensive SEO service to boost your website's ranking on search engines. Includes keyword research, on-page optimization, technical SEO audit, and monthly performance reports to guarantee results.",
+                    price: "From $200",
+                    contact: {
+                        telegram: "https://t.me/emilywhite_seo",
+                        whatsapp: "https://wa.me/6677889900",
+                        instagram: "https://instagram.com/emilywhite_seo"
+                    }
+                },
+                4: { 
+                    name: "Creative Content Creation", 
+                    provider: "David Lee", 
+                    rating: "★★★★☆", 
+                    reviews: "(4.6 / 8 Reviews)",
+                    description: "Producing engaging and high-quality written content for blogs, websites, and social media platforms. Specializing in technology, business, and self-development topics to attract and retain your audience.",
+                    price: "From $80",
+                    contact: {
+                        telegram: "https://t.me/davidlee_writer",
+                        whatsapp: "https://wa.me/1098765432",
+                        instagram: "https://instagram.com/davidlee_writer"
+                    }
+                },
+                5: { 
+                    name: "Professional Video Editing", 
+                    provider: "Mia Chen", 
+                    rating: "★★★★★", 
+                    reviews: "(5.0 / 12 Reviews)",
+                    description: "Top-tier video editing services for YouTube, social media, and corporate videos. Includes color grading, sound design, motion graphics, and fast turnaround to meet your deadlines.",
+                    price: "From $350",
+                    contact: {
+                        telegram: "https://t.me/miachen_video",
+                        whatsapp: "https://wa.me/2134567890",
+                        instagram: "https://instagram.com/miachen_video"
+                    }
+                },
+                // Add more service objects here...
+            };
             
-            // 1. Toggle Mobile Menu
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-            
-            // Smooth scrolling for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    if (this.getAttribute('href').startsWith('#')) {
-                        e.preventDefault();
-                        document.querySelector(this.getAttribute('href')).scrollIntoView({
-                            behavior: 'smooth'
-                        });
+            let currentServiceId = null;
+
+            // --- GENERAL MODAL LOGIC ---
+            const detailsModal = document.getElementById('service-details-modal');
+            const contactModal = document.getElementById('contact-links-modal');
+            const openContactBtn = document.getElementById('open-contact-modal-btn');
+
+            const closeModal = (modal) => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            };
+
+            const openModal = (modal) => {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling the background
+            };
+
+            // Close logic for both modals
+            document.querySelectorAll('.close-modal-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const modal = button.closest('.fixed');
+                    if (modal) {
+                        closeModal(modal);
                     }
                 });
             });
 
-            // 2. Contact Modal Logic (Services)
-            const openServiceModalButtons = document.querySelectorAll('#open-contact-modal, #order-website-service, #order-design-service');
-            const closeModalButton = document.getElementById('close-modal');
-            const contactModal = document.getElementById('contact-modal');
-            
-            const openContactModal = (e) => {
-                if (e.currentTarget.tagName === 'A') {
-                    e.preventDefault();
-                }
-                contactModal.classList.remove('hidden');
-                contactModal.classList.add('flex');
-            };
-
-            const closeContactModal = () => {
-                contactModal.classList.add('hidden');
-                contactModal.classList.remove('flex');
-            };
-
-            openServiceModalButtons.forEach(button => {
-                button.addEventListener('click', openContactModal);
-            });
-            
-            if (closeModalButton) closeModalButton.addEventListener('click', closeContactModal);
-            if (contactModal) contactModal.addEventListener('click', (e) => {
-                if (e.target === contactModal) closeContactModal();
+            // Close modals by clicking the backdrop
+            [detailsModal, contactModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal(modal);
+                    }
+                });
             });
 
-            // 3. Product Detail Modal Logic (NEW)
-            const viewDetailButtons = document.querySelectorAll('.view-product-details');
-            const closeProductModalButton = document.getElementById('close-product-modal');
-            const productModal = document.getElementById('product-detail-modal');
-            const copyLinkButton = document.getElementById('copy-product-link');
-            const copyMessage = document.getElementById('copy-message');
 
-            viewDetailButtons.forEach(button => {
+            // --- SERVICE DETAILS LOGIC (Rendering data into the modal) ---
+
+            const renderServiceDetails = (serviceId) => {
+                const service = servicesData[serviceId];
+                if (!service) return;
+                
+                currentServiceId = serviceId; // Store for use by contact button
+                
+                // Update Modal Content
+                document.getElementById('modal-service-title').textContent = service.name;
+                document.getElementById('modal-service-provider').textContent = service.provider;
+                document.getElementById('modal-service-rating').textContent = service.rating;
+                document.getElementById('modal-service-reviews').textContent = service.reviews;
+                document.getElementById('modal-service-description').textContent = service.description;
+
+                // Simple static pricing update (needs advanced logic for real dynamic packages)
+                const pricingDivs = document.querySelectorAll('#modal-service-pricing > div');
+                if (pricingDivs[0]) pricingDivs[0].querySelector('span:last-child').textContent = service.price;
+
+                openModal(detailsModal);
+            };
+
+
+            // --- FILTERING AND SEARCH LOGIC ---
+
+            const servicesGrid = document.getElementById('services-grid');
+            const serviceCards = Array.from(document.querySelectorAll('.service-card'));
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+
+            const filterAndSearch = () => {
+                const activeFilter = document.querySelector('.filter-button.active').dataset.filter;
+                const searchTerm = searchInput.value.toLowerCase().trim();
+
+                serviceCards.forEach(card => {
+                    const cardCategory = card.dataset.category;
+                    const cardName = card.dataset.name.toLowerCase();
+                    
+                    const matchesCategory = activeFilter === 'all' || cardCategory === activeFilter;
+                    const matchesSearch = cardName.includes(searchTerm);
+
+                    if (matchesCategory && matchesSearch) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            };
+
+            // Filter button click handler
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    filterAndSearch();
+                });
+            });
+
+            // Search input/button handler
+            searchButton.addEventListener('click', filterAndSearch);
+            searchInput.addEventListener('keyup', filterAndSearch);
+
+
+            // --- EVENT LISTENERS ---
+
+            // Mobile Menu Toggle
+            document.getElementById('mobile-menu-button').addEventListener('click', function() {
+                document.getElementById('mobile-menu').classList.toggle('hidden');
+            });
+
+            // Event listener for opening details modal from grid cards
+            document.querySelectorAll('.open-details-modal').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    const productCard = e.currentTarget.closest('.product-card');
-                    if (productCard) {
-                        openProductModal(productCard);
-                    }
+                    const serviceId = e.currentTarget.dataset.serviceId;
+                    renderServiceDetails(serviceId);
                 });
             });
+            
+            // Event listener for opening contact modal from details modal
+            openContactBtn.addEventListener('click', () => {
+                const service = servicesData[currentServiceId];
+                if (!service) return;
+                
+                // Populate Contact Modal
+                document.getElementById('contact-provider-name').textContent = service.provider;
+                const contactContainer = document.getElementById('contact-links-container');
+                
+                // Ensure the links are correctly updated
+                contactContainer.querySelector('.fa-telegram-plane').closest('a').href = service.contact.telegram;
+                contactContainer.querySelector('.fa-whatsapp').closest('a').href = service.contact.whatsapp;
+                contactContainer.querySelector('.fa-instagram').closest('a').href = service.contact.instagram;
 
-            if (closeProductModalButton) closeProductModalButton.addEventListener('click', closeProductModal);
-            if (productModal) productModal.addEventListener('click', (e) => {
-                if (e.target === productModal) closeProductModal();
-            });
-
-            // Copy Link Functionality
-            if (copyLinkButton) {
-                copyLinkButton.addEventListener('click', () => {
-                    const linkToCopy = copyLinkButton.dataset.linkToCopy;
-                    if (linkToCopy) {
-                        navigator.clipboard.writeText(linkToCopy).then(() => {
-                            copyMessage.classList.remove('hidden');
-                            setTimeout(() => {
-                                copyMessage.classList.add('hidden');
-                            }, 2000);
-                        }).catch(err => {
-                            console.error('Could not copy text: ', err);
-                            alert('تعذر نسخ الرابط. يرجى النسخ يدوياً: ' + linkToCopy);
-                        });
-                    }
-                });
-            }
-
-            // 4. Check for Deep Links on Load (NEW)
-            checkDeepLink();
-
-            // Universal Escape key close
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    if (!contactModal.classList.contains('hidden')) {
-                        closeContactModal();
-                    }
-                    if (!productModal.classList.contains('hidden')) {
-                        closeProductModal();
-                    }
-                }
+                // Close details modal and open contact modal
+                closeModal(detailsModal);
+                openModal(contactModal);
             });
         });
     </script>
