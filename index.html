@@ -134,7 +134,7 @@
             </div>
 
             <div class="md:w-1/2 flex justify-center md:justify-end order-1 md:order-2">
-                <img src="https://i.ibb.co/mVkT9J6/Screenshot-20251010-212631.jpg" alt="Screenshot-20251010-212631" class="rounded-lg shadow-xl max-w-full h-auto">
+                <img src="https://i.ibb.co/mVkT9J6h/Screenshot-20251010-212631.jpg" alt="Screenshot 20251010 212631" class="rounded-lg shadow-xl max-w-full h-auto">
             </div>
         </div>
     </section>
@@ -410,18 +410,18 @@
                     </a>
                 </div>
                 
-                <a href="services.html" class="text-left bg-primary-yellow p-6 rounded-xl shadow-2xl hover:shadow-3xl transition duration-300 border-t-4 border-primary-dark flex flex-col justify-between text-primary-dark">
+                <div id="open-contact-modal" class="cursor-pointer text-left bg-primary-yellow p-6 rounded-xl shadow-2xl hover:shadow-3xl transition duration-300 border-t-4 border-primary-dark flex flex-col justify-between text-primary-dark">
                     <div>
                         <svg class="w-10 h-10 mb-3 text-primary-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <h3 class="text-2xl font-bold mb-3">Want to Offer Your Own Service?</h3>
                         <p class="text-gray-800 mb-4 font-semibold">
-                            Become a service provider on Rx Store. Click to learn how to feature your service here!
+                            Become a service provider on Rx Store. Click to see contact options!
                         </p>
                     </div>
                     <span class="text-primary-dark font-bold py-2 px-4 bg-white rounded-full text-center block hover:bg-gray-100 transition duration-300">
                         Publish Your Service 🚀
                     </span>
-                </a>
+                </div>
             </div>
         </div>
     </section>
@@ -466,6 +466,29 @@
         </div>
     </footer>
 
+    <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl p-8 shadow-2xl max-w-sm w-full relative transform transition-all duration-300 scale-100 opacity-100">
+            <button id="close-modal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <h3 class="text-2xl font-bold text-primary-dark mb-4 text-center">تواصل معنا لنشر خدمتك</h3>
+            <p class="text-gray-600 mb-6 text-center">يرجى اختيار طريقة التواصل المفضلة لديك لبدء عملية نشر الخدمة:</p>
+
+            <div class="space-y-4">
+                <a href="https://wa.me/qr/GJG7SGKGIODTE1" target="_blank" class="flex items-center justify-center bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition duration-300 shadow-md">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.001 0C6.113 0 1.341 4.773 1.341 10.66c0 1.948.51 3.834 1.487 5.518L1.084 23.416l7.464-2.433a9.23 9.23 0 003.454.677c5.887 0 10.66-4.773 10.66-10.66S17.888 0 12.001 0zM17 15.17c-.204.34-.413.43-.687.43-.274 0-.49-.09-.7-.43l-1.373-2.228c-.204-.34-.407-.406-.687-.406-.274 0-.52.094-.748.406l-.7.94c-.18.243-.377.29-.687.29-.31 0-.616-.08-.94-.377a7.6 7.6 0 01-3.615-3.084c-.31-.48-.49-.7-.49-1.077 0-.31.094-.52.274-.707l.9-.844c.243-.2.34-.377.34-.687 0-.31-.1-.52-.31-.69l-2.03-3.136c-.204-.31-.48-.377-.7-.377-.243 0-.48.094-.707.377l-.7.94c-.204.31-.407.43-.687.43-.274 0-.49-.09-.7-.43l-1.373-2.228c-.204-.34-.407-.406-.687-.406-.274 0-.52.094-.748.406L9 12.67c.243.2 4.49 4.887 4.965 4.887.476 0 .844-.1.844-.456v-.29c0-.243.094-.48.274-.69l1.467-.624c.243-.1.49-.03.7.17l.7.94c.204.31.407.43.687.43.274 0 .49-.09.7-.43l.42-1.12c.204-.31.407-.43.687-.43.274 0 .52.094.748.406l1.373 2.228c.204.34.413.43.687.43.274 0 .49-.09.7-.43l.42-1.12c.204-.31.407-.43.687-.43.274 0 .52.094.748.406l-1.373 2.228z"/></svg>
+                    تواصل عبر واتساب
+                </a>
+
+                <a href="https://t.me/yonzzc" target="_blank" class="flex items-center justify-center bg-blue-500 text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition duration-300 shadow-md">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.3 8.3L9.6 14.7c-.5.5-.9.4-1.2.1-.3-.3-.4-.7-.1-1.2l5.7-4.2c.4-.3.9-.2 1.2.1.3.3.4.7.1 1.2zM12 11.2l-3.3 2.4c-.2.1-.4 0-.6-.2-.2-.2-.1-.4.1-.6l3.3-2.4c.2-.1.4 0 .6.2.2.2.1.4-.1.6zm4.3-1.6l-5.7 4.2c-.4.3-.9.2-1.2-.1-.3-.3-.4-.7-.1-1.2l5.7-4.2c.4-.3.9-.2 1.2.1.3.3.4.7.1 1.2z"/></svg>
+                    تواصل عبر تليجرام
+                </a>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const button = document.getElementById('mobile-menu-button');
@@ -488,6 +511,41 @@
                     }
                 });
             });
+
+            // 2. Modal Logic for "Want to Offer Your Own Service?" card
+            const openModalButton = document.getElementById('open-contact-modal');
+            const closeModalButton = document.getElementById('close-modal');
+            const modal = document.getElementById('contact-modal');
+            
+            if (openModalButton && closeModalButton && modal) {
+                // Function to open the modal
+                openModalButton.addEventListener('click', () => {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex'); // Add flex to center content
+                });
+
+                // Function to close the modal
+                const closeContactModal = () => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                };
+
+                closeModalButton.addEventListener('click', closeContactModal);
+
+                // Close modal if user clicks outside of the modal content
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeContactModal();
+                    }
+                });
+                
+                // Close modal on Escape key press
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                        closeContactModal();
+                    }
+                });
+            }
         });
     </script>
 </body>
