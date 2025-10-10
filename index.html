@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rx Store - Your Gateway to Knowledge, Tech, and Digital Services</title>
-    <!-- Include Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     <script>
@@ -74,20 +73,8 @@
             }
         }
 
-        /* Modal styling */
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.7);
-            transition: opacity 0.3s ease;
-        }
-        .modal-content {
-            animation: fadeIn 0.3s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        /* Modal styling - REMOVED MODAL STYLES as modal is removed */
     </style>
-    <!-- Open Graph Data for SEO -->
     <meta property="og:title" content="Rx Store - Your Gateway to Knowledge, Tech, and Services" />
     <meta property="og:description" content="Explore, discover, and create. The best books, electronics, and design/website services." />
     <meta property="og:image" content="https://placehold.co/1200x630/E5E7EB/5C5E60?text=Rx+Store+Cover" />
@@ -95,15 +82,12 @@
 </head>
 <body class="text-primary-dark">
 
-    <!-- Header / Navigation Bar -->
     <header class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
-            <!-- Logo -->
             <div class="text-2xl font-bold text-primary-dark flex items-center">
                 <span class="text-primary-yellow text-3xl mr-1">Rx</span> Store
             </div>
 
-            <!-- Navigation Menu -->
             <nav class="hidden md:flex space-x-6 text-lg font-medium">
                 <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Home</a>
                 <a href="#books" class="text-primary-dark hover:text-primary-yellow transition duration-300">Books</a>
@@ -113,18 +97,14 @@
                 <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Blog</a>
             </nav>
 
-            <!-- Placeholder for alignment on Desktop -->
             <div class="hidden md:block w-24">
-                <!-- Empty space to maintain spacing -->
-            </div>
+                </div>
 
-            <!-- Mobile Menu (Hamburger Icon) -->
             <button id="mobile-menu-button" class="md:hidden p-2 text-primary-dark">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
         </div>
 
-        <!-- Mobile Pop-up Menu -->
         <div id="mobile-menu" class="hidden md:hidden shadow-lg">
             <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300 border-t">Home</a>
             <a href="#books" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Books</a>
@@ -132,14 +112,9 @@
             <a href="#services" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Our Services</a>
             <a href="#community-services" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300 font-extrabold">Community Offers</a>
             <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Blog</a>
-            <!-- *** New Feature: Create a Service *** -->
-            <button id="open-modal-mobile" class="w-full text-center py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
-                Publish Your Service
-            </button>
-        </div>
+            </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero-section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
             <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0 order-2 md:order-1">
@@ -165,50 +140,43 @@
         </div>
     </section>
 
-    <!-- Category and Service Icons Bar -->
     <section class="py-12 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
-                <!-- Icon 1: Books -->
                 <a href="#books" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
                     <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.208 5 7.5 5A6.5 6.5 0 003 11.5c0 1.615.477 3.111 1.253 4.331M12 6.253c1.168.776 2.792 1.253 4.5 1.253a6.5 6.5 0 014.5-6.747M12 19.253C13.168 18.477 14.792 18 16.5 18a6.5 6.5 0 004.5-6.747M12 19.253c-1.168.776-2.792 1.253-4.5 1.253a6.5 6.5 0 01-4.5-6.747"></path></svg>
                     </div>
                     <span class="text-sm font-medium">Books</span>
                 </a>
-                <!-- Icon 2: PC Monitors -->
                 <a href="#screens" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
                     <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
                          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25M7 16h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v7a2 2 0 002 2z"></path></svg>
                     </div>
                     <span class="text-sm font-medium">PC Monitors</span>
                 </a>
-                <!-- Icon 3: Headphones -->
                 <a href="#headphones" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
                     <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v14l-12 3zm0 0l-4-1m4 1v-5m0 5l4 1m-4-1h-5v-10h9v5"></path></svg>
                     </div>
                     <span class="text-sm font-medium">Headphones</span>
                 </a>
-                <!-- Icon 4: Community Services -->
                 <a href="#community-services" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
                     <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354l9.284 4.545-9.284 4.545-9.284-4.545L12 4.354zM21.284 10.5l-9.284 4.545-9.284-4.545M21.284 16.5l-9.284 4.545-9.284-4.545"></path></svg>
                     </div>
                     <span class="text-sm font-medium">Community Services</span>
                 </a>
-                <!-- Icon 5: Graphic Design -->
-                <button onclick="openContactModal()" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                <a href="#contact-us" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
                     <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 10v-4m0 0l4 4m-4-4l-4 4m4-4L6 4"></path></svg>
                     </div>
-                    <span class="text-sm font-medium">Get a Service</span>
-                </button>
+                    <span class="text-sm font-medium">Contact Us</span>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Section 1: Top Selling Books -->
     <section id="books" class="py-16 bg-secondary-gray">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">📚 Top Selling Books</h2>
@@ -216,7 +184,6 @@
             
             <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
                 
-                <!-- Book Card 1 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/3B82F6/ffffff?text=AI+Power+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
@@ -233,7 +200,6 @@
                     </a>
                 </div>
                 
-                <!-- Book Card 2 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/F97316/ffffff?text=Entrepreneurship+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
@@ -250,7 +216,6 @@
                     </a>
                 </div>
 
-                <!-- Book Card 3 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/8B5CF6/ffffff?text=Self+Dev+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
@@ -266,7 +231,6 @@
                         Buy via Affiliate Link
                     </a>
                 </div>
-                <!-- More Cards here -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/D97706/ffffff?text=Money+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">The Art of Money Management</h3>
@@ -283,7 +247,6 @@
         </div>
     </section>
 
-    <!-- Section 2: Latest PC Monitors -->
     <section id="screens" class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">💻 Latest PC Monitors</h2>
@@ -291,7 +254,6 @@
             
             <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
                 
-                <!-- Monitor Card 1 -->
                 <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/4B5563/ffffff?text=Gaming+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
@@ -308,7 +270,6 @@
                     </a>
                 </div>
 
-                <!-- Monitor Card 2 -->
                 <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/9CA3AF/ffffff?text=Work+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
@@ -325,7 +286,6 @@
                     </a>
                 </div>
                 
-                <!-- Monitor Card 3 -->
                 <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/6B7280/ffffff?text=Curved+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Curved G50 Monitor</h3>
@@ -338,7 +298,6 @@
                         Buy via Affiliate Link
                     </a>
                 </div>
-                <!-- More Cards here -->
                 <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/1F2937/ffffff?text=Budget+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">EcoView 24 Monitor</h3>
@@ -355,7 +314,6 @@
         </div>
     </section>
 
-    <!-- Section 3: Headphones & Other Electronics -->
     <section id="headphones" class="py-16 bg-secondary-gray">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">🎧 Headphones & Other Electronics</h2>
@@ -363,7 +321,6 @@
             
             <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
                 
-                <!-- Headphone Card 1 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <div class="relative">
                         <img src="https://placehold.co/400x400/10B981/ffffff?text=Headphones" alt="Wireless Headphones" class="w-full h-48 object-cover rounded-lg mb-4">
@@ -380,7 +337,6 @@
                     </a>
                 </div>
                 
-                <!-- Accessory Card 2 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/4F46E5/ffffff?text=Wireless+Charger" alt="Wireless Charger" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">MagCharge X Charger</h3>
@@ -394,7 +350,6 @@
                     </a>
                 </div>
 
-                <!-- Accessory Card 3 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/D946EF/ffffff?text=Webcam" alt="Webcam" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">WebCam 1080P Camera</h3>
@@ -407,7 +362,6 @@
                         Buy via Affiliate Link
                     </a>
                 </div>
-                <!-- More Cards here -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
                     <img src="https://placehold.co/400x400/94A3B8/ffffff?text=Smartwatch" alt="Smartwatch" class="w-full h-48 object-cover rounded-lg mb-4">
                     <h3 class="text-lg font-bold text-primary-dark truncate mb-1">ChronoTech Watch</h3>
@@ -424,7 +378,6 @@
         </div>
     </section>
 
-    <!-- Featured Services Section (Rx Store Internal Services) -->
     <section id="services" class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-center mb-10 text-primary-dark">Our Core Digital Services</h2>
@@ -432,9 +385,8 @@
                 In addition to products, we offer integrated services to help you build your online brand.
             </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8"> 
                 
-                 <!-- Service Card 1: Website Creation -->
                  <div class="bg-secondary-gray p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-primary-yellow">
                     <h3 class="text-2xl font-bold mb-3 text-primary-dark">Website Creation Service</h3>
                     <p class="text-gray-600 mb-4">
@@ -450,7 +402,6 @@
                     </a>
                 </div>
 
-                <!-- Service Card 2: Creative Graphic Design -->
                 <div class="bg-secondary-gray p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-primary-dark">
                     <h3 class="text-2xl font-bold mb-3 text-primary-dark">Creative Graphic Design Service</h3>
                     <p class="text-gray-600 mb-4">
@@ -466,24 +417,10 @@
                     </a>
                 </div>
                 
-                <!-- Service Card 3: Publish Your Service (Call to Action) - Opens Modal -->
-                <button onclick="openContactModal()" class="text-left bg-primary-yellow p-6 rounded-xl shadow-2xl hover:shadow-3xl transition duration-300 border-t-4 border-primary-dark flex flex-col justify-between text-primary-dark">
-                    <div>
-                        <svg class="w-10 h-10 mb-3 text-primary-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <h3 class="text-2xl font-bold mb-3">Want to Offer Your Own Service?</h3>
-                        <p class="text-gray-800 mb-4 font-semibold">
-                            Become a service provider on Rx Store. Contact us to learn how to feature your service here!
-                        </p>
-                    </div>
-                    <span class="text-primary-dark font-bold py-2 px-4 bg-white rounded-full text-center block hover:bg-gray-100 transition duration-300">
-                        Publish Your Service 🚀
-                    </span>
-                </button>
-            </div>
+                </div>
         </div>
     </section>
 
-    <!-- NEW SECTION: Services from Our Community (User-Published) -->
     <section id="community-services" class="py-16 bg-secondary-gray">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-center mb-10 text-primary-dark">Services from Our Community</h2>
@@ -493,7 +430,6 @@
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 
-                <!-- Community Service Card 1: Expert Logo Design -->
                 <div class="bg-white rounded-xl p-5 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-blue-500">
                     <div class="flex items-center mb-3">
                         <span class="text-blue-500 text-3xl mr-3">🎨</span>
@@ -511,7 +447,6 @@
                     </a>
                 </div>
 
-                <!-- Community Service Card 2: Python Automation Scripting -->
                 <div class="bg-white rounded-xl p-5 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-green-500">
                     <div class="flex items-center mb-3">
                         <span class="text-green-500 text-3xl mr-3">🐍</span>
@@ -529,7 +464,6 @@
                     </a>
                 </div>
 
-                <!-- Community Service Card 3: SEO Content Writing -->
                 <div class="bg-white rounded-xl p-5 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-purple-500">
                     <div class="flex items-center mb-3">
                         <span class="text-purple-500 text-3xl mr-3">✍️</span>
@@ -547,7 +481,6 @@
                     </a>
                 </div>
 
-                <!-- Community Service Card 4: Social Media Strategy -->
                 <div class="bg-white rounded-xl p-5 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-red-500">
                     <div class="flex items-center mb-3">
                         <span class="text-red-500 text-3xl mr-3">📊</span>
@@ -569,18 +502,15 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-primary-dark text-white py-10 mt-12">
+    <footer id="contact-us" class="bg-primary-dark text-white py-10 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-gray-700 pb-8 mb-8">
-                <!-- Logo and Description -->
                 <div>
                     <h3 class="text-2xl font-bold text-primary-yellow mb-3">Rx Store</h3>
                     <p class="text-sm text-gray-400">
                         A selection of the best books, electronics, and digital services you need for growth and innovation.
                     </p>
                 </div>
-                <!-- Quick Links -->
                 <div>
                     <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
                     <ul class="space-y-2 text-sm text-gray-400">
@@ -590,16 +520,14 @@
                         <li><a href="#community-services" class="hover:text-primary-yellow transition duration-300">Community Services</a></li>
                     </ul>
                 </div>
-                <!-- Support and Help -->
                 <div>
                     <h4 class="text-lg font-semibold mb-3">Support and Help</h4>
                     <ul class="space-y-2 text-sm text-gray-400">
                         <li><a href="#" class="hover:text-primary-yellow transition duration-300">Privacy Policy</a></li>
                         <li><a href="#" class="hover:text-primary-yellow transition duration-300">Terms of Use</a></li>
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Contact Us</a></li>
+                        <li><a href="#contact-us" class="hover:text-primary-yellow transition duration-300">Contact Us</a></li>
                     </ul>
                 </div>
-                <!-- Connect With Us -->
                 <div>
                     <h4 class="text-lg font-semibold mb-3">Connect With Us</h4>
                     <p class="text-sm text-gray-400">
@@ -615,78 +543,21 @@
         </div>
     </footer>
 
-    <!-- *** Contact Pop-up Window (Modal) *** -->
-    <div id="contact-modal" class="modal-overlay fixed inset-0 hidden items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-xl p-8 max-w-lg w-full shadow-2xl text-center relative">
-             <!-- Close Button -->
-            <button onclick="closeContactModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 transition duration-150">
-                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            
-            <h3 class="text-3xl font-bold mb-2 text-primary-dark">Publish Your Service</h3>
-            <p class="text-gray-600 mb-8">To start selling your services with us, please contact us via one of the links below:</p>
-
-            <div class="space-y-4">
-                <!-- WhatsApp Link -->
-                <a href="https://wa.me/qr/GJG7SGKGIODTE1" target="_blank" class="flex items-center justify-center bg-green-500 text-white font-bold py-3 px-6 rounded-full hover:bg-green-600 transition duration-300 shadow-lg">
-                    <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12c0 3.32 1.6 6.27 4.07 8.01l-.16.33-1.8 1.8 2.01-.52.26.05c1.6.43 3.33.68 5.62.68 5.52 0 10-4.48 10-10S17.52 2 12 2zm3.38 12.33c-.09.25-.19.29-.4.32-.2.03-1.01.07-1.93-.41-.92-.48-1.46-1.12-1.74-1.51-.28-.4-.57-.45-.8-.45s-.45.03-.64.09c-.19.06-.41.09-.64.09-.23 0-.46-.03-.7-.32-.24-.29-.86-.87-.86-2.1c0-1.23.67-1.81.93-2.07.26-.26.54-.33.72-.33.18 0 .37 0 .56.02.19.02.43.05.67.6.24.55.82 1.96.88 2.11.06.15.1.18.19.34.09.16.12.33.04.49-.07.16-.41.34-.65.59-.23.24-.49.49-.75.76-.25.27-.5.54-.74.81-.25.27-.47.53-.68.78-.2.25-.3.5-.27.75.03.25.13.43.3.57.17.14.37.23.59.34.22.11.45.2.7.27.25.07.5.1.75.1.25 0 .46-.03.65-.09.19-.06.4-.09.64-.09.23 0 .45.03.68.32.23.29.27.4.3.64.03.24.03.68-.31 1.42z"/></svg>
-                    Contact via WhatsApp
-                </a>
-
-                <!-- Telegram Link -->
-                <a href="https://t.me/yonzzc" target="_blank" class="flex items-center justify-center bg-blue-500 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-600 transition duration-300 shadow-lg">
-                    <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 8c-.62 0-1.2.32-1.5.83l-2.73-1.7c-.15-.09-.32-.13-.5-.13h-.07c-.42 0-.79.23-.97.6-.02.04-.03.09-.03.14V14c0 .4.32.7.7.7.18 0 .35-.04.5-.13l2.73-1.7c.3.51.88.83 1.5.83.97 0 1.75-.78 1.75-1.75S17.47 10 16.5 10zm-4.45 2.5L9.64 14.2c-.34-.14-.7-.2-.95-.2-.5 0-.9.4-.9.9s.4.9.9.9c.25 0 .61-.06.95-.2l2.41 1.48c.34.21.72.32 1.14.32.97 0 1.75-.78 1.75-1.75s-.78-1.75-1.75-1.75c-.3 0-.58.07-.85.2z"/></svg>
-                    Contact via Telegram
-                </a>
-            </div>
-
-            <button onclick="closeContactModal()" class="mt-8 text-gray-500 hover:text-primary-dark transition duration-300 text-sm font-semibold">
-                Cancel and Close Window
-            </button>
-        </div>
-    </div>
-
-
-    <!-- JavaScript for Mobile Menu and Modal Operation -->
     <script>
-        // Function to open the modal
-        function openContactModal() {
-            document.getElementById('contact-modal').classList.remove('hidden');
-            document.getElementById('contact-modal').classList.add('flex');
-            document.getElementById('mobile-menu').classList.add('hidden'); // Close mobile menu if open
-        }
-
-        // Function to close the modal
-        function closeContactModal() {
-            document.getElementById('contact-modal').classList.add('hidden');
-            document.getElementById('contact-modal').classList.remove('flex');
-        }
+        // *** Removed modal-related functions (openContactModal, closeContactModal) ***
 
         document.addEventListener('DOMContentLoaded', () => {
             const button = document.getElementById('mobile-menu-button');
             const menu = document.getElementById('mobile-menu');
-            const mobileLink = document.getElementById('open-modal-mobile');
-            // The Hero button now links directly to the new community section
-            // const desktopHeroButton = document.getElementById('open-modal-desktop-hero'); 
+            // const mobileLink = document.getElementById('open-modal-mobile'); // Removed
 
             // 1. Toggle Mobile Menu
             button.addEventListener('click', () => {
                 menu.classList.toggle('hidden');
             });
 
-            // 2. Open Modal from Mobile Menu link
-            mobileLink.addEventListener('click', openContactModal);
+            // *** Removed: Modal opening/closing event listeners ***
             
-            // 3. Open Modal from Hero Section button is removed, now it links to #community-services
-            // desktopHeroButton.addEventListener('click', openContactModal);
-
-            // 4. Close Modal when clicking outside the content
-            document.getElementById('contact-modal').addEventListener('click', (e) => {
-                if (e.target.id === 'contact-modal') {
-                    closeContactModal();
-                }
-            });
-
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
