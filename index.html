@@ -389,7 +389,7 @@
                         <li>Fully Responsive Design</li>
                         <li>Search Engine Optimization (SEO)</li>
                     </ul>
-                    <a href="#" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center">
+                    <a href="#" id="order-website-service" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center cursor-pointer">
                         Order the Service Now
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
@@ -404,7 +404,7 @@
                         <li>Logo Design and Visual Identity</li>
                         <li>Impactful Digital Ads</li>
                     </ul>
-                    <a href="#" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center">
+                    <a href="#" id="order-design-service" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center cursor-pointer">
                         Order the Service Now
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
@@ -502,7 +502,6 @@
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
-                    // Check if the link is a page anchor and not an external link like services.html
                     if (this.getAttribute('href').startsWith('#')) {
                         e.preventDefault();
                         document.querySelector(this.getAttribute('href')).scrollIntoView({
@@ -512,16 +511,25 @@
                 });
             });
 
-            // 2. Modal Logic for "Want to Offer Your Own Service?" card
-            const openModalButton = document.getElementById('open-contact-modal');
+            // 2. Modal Logic for all contact triggers
+            const openModalButtons = document.querySelectorAll('#open-contact-modal, #order-website-service, #order-design-service');
             const closeModalButton = document.getElementById('close-modal');
             const modal = document.getElementById('contact-modal');
             
-            if (openModalButton && closeModalButton && modal) {
+            if (closeModalButton && modal && openModalButtons.length > 0) {
                 // Function to open the modal
-                openModalButton.addEventListener('click', () => {
+                const openContactModal = (e) => {
+                    // Prevent default anchor behavior if the trigger is a link
+                    if (e.currentTarget.tagName === 'A') {
+                        e.preventDefault();
+                    }
                     modal.classList.remove('hidden');
-                    modal.classList.add('flex'); // Add flex to center content
+                    modal.classList.add('flex');
+                };
+
+                // Attach event listener to all open buttons
+                openModalButtons.forEach(button => {
+                    button.addEventListener('click', openContactModal);
                 });
 
                 // Function to close the modal
