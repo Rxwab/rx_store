@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rx Store - Community Services Showcase</title>
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // Tailwind Configuration for consistent branding
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-yellow': '#FFD700', // Primary Gold/Yellow Accent
+                        'primary-dark': '#1C1C1C', // Header Color (Dark Gray)
+                        'secondary-gray': '#F5F5F5', // Light Background Color
+                        'dark-bg': '#2C2C2C', // Dark background for the new header/sections
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles for Service Cards and Filters */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #1C1C1C;
+        }
+        .service-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .filter-button {
+            @apply px-4 py-2 rounded-full text-sm font-medium transition duration-300 whitespace-nowrap;
+        }
+        .filter-button.active {
+            @apply bg-primary-yellow text-primary-dark shadow-md;
+        }
+        .filter-button:not(.active) {
+            @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+        }
+        .filter-carousel {
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 5px;
+        }
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-secondary-gray">
+
+    <!-- Header / Navigation Bar -->
+    <header class="bg-dark-bg text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
+            <div class="text-2xl font-bold flex items-center">
+                <span class="text-primary-yellow text-3xl mr-1">Rx</span> Store
+            </div>
+            <nav class="hidden md:flex space-x-6 text-lg font-medium">
+                <a href="index.html" class="hover:text-primary-yellow transition duration-300">Home</a>
+                <a href="index.html#books" class="hover:text-primary-yellow transition duration-300">Books</a>
+                <a href="index.html#screens" class="hover:text-primary-yellow transition duration-300">Electronics</a>
+                <a href="index.html#services" class="hover:text-primary-yellow transition duration-300">Our Services</a> 
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden p-2 text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-bg text-white shadow-lg">
+            <a href="index.html" class="block px-4 py-2 hover:bg-gray-700 transition duration-300 border-t border-gray-700">Home</a>
+            <a href="index.html#books" class="block px-4 py-2 hover:bg-gray-700 transition duration-300">Books</a>
+            <a href="index.html#screens" class="block px-4 py-2 hover:bg-gray-700 transition duration-300">Electronics</a>
+            <a href="index.html#services" class="block px-4 py-2 hover:bg-gray-700 transition duration-300">Our Services</a>
+            <a href="#" class="w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
+                Publish Your Service
+            </a>
+        </div>
+    </header>
+
+    <main class="py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Page Title and Description -->
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-primary-dark mb-4 text-center md:text-left">Community Services Showcase</h1>
+            <p class="text-xl text-gray-600 mb-12 text-center md:text-left max-w-3xl mx-auto md:mx-0">
+                Discover services offered by talented members of our community, spanning web development, design, content creation, and more.
+            </p>
+
+            <!-- Search and Filter Bar -->
+            <div class="bg-white p-6 rounded-xl shadow-lg mb-10">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                    <div class="relative w-full sm:flex-1">
+                        <input type="text" id="search-input" placeholder="Search for services (e.g., 'Logo Design')..." class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-yellow">
+                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <button id="search-button" class="bg-primary-dark text-white px-6 py-3 rounded-full hover:bg-gray-700 transition duration-300 w-full sm:w-auto font-bold">Search</button>
+                </div>
+
+                <!-- Filter Buttons (Scrollable on mobile) -->
+                <div class="filter-carousel flex gap-3 pb-2">
+                    <button class="filter-button active" data-filter="all">All</button>
+                    <button class="filter-button" data-filter="web-dev">Web Development</button>
+                    <button class="filter-button" data-filter="design">Graphic Design</button>
+                    <button class="filter-button" data-filter="writing">Writing & Content</button>
+                    <button class="filter-button" data-filter="marketing">Digital Marketing</button>
+                    <button class="filter-button" data-filter="video">Video & Animation</button>
+                    <button class="filter-button" data-filter="consulting">Consulting</button>
+                </div>
+            </div>
+
+            <!-- Services Grid -->
+            <div id="services-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                
+                <!-- Service Card 1: Web Development -->
+                <div class="service-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-5" 
+                     data-category="web-dev" data-name="Full-Stack Website Development" 
+                     data-service-id="1">
+                    <img src="https://placehold.co/400x250/FCD34D/3B4452?text=Web+Dev" alt="Full-Stack Web Development" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold text-primary-dark truncate mb-1">Full-Stack Website Development</h3>
+                    <p class="text-sm text-gray-500 mb-2">By: Jane Doe</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-lg">★★★★★</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.9)</span>
+                    </div>
+                    <p class="text-lg font-bold text-primary-dark mb-4">From $299</p>
+                    <button data-service-id="1" class="open-details-modal block w-full text-center bg-primary-dark text-white font-bold py-2 rounded-full hover:bg-gray-700 transition duration-300">
+                        More Details
+                    </button>
+                </div>
+
+                <!-- Service Card 2: Design -->
+                <div class="service-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-5" 
+                     data-category="design" data-name="Mobile UI/UX Design"
+                     data-service-id="2">
+                    <img src="https://placehold.co/400x250/A78BFA/3B4452?text=UI/UX" alt="Mobile UI/UX Design" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold text-primary-dark truncate mb-1">Mobile UI/UX Design</h3>
+                    <p class="text-sm text-gray-500 mb-2">By: John Smith</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-lg">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.7)</span>
+                    </div>
+                    <p class="text-lg font-bold text-primary-dark mb-4">From $150</p>
+                    <button data-service-id="2" class="open-details-modal block w-full text-center bg-primary-dark text-white font-bold py-2 rounded-full hover:bg-gray-700 transition duration-300">
+                        More Details
+                    </button>
+                </div>
+
+                <!-- Service Card 3: Marketing -->
+                <div class="service-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-5" 
+                     data-category="marketing" data-name="Advanced SEO Optimization"
+                     data-service-id="3">
+                    <img src="https://placehold.co/400x250/34D399/3B4452?text=SEO" alt="Advanced SEO Optimization" class="w-full h-40 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold text-primary-dark truncate mb-1">Advanced SEO Optimization</h3>
+                    <p class="text-sm text-gray-500 mb-2">By: Emily White</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-lg">★★★★★</span>
+                        <span class="text-gray-500 text-sm ml-2">(5.0)</span>
+                    </div>
+                    <p class="text-lg font-bold text-primary-dark mb-4">From $200</p>
+                    <button data-service-id="3" class="open-details-modal block w-full text-center bg-primary-dark text-white font-bold py-2 rounded-full hover:bg-gray-700 transition duration-300">
+                        More Details
+                    </button>
+                </div>
+                
+                <!-- Add more cards as needed... -->
+            </div> 
+
+        </div>
+    </main>
+
+    <!-- 1. SERVICE DETAILS MODAL (Pop-up for 'More Details') -->
+    <div id="service-details-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300">
+            
+            <!-- Modal Header -->
+            <div class="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center z-10">
+                <h2 id="modal-service-title" class="text-3xl font-bold text-primary-dark"></h2>
+                <button class="close-modal-button text-gray-500 hover:text-gray-900">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Modal Body (Content) -->
+            <div class="p-6 md:p-8">
+                
+                <!-- Cover Image & Provider Info -->
+                <div class="mb-8">
+                    <img id="modal-service-cover" src="https://placehold.co/800x300/FCD34D/3B4452?text=Service+Cover" alt="Service Cover" class="w-full h-56 object-cover rounded-xl mb-4 shadow-lg">
+                    <div class="flex items-center justify-between mt-4">
+                        <p class="text-lg text-gray-600">Offered By: <span id="modal-service-provider" class="font-semibold text-primary-dark"></span></p>
+                        <div class="flex items-center">
+                            <span id="modal-service-rating" class="text-yellow-500 text-xl mr-2"></span>
+                            <span id="modal-service-reviews" class="text-gray-500 text-sm"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description & Details -->
+                <h3 class="text-2xl font-bold text-primary-dark mb-3">Service Description</h3>
+                <p id="modal-service-description" class="text-gray-700 leading-relaxed mb-8">
+                    This is the detailed description of the service. It covers the scope of work, what the client receives, and why this provider is the best choice.
+                </p>
+
+                <!-- Work Samples / Gallery -->
+                <h3 class="text-2xl font-bold text-primary-dark mb-3">Work Samples</h3>
+                <div id="modal-service-gallery" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                    <!-- Sample images will be loaded here -->
+                    <img src="https://placehold.co/300x200/60A5FA/ffffff?text=Sample+1" class="w-full h-auto rounded-lg object-cover shadow-sm">
+                    <img src="https://placehold.co/300x200/F472B6/ffffff?text=Sample+2" class="w-full h-auto rounded-lg object-cover shadow-sm">
+                    <img src="https://placehold.co/300x200/34D399/ffffff?text=Sample+3" class="w-full h-auto rounded-lg object-cover shadow-sm">
+                </div>
+
+                <!-- Pricing Section -->
+                <h3 class="text-2xl font-bold text-primary-dark mb-4">Pricing & Packages</h3>
+                <div id="modal-service-pricing" class="space-y-4 mb-8">
+                    <!-- Pricing tiers will be loaded here -->
+                    <div class="bg-secondary-gray p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <span class="font-semibold text-lg">Basic Package (5 days)</span>
+                        <span class="text-xl font-bold text-green-600">$299</span>
+                    </div>
+                    <div class="bg-secondary-gray p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <span class="font-semibold text-lg">Premium Package (14 days)</span>
+                        <span class="text-xl font-bold text-green-600">$699</span>
+                    </div>
+                </div>
+
+                <!-- Action Button to open Contact Modal -->
+                <button id="open-contact-modal-btn" class="w-full text-center bg-primary-yellow text-primary-dark font-extrabold text-xl py-3 rounded-full hover:bg-yellow-400 transition duration-300 shadow-md">
+                    Order Service Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. CONTACT LINKS MODAL (Pop-up for 'Order Service Now') -->
+    <div id="contact-links-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 modal-backdrop">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-8 transform transition-all duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-primary-dark">Contact Provider: <span id="contact-provider-name"></span></h2>
+                <button class="close-modal-button text-gray-500 hover:text-gray-900">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <p class="text-lg text-gray-600 mb-6 text-center">Use one of the links below to start your order directly with the service provider.</p>
+
+            <div id="contact-links-container" class="space-y-4">
+                <!-- Contact Links will be loaded here -->
+                <a href="#" target="_blank" class="block w-full text-center p-4 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition duration-300 flex items-center justify-center space-x-3">
+                    <i class="fab fa-telegram-plane text-2xl"></i>
+                    <span>Telegram (Recommended)</span>
+                </a>
+                <a href="#" target="_blank" class="block w-full text-center p-4 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600 transition duration-300 flex items-center justify-center space-x-3">
+                    <i class="fab fa-whatsapp text-2xl"></i>
+                    <span>WhatsApp</span>
+                </a>
+                <a href="#" target="_blank" class="block w-full text-center p-4 rounded-xl bg-pink-500 text-white font-bold hover:bg-pink-600 transition duration-300 flex items-center justify-center space-x-3">
+                    <i class="fab fa-instagram text-2xl"></i>
+                    <span>Instagram DM</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark-bg text-white py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-gray-700 pb-8 mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold text-primary-yellow mb-3">Rx Store</h3>
+                    <p class="text-sm text-gray-400">A selection of the best books, electronics, and digital services you need for growth and innovation.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="index.html" class="hover:text-primary-yellow transition duration-300">Home</a></li>
+                        <li><a href="index.html#products" class="hover:text-primary-yellow transition duration-300">Products</a></li>
+                        <li><a href="index.html#services" class="hover:text-primary-yellow transition duration-300">Our Services</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Support and Help</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Terms of Use</a></li>
+                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Connect With Us</h4>
+                    <p class="text-sm text-gray-400">For inquiries and special requests</p>
+                    <a href="mailto:info@rxstore.com" class="text-primary-yellow block mt-2 hover:text-yellow-400">info@rxstore.com</a>
+                </div>
+            </div>
+            
+            <div class="text-center text-sm text-gray-500">
+                &copy; 2024 Rx Store. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Functionality and Modals -->
+    <script>
+        // Sample Data for Services (In a real app, this would come from a database)
+        const servicesData = {
+            '1': {
+                title: "Full-Stack Website Development",
+                provider: "Jane Doe",
+                description: "Complete end-to-end web application development using modern frameworks like React and Node.js. Includes responsive design, database setup, and 3 months of support. We specialize in fast, scalable e-commerce platforms.",
+                rating: 4.9,
+                reviews: 55,
+                cover: "https://placehold.co/800x300/FCD34D/3B4452?text=Web+App+Cover",
+                samples: [
+                    "https://placehold.co/300x200/60A5FA/ffffff?text=E-commerce+UI",
+                    "https://placehold.co/300x200/F472B6/ffffff?text=Dashboard",
+                    "https://placehold.co/300x200/34D399/ffffff?text=Mobile+View",
+                ],
+                pricing: [
+                    { name: "Basic Landing Page", price: 299, days: 5 },
+                    { name: "Full E-commerce Site", price: 999, days: 14 },
+                    { name: "Custom SaaS Platform", price: 2500, days: 30 }
+                ],
+                contact: {
+                    telegram: "https://t.me/janedoe_dev",
+                    whatsapp: "https://wa.me/1234567890",
+                    instagram: "https://instagram.com/janedoe_dev"
+                }
+            },
+            '2': {
+                title: "Mobile UI/UX Design",
+                provider: "John Smith",
+                description: "Crafting beautiful and intuitive user interfaces for iOS and Android apps. Focus on user flow, wireframing, high-fidelity prototypes, and design system creation in Figma.",
+                rating: 4.7,
+                reviews: 40,
+                cover: "https://placehold.co/800x300/A78BFA/3B4452?text=UI/UX+Design+Cover",
+                samples: [
+                    "https://placehold.co/300x200/FFD700/3B4452?text=App+Screen+1",
+                    "https://placehold.co/300x200/1C1C1C/ffffff?text=App+Screen+2",
+                    "https://placehold.co/300x200/F472B6/ffffff?text=Prototype",
+                ],
+                pricing: [
+                    { name: "Wireframe Only", price: 150, days: 3 },
+                    { name: "Full UI/UX (5 Screens)", price: 450, days: 7 },
+                ],
+                contact: {
+                    telegram: "https://t.me/johnsmith_design",
+                    whatsapp: "https://wa.me/1987654321",
+                    instagram: "https://instagram.com/johnsmith_design"
+                }
+            },
+            '3': {
+                title: "Advanced SEO Optimization",
+                provider: "Emily White",
+                description: "In-depth SEO audit, keyword research, on-page and off-page optimization strategy to significantly boost your search engine rankings and organic traffic. We deliver measurable results within 60 days.",
+                rating: 5.0,
+                reviews: 120,
+                cover: "https://placehold.co/800x300/34D399/3B4452?text=SEO+Cover",
+                samples: [
+                    "https://placehold.co/300x200/FCD34D/3B4452?text=Traffic+Graph",
+                    "https://placehold.co/300x200/60A5FA/ffffff?text=Keyword+Report",
+                    "https://placehold.co/300x200/F472B6/ffffff?text=Audit+Page",
+                ],
+                pricing: [
+                    { name: "SEO Audit Only", price: 200, days: 7 },
+                    { name: "Monthly Optimization", price: 400, days: 30 },
+                ],
+                contact: {
+                    telegram: "https://t.me/emilywhite_seo",
+                    whatsapp: "https://wa.me/1555123456",
+                    instagram: "https://instagram.com/emilywhite_marketing"
+                }
+            },
+            // Add other service data here (for cards 4, 5, 6, etc.)
+        };
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- General Handlers ---
+            const mobileButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // --- Filter and Search Logic ---
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const services = document.querySelectorAll('.service-card');
+
+            const applyFilters = () => {
+                const activeCategory = document.querySelector('.filter-button.active').dataset.filter;
+                const searchTerm = searchInput.value.toLowerCase().trim();
+
+                services.forEach(service => {
+                    const serviceCategory = service.dataset.category;
+                    const serviceName = service.dataset.name.toLowerCase();
+                    let isVisible = true;
+
+                    if (activeCategory !== 'all' && serviceCategory !== activeCategory) {
+                        isVisible = false;
+                    }
+                    if (searchTerm && !serviceName.includes(searchTerm)) {
+                        isVisible = false;
+                    }
+                    service.style.display = isVisible ? 'block' : 'none';
+                });
+            };
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    applyFilters();
+                });
+            });
+
+            searchButton.addEventListener('click', applyFilters);
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    applyFilters();
+                }
+            });
+            applyFilters(); // Initial load
+
+            // --- Modal Logic ---
+            const detailsModal = document.getElementById('service-details-modal');
+            const contactModal = document.getElementById('contact-links-modal');
+            const closeButtons = document.querySelectorAll('.close-modal-button');
+            const openContactBtn = document.getElementById('open-contact-modal-btn');
+            
+            let currentServiceId = null;
+
+            // Function to close a modal
+            const closeModal = (modal) => {
+                modal.classList.add('hidden');
+            };
+
+            // Event listener for closing modals
+            closeButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    closeModal(detailsModal);
+                    closeModal(contactModal);
+                });
+            });
+
+            // Close modal when clicking outside
+            detailsModal.addEventListener('click', (e) => {
+                if (e.target === detailsModal) closeModal(detailsModal);
+            });
+            contactModal.addEventListener('click', (e) => {
+                if (e.target === contactModal) closeModal(contactModal);
+            });
+
+
+            // Function to render details in the modal
+            const renderServiceDetails = (serviceId) => {
+                const service = servicesData[serviceId];
+                if (!service) return;
+
+                currentServiceId = serviceId; // Store current service ID
+
+                // Populate Details Modal
+                document.getElementById('modal-service-title').textContent = service.title;
+                document.getElementById('modal-service-provider').textContent = service.provider;
+                document.getElementById('modal-service-cover').src = service.cover;
+                
+                // Render Rating Stars
+                const stars = '★'.repeat(Math.floor(service.rating)) + '☆'.repeat(5 - Math.floor(service.rating));
+                document.getElementById('modal-service-rating').textContent = stars;
+                document.getElementById('modal-service-reviews').textContent = `(${service.rating}, ${service.reviews} Reviews)`;
+
+                document.getElementById('modal-service-description').textContent = service.description;
+
+                // Render Gallery Samples
+                const galleryContainer = document.getElementById('modal-service-gallery');
+                galleryContainer.innerHTML = service.samples.map(src => 
+                    `<img src="${src}" class="w-full h-auto rounded-lg object-cover shadow-sm">`
+                ).join('');
+
+                // Render Pricing
+                const pricingContainer = document.getElementById('modal-service-pricing');
+                pricingContainer.innerHTML = service.pricing.map(p => `
+                    <div class="bg-secondary-gray p-4 rounded-xl flex justify-between items-center border border-gray-200">
+                        <span class="font-semibold text-lg">${p.name} (${p.days} days)</span>
+                        <span class="text-xl font-bold text-green-600">$${p.price}</span>
+                    </div>
+                `).join('');
+
+                // Show Details Modal
+                detailsModal.classList.remove('hidden');
+            };
+
+            // Event listener for opening details modal from grid cards
+            document.querySelectorAll('.open-details-modal').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const serviceId = e.currentTarget.dataset.serviceId;
+                    renderServiceDetails(serviceId);
+                });
+            });
+            
+            // Event listener for opening contact modal from details modal
+            openContactBtn.addEventListener('click', () => {
+                const service = servicesData[currentServiceId];
+                if (!service) return;
+                
+                // Populate Contact Modal
+                document.getElementById('contact-provider-name').textContent = service.provider;
+                const contactContainer = document.getElementById('contact-links-container');
+                
+                // Ensure the links are correctly updated
+                contactContainer.querySelector('.fa-telegram-plane').closest('a').href = service.contact.telegram;
+                contactContainer.querySelector('.fa-whatsapp').closest('a').href = service.contact.whatsapp;
+                contactContainer.querySelector('.fa-instagram').closest('a').href = service.contact.instagram;
+
+                // Close details modal and open contact modal
+                closeModal(detailsModal);
+                contactModal.classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
