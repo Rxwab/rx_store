@@ -1,285 +1,701 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RXstore - Your Best Online Shop for Tech Deals</title>
-    
-    <meta name="description" content="Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.">
-    <meta name="keywords" content="RXstore, tech shop, online store, gaming monitor, electronics, deals, discounts">
-    <meta name="author" content="RXstore Team">
-    <meta name="robots" content="index, follow"> 
-    
-    <link rel="icon" type="image/png" href="https://i.ibb.co/XkXMzMLm/IMG.png" sizes="16x16">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Rx Store - Your Gateway to Knowledge, Tech, and Digital Services</title>
+    <!-- Include Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-yellow': '#FFD700', // Primary Gold/Yellow Accent
+                        'primary-dark': '#1C1C1C', // Header Color
+                        'secondary-gray': '#F5F5F5', // Light Background Color
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        /* Custom Styles for Modern Design */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0d1117;
-            color: #e2e8f0;
+            background-color: #ffffff;
+        }
+        .hero-section {
+            background-color: #FAFAFA;
+            min-height: 500px;
+            padding: 4rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .product-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            flex: 0 0 280px;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
         }
 
-        .product-card-hidden {
-            opacity: 0;
-            transform: translateX(50px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        .carousel-container {
+            overflow-x: scroll;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 1rem;
         }
 
-        .product-card-visible {
-            opacity: 1;
-            transform: translateX(0);
+        .carousel-container::-webkit-scrollbar {
+            height: 6px;
         }
 
-        .product-image-container {
-            overflow: hidden;
-            border-radius: 1.5rem; 
+        .carousel-container::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 10px;
         }
-        
-        .product-image {
-            transition: transform 0.3s ease-in-out;
-            width: 100%;
-            height: auto;
-            object-fit: cover;
+
+        /* Responsive card sizing */
+        @media (max-width: 640px) {
+            .product-card {
+                flex: 0 0 45%;
+            }
         }
-        
-        .product-image-container:hover .product-image {
-            transform: scale(1.05);
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .product-card {
+                flex: 0 0 300px;
+            }
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.7);
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
+    <!-- Open Graph Data for SEO -->
+    <meta property="og:title" content="Rx Store - Your Gateway to Knowledge, Tech, and Services" />
+    <meta property="og:description" content="Explore, discover, and create. The best books, electronics, and design/website services." />
+    <meta property="og:image" content="https://placehold.co/1200x630/E5E7EB/5C5E60?text=Rx+Store+Cover" />
+    <meta property="og:url" content="https://your-rxstore-url.github.io/" />
 </head>
-<body class="p-6 md:p-12 lg:p-20 transition-all duration-300" dir="ltr">
+<body class="text-primary-dark">
 
-    <header class="mb-12 flex justify-between items-center">
-        <a href="." class="flex items-center" onclick="history.pushState(null, '', location.pathname); handleRouting(); return false;">
-            <img src="https://i.ibb.co/XkXMzMLm/IMG.png" alt="RXstore Logo" class="h-12 w-auto mr-3">
-            <span class="text-3xl font-extrabold text-white">RXstore</span>
-        </a>
+    <!-- Header / Navigation Bar -->
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div class="text-2xl font-bold text-primary-dark flex items-center">
+                <span class="text-primary-yellow text-3xl mr-1">Rx</span> Store
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="hidden md:flex space-x-6 text-lg font-medium">
+                <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Home</a>
+                <a href="#books" class="text-primary-dark hover:text-primary-yellow transition duration-300">Books</a>
+                <a href="#tech" class="text-primary-dark hover:text-primary-yellow transition duration-300">Electronics</a>
+                <a href="#services" class="text-primary-dark hover:text-primary-yellow transition duration-300">Our Services</a>
+                <a href="#community-services" class="text-primary-dark hover:text-primary-yellow transition duration-300 font-extrabold">Community Offers</a>
+                <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Blog</a>
+            </nav>
+
+            <!-- Placeholder for alignment on Desktop -->
+            <div class="hidden md:block w-24">
+                <!-- Empty space to maintain spacing -->
+            </div>
+
+            <!-- Mobile Menu (Hamburger Icon) -->
+            <button id="mobile-menu-button" class="md:hidden p-2 text-primary-dark">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+
+        <!-- Mobile Pop-up Menu -->
+        <div id="mobile-menu" class="hidden md:hidden shadow-lg">
+            <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300 border-t">Home</a>
+            <a href="#books" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Books</a>
+            <a href="#tech" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Electronics</a>
+            <a href="#services" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Our Services</a>
+            <a href="#community-services" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300 font-extrabold">Community Offers</a>
+            <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Blog</a>
+            <!-- *** New Feature: Create a Service *** -->
+            <button id="open-modal-mobile" class="w-full text-center py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
+                Publish Your Service
+            </button>
+        </div>
     </header>
 
-    <div id="content-container">
-        <div id="loading-message" class="text-center py-20 text-xl font-semibold text-blue-400">Loading products...</div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
+            <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0 order-2 md:order-1">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-primary-dark mb-4">
+                    Explore. Discover. Create.
+                </h1>
+                <p class="text-xl text-gray-600 mb-8">
+                    Your gateway to integrated knowledge, technology, and digital services.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#books" class="bg-primary-yellow text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300 text-lg">
+                        Browse Products
+                    </a>
+                    <a href="#community-services" class="bg-primary-dark text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-700 transition duration-300 text-lg">
+                        Explore Community Services
+                    </a>
+                </div>
+            </div>
+
+            <div class="md:w-1/2 flex justify-center md:justify-end order-1 md:order-2">
+                <img src="https://placehold.co/400x300/F0F0F0/1C1C1C?text=Books+%26+Tech+Visual" alt="Books & Electronic Devices" class="rounded-lg shadow-xl max-w-full h-auto">
+            </div>
+        </div>
+    </section>
+
+    <!-- Category and Service Icons Bar -->
+    <section class="py-12 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
+                <!-- Icon 1: Books -->
+                <a href="#books" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.208 5 7.5 5A6.5 6.5 0 003 11.5c0 1.615.477 3.111 1.253 4.331M12 6.253c1.168.776 2.792 1.253 4.5 1.253a6.5 6.5 0 014.5-6.747M12 19.253C13.168 18.477 14.792 18 16.5 18a6.5 6.5 0 004.5-6.747M12 19.253c-1.168.776-2.792 1.253-4.5 1.253a6.5 6.5 0 01-4.5-6.747"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">Books</span>
+                </a>
+                <!-- Icon 2: PC Monitors -->
+                <a href="#screens" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25M7 16h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v7a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">PC Monitors</span>
+                </a>
+                <!-- Icon 3: Headphones -->
+                <a href="#headphones" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v14l-12 3zm0 0l-4-1m4 1v-5m0 5l4 1m-4-1h-5v-10h9v5"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">Headphones</span>
+                </a>
+                <!-- Icon 4: Community Services -->
+                <a href="#community-services" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354l9.284 4.545-9.284 4.545-9.284-4.545L12 4.354zM21.284 10.5l-9.284 4.545-9.284-4.545M21.284 16.5l-9.284 4.545-9.284-4.545"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">Community Services</span>
+                </a>
+                <!-- Icon 5: Graphic Design -->
+                <button onclick="openContactModal()" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 10v-4m0 0l4 4m-4-4l-4 4m4-4L6 4"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">Get a Service</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Top Selling Books -->
+    <section id="books" class="py-16 bg-secondary-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">📚 Top Selling Books</h2>
+            <p class="text-gray-600 mb-8 text-left">A curated selection of the most important books in technology and self-development.</p>
+            
+            <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
+                
+                <!-- Book Card 1 -->
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <div class="relative">
+                        <img src="https://placehold.co/400x400/3B82F6/ffffff?text=AI+Power+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Offer</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">The Power of AI</h3>
+                    <p class="text-sm text-gray-500 mb-3">Author: Ahmed Mohamed</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.5)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+                
+                <!-- Book Card 2 -->
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <div class="relative">
+                        <img src="https://placehold.co/400x400/F97316/ffffff?text=Entrepreneurship+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <span class="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">Best Seller</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Secrets of Entrepreneurship</h3>
+                    <p class="text-sm text-gray-500 mb-3">Author: Khaled Ali</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★★</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.9)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+
+                <!-- Book Card 3 -->
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <div class="relative">
+                        <img src="https://placehold.co/400x400/8B5CF6/ffffff?text=Self+Dev+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Exclusive</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Five Morning Habits</h3>
+                    <p class="text-sm text-gray-500 mb-3">Author: Sarah Fouad</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.1)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+                <!-- More Cards here -->
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <img src="https://placehold.co/400x400/D97706/ffffff?text=Money+Book" alt="Book Cover" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">The Art of Money Management</h3>
+                    <p class="text-sm text-gray-500 mb-3">Author: Ibrahim Ali</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.7)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Latest PC Monitors -->
+    <section id="screens" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">💻 Latest PC Monitors</h2>
+            <p class="text-gray-600 mb-8 text-left">High-resolution displays dedicated to gaming and professional work.</p>
+            
+            <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
+                
+                <!-- Monitor Card 1 -->
+                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <div class="relative">
+                        <img src="https://placehold.co/400x400/4B5563/ffffff?text=Gaming+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">4K</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">UltraView Pro Monitor</h3>
+                    <p class="text-sm text-gray-500 mb-3">32 Inch, 144 Hz</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★★</span>
+                        <span class="text-gray-500 text-sm ml-2">(5.0)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+
+                <!-- Monitor Card 2 -->
+                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <div class="relative">
+                        <img src="https://placehold.co/400x400/9CA3AF/ffffff?text=Work+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">New</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">FlexiScreen 27 Monitor</h3>
+                    <p class="text-sm text-gray-500 mb-3">Ideal for Programming and Design</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.7)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+                
+                <!-- Monitor Card 3 -->
+                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <img src="https://placehold.co/400x400/6B7280/ffffff?text=Curved+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">Curved G50 Monitor</h3>
+                    <p class="text-sm text-gray-500 mb-3">Curved Gaming Monitor</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.4)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+                <!-- More Cards here -->
+                <div class="product-card bg-secondary-gray rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <img src="https://placehold.co/400x400/1F2937/ffffff?text=Budget+Monitor" alt="PC Monitor" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">EcoView 24 Monitor</h3>
+                    <p class="text-sm text-gray-500 mb-3">Good performance at an economical price</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★☆☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(3.9)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Headphones & Other Electronics -->
+    <section id="headphones" class="py-16 bg-secondary-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">🎧 Headphones & Other Electronics</h2>
+            <p class="text-gray-600 mb-8 text-left">The best audio devices and smart accessories to boost your productivity.</p>
+            
+            <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
+                
+                <!-- Headphone Card 1 -->
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <div class="relative">
+                        <img src="https://placehold.co/400x400/10B981/ffffff?text=Headphones" alt="Wireless Headphones" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">Discounted</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">AeroSounds Headphones</h3>
+                    <p class="text-sm text-gray-500 mb-3">Effective Noise Cancellation</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.2)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+                
+                <!-- Accessory Card 2 -->
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <img src="https://placehold.co/400x400/4F46E5/ffffff?text=Wireless+Charger" alt="Wireless Charger" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">MagCharge X Charger</h3>
+                    <p class="text-sm text-gray-500 mb-3">Super Fast Charging</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★★</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.8)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+
+                <!-- Accessory Card 3 -->
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <img src="https://placehold.co/400x400/D946EF/ffffff?text=Webcam" alt="Webcam" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">WebCam 1080P Camera</h3>
+                    <p class="text-sm text-gray-500 mb-3">High Quality for Calls</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.5)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+                <!-- More Cards here -->
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4">
+                    <img src="https://placehold.co/400x400/94A3B8/ffffff?text=Smartwatch" alt="Smartwatch" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-lg font-bold text-primary-dark truncate mb-1">ChronoTech Watch</h3>
+                    <p class="text-sm text-gray-500 mb-3">Fitness Tracking</p>
+                    <div class="flex items-center mb-3">
+                        <span class="text-yellow-500 text-xl">★★★★☆</span>
+                        <span class="text-gray-500 text-sm ml-2">(4.1)</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-primary-yellow text-primary-dark font-bold py-2 rounded-full hover:bg-yellow-400 transition duration-300">
+                        Buy via Affiliate Link
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Services Section (Rx Store Internal Services) -->
+    <section id="services" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-10 text-primary-dark">Our Core Digital Services</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+                In addition to products, we offer integrated services to help you build your online brand.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                 <!-- Service Card 1: Website Creation -->
+                 <div class="bg-secondary-gray p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-primary-yellow">
+                    <h3 class="text-2xl font-bold mb-3 text-primary-dark">Website Creation Service</h3>
+                    <p class="text-gray-600 mb-4">
+                        We offer integrated solutions to build your own website using the latest technologies.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4 pl-5">
+                        <li>Fully Responsive Design</li>
+                        <li>Search Engine Optimization (SEO)</li>
+                    </ul>
+                    <a href="#" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center">
+                        Order the Service Now
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </a>
+                </div>
+
+                <!-- Service Card 2: Creative Graphic Design -->
+                <div class="bg-secondary-gray p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-primary-dark">
+                    <h3 class="text-2xl font-bold mb-3 text-primary-dark">Creative Graphic Design Service</h3>
+                    <p class="text-gray-600 mb-4">
+                        Professional product images, ads, and social media covers that boost your content appeal.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 mb-4 pl-5">
+                        <li>Logo Design and Visual Identity</li>
+                        <li>Impactful Digital Ads</li>
+                    </ul>
+                    <a href="#" class="text-primary-yellow font-bold hover:text-yellow-600 transition duration-300 flex items-center">
+                        Order the Service Now
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </a>
+                </div>
+                
+                <!-- Service Card 3: Publish Your Service (Call to Action) - Opens Modal -->
+                <button onclick="openContactModal()" class="text-left bg-primary-yellow p-6 rounded-xl shadow-2xl hover:shadow-3xl transition duration-300 border-t-4 border-primary-dark flex flex-col justify-between text-primary-dark">
+                    <div>
+                        <svg class="w-10 h-10 mb-3 text-primary-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h3 class="text-2xl font-bold mb-3">Want to Offer Your Own Service?</h3>
+                        <p class="text-gray-800 mb-4 font-semibold">
+                            Become a service provider on Rx Store. Contact us to learn how to feature your service here!
+                        </p>
+                    </div>
+                    <span class="text-primary-dark font-bold py-2 px-4 bg-white rounded-full text-center block hover:bg-gray-100 transition duration-300">
+                        Publish Your Service 🚀
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: Services from Our Community (User-Published) -->
+    <section id="community-services" class="py-16 bg-secondary-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-10 text-primary-dark">Services from Our Community</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+                Explore unique digital services offered by professionals who have successfully published their offers through Rx Store.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                
+                <!-- Community Service Card 1: Expert Logo Design -->
+                <div class="bg-white rounded-xl p-5 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-blue-500">
+                    <div class="flex items-center mb-3">
+                        <span class="text-blue-500 text-3xl mr-3">🎨</span>
+                        <h3 class="text-xl font-bold text-primary-dark">Expert Logo Design</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        Custom logo and brand identity creation, delivered in 48 hours. Professional portfolio guaranteed.
+                    </p>
+                    <div class="flex justify-between items-center text-sm mb-4">
+                        <span class="font-semibold text-primary-yellow">Starting at $150</span>
+                        <span class="text-gray-500">By: User ID #1001</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-blue-500 text-white font-bold py-2 rounded-full hover:bg-blue-600 transition duration-300 text-sm">
+                        View Details
+                    </a>
+                </div>
+
+                <!-- Community Service Card 2: Python Automation Scripting -->
+                <div class="bg-white rounded-xl p-5 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-green-500">
+                    <div class="flex items-center mb-3">
+                        <span class="text-green-500 text-3xl mr-3">🐍</span>
+                        <h3 class="text-xl font-bold text-primary-dark">Python Automation Scripting</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        Develop custom Python scripts to automate daily tasks, data processing, and web scraping.
+                    </p>
+                    <div class="flex justify-between items-center text-sm mb-4">
+                        <span class="font-semibold text-primary-yellow">Starting at $99</span>
+                        <span class="text-gray-500">By: User ID #1002</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-green-500 text-white font-bold py-2 rounded-full hover:bg-green-600 transition duration-300 text-sm">
+                        View Details
+                    </a>
+                </div>
+
+                <!-- Community Service Card 3: SEO Content Writing -->
+                <div class="bg-white rounded-xl p-5 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-purple-500">
+                    <div class="flex items-center mb-3">
+                        <span class="text-purple-500 text-3xl mr-3">✍️</span>
+                        <h3 class="text-xl font-bold text-primary-dark">SEO Content Writing</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        High-quality, keyword-optimized articles and blog posts that boost your search rankings.
+                    </p>
+                    <div class="flex justify-between items-center text-sm mb-4">
+                        <span class="font-semibold text-primary-yellow">Starting at $50/article</span>
+                        <span class="text-gray-500">By: User ID #1003</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-purple-500 text-white font-bold py-2 rounded-full hover:bg-purple-600 transition duration-300 text-sm">
+                        View Details
+                    </a>
+                </div>
+
+                <!-- Community Service Card 4: Social Media Strategy -->
+                <div class="bg-white rounded-xl p-5 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-red-500">
+                    <div class="flex items-center mb-3">
+                        <span class="text-red-500 text-3xl mr-3">📊</span>
+                        <h3 class="text-xl font-bold text-primary-dark">Social Media Strategy</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm">
+                        Full analysis and 3-month strategy plan for Instagram, X, and TikTok to maximize engagement.
+                    </p>
+                    <div class="flex justify-between items-center text-sm mb-4">
+                        <span class="font-semibold text-primary-yellow">Starting at $250</span>
+                        <span class="text-gray-500">By: User ID #1004</span>
+                    </div>
+                    <a href="#" class="block w-full text-center bg-red-500 text-white font-bold py-2 rounded-full hover:bg-red-600 transition duration-300 text-sm">
+                        View Details
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-dark text-white py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-gray-700 pb-8 mb-8">
+                <!-- Logo and Description -->
+                <div>
+                    <h3 class="text-2xl font-bold text-primary-yellow mb-3">Rx Store</h3>
+                    <p class="text-sm text-gray-400">
+                        A selection of the best books, electronics, and digital services you need for growth and innovation.
+                    </p>
+                </div>
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Home</a></li>
+                        <li><a href="#products" class="hover:text-primary-yellow transition duration-300">Products</a></li>
+                        <li><a href="#services" class="hover:text-primary-yellow transition duration-300">Our Services</a></li>
+                        <li><a href="#community-services" class="hover:text-primary-yellow transition duration-300">Community Services</a></li>
+                    </ul>
+                </div>
+                <!-- Support and Help -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Support and Help</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Terms of Use</a></li>
+                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Contact Us</a></li>
+                    </ul>
+                </div>
+                <!-- Connect With Us -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-3">Connect With Us</h4>
+                    <p class="text-sm text-gray-400">
+                        For inquiries and special requests
+                    </p>
+                    <a href="mailto:info@rxstore.com" class="text-primary-yellow block mt-2 hover:text-yellow-400">info@rxstore.com</a>
+                </div>
+            </div>
+            
+            <div class="text-center text-sm text-gray-500">
+                &copy; 2024 Rx Store. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- *** Contact Pop-up Window (Modal) *** -->
+    <div id="contact-modal" class="modal-overlay fixed inset-0 hidden items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl p-8 max-w-lg w-full shadow-2xl text-center relative">
+             <!-- Close Button -->
+            <button onclick="closeContactModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 transition duration-150">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <h3 class="text-3xl font-bold mb-2 text-primary-dark">Publish Your Service</h3>
+            <p class="text-gray-600 mb-8">To start selling your services with us, please contact us via one of the links below:</p>
+
+            <div class="space-y-4">
+                <!-- WhatsApp Link -->
+                <a href="https://wa.me/qr/GJG7SGKGIODTE1" target="_blank" class="flex items-center justify-center bg-green-500 text-white font-bold py-3 px-6 rounded-full hover:bg-green-600 transition duration-300 shadow-lg">
+                    <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12c0 3.32 1.6 6.27 4.07 8.01l-.16.33-1.8 1.8 2.01-.52.26.05c1.6.43 3.33.68 5.62.68 5.52 0 10-4.48 10-10S17.52 2 12 2zm3.38 12.33c-.09.25-.19.29-.4.32-.2.03-1.01.07-1.93-.41-.92-.48-1.46-1.12-1.74-1.51-.28-.4-.57-.45-.8-.45s-.45.03-.64.09c-.19.06-.41.09-.64.09-.23 0-.46-.03-.7-.32-.24-.29-.86-.87-.86-2.1c0-1.23.67-1.81.93-2.07.26-.26.54-.33.72-.33.18 0 .37 0 .56.02.19.02.43.05.67.6.24.55.82 1.96.88 2.11.06.15.1.18.19.34.09.16.12.33.04.49-.07.16-.41.34-.65.59-.23.24-.49.49-.75.76-.25.27-.5.54-.74.81-.25.27-.47.53-.68.78-.2.25-.3.5-.27.75.03.25.13.43.3.57.17.14.37.23.59.34.22.11.45.2.7.27.25.07.5.1.75.1.25 0 .46-.03.65-.09.19-.06.4-.09.64-.09.23 0 .45.03.68.32.23.29.27.4.3.64.03.24.03.68-.31 1.42z"/></svg>
+                    Contact via WhatsApp
+                </a>
+
+                <!-- Telegram Link -->
+                <a href="https://t.me/yonzzc" target="_blank" class="flex items-center justify-center bg-blue-500 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-600 transition duration-300 shadow-lg">
+                    <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 8c-.62 0-1.2.32-1.5.83l-2.73-1.7c-.15-.09-.32-.13-.5-.13h-.07c-.42 0-.79.23-.97.6-.02.04-.03.09-.03.14V14c0 .4.32.7.7.7.18 0 .35-.04.5-.13l2.73-1.7c.3.51.88.83 1.5.83.97 0 1.75-.78 1.75-1.75S17.47 10 16.5 10zm-4.45 2.5L9.64 14.2c-.34-.14-.7-.2-.95-.2-.5 0-.9.4-.9.9s.4.9.9.9c.25 0 .61-.06.95-.2l2.41 1.48c.34.21.72.32 1.14.32.97 0 1.75-.78 1.75-1.75s-.78-1.75-1.75-1.75c-.3 0-.58.07-.85.2z"/></svg>
+                    Contact via Telegram
+                </a>
+            </div>
+
+            <button onclick="closeContactModal()" class="mt-8 text-gray-500 hover:text-primary-dark transition duration-300 text-sm font-semibold">
+                Cancel and Close Window
+            </button>
+        </div>
     </div>
 
+
+    <!-- JavaScript for Mobile Menu and Modal Operation -->
     <script>
-        const contentContainer = document.getElementById('content-container');
-        let productsData = []; 
-
-        async function fetchProductsAndRender() {
-            try {
-                // جلب ملف JSON من مسار الموقع
-                const response = await fetch('products.json'); 
-                if (!response.ok) {
-                    throw new Error('products.json not found or network error.');
-                }
-                productsData = await response.json();
-                
-                document.getElementById('loading-message').classList.add('hidden');
-                
-                handleRouting(); 
-            } catch (error) {
-                console.error("Error fetching products from JSON file:", error);
-                
-                // رسالة واضحة للمستخدم عند الفشل
-                contentContainer.innerHTML = `
-                    <div class="text-center py-20">
-                        <h2 class="text-3xl font-bold text-red-500 mb-4">Error Loading Products</h2>
-                        <p class="text-slate-400 text-lg">Please ensure the <strong>products.json</strong> file is uploaded to your GitHub repository.</p>
-                        <p class="text-sm text-yellow-400 mt-4">(${error.message})</p>
-                    </div>
-                `;
-            }
+        // Function to open the modal
+        function openContactModal() {
+            document.getElementById('contact-modal').classList.remove('hidden');
+            document.getElementById('contact-modal').classList.add('flex');
+            document.getElementById('mobile-menu').classList.add('hidden'); // Close mobile menu if open
         }
 
-        function renderHome() {
-            document.title = "RXstore - Your Best Online Shop for Tech Deals";
-            document.querySelector('meta[name="description"]').setAttribute('content', "Discover the latest tech gadgets and gaming accessories at RXstore. High-quality monitors, electronics, and more with amazing discounts.");
-            
-            contentContainer.innerHTML = `
-                <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                </div>
-            `;
-            const productList = document.getElementById('product-list');
-
-            if (productsData.length === 0) {
-                productList.innerHTML = `
-                    <div class="col-span-full text-center p-12 bg-slate-800 rounded-3xl">
-                        <h2 class="text-3xl font-bold text-yellow-500 mb-4">No Products Yet!</h2>
-                        <p class="text-slate-400">The <strong>products.json</strong> file is empty. Please add products using the dashboard and upload the new file.</p>
-                    </div>
-                `;
-                setupIntersectionObserver();
-                return;
-            }
-            
-            productsData.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = \`product-card-hidden bg-slate-800 rounded-3xl p-6 shadow-2xl transition-transform transform hover:scale-105 duration-300 relative overflow-hidden cursor-pointer\`;
-                productCard.setAttribute('data-product-id', product.id);
-
-                const priceSection = product.oldPrice && product.discount ? \`
-                    <div class="flex items-center gap-4 mt-2">
-                        <span class="text-3xl font-bold text-red-500">\${product.price}</span>
-                        <span class="text-xl font-semibold line-through text-slate-500">\${product.oldPrice}</span>
-                        <span class="bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-full">\${product.discount}</span>
-                    </div>
-                \` : \`
-                    <div class="flex items-center gap-4 mt-2">
-                        <span class="text-3xl font-bold text-white">\${product.price}</span>
-                    </div>
-                \`;
-
-                productCard.innerHTML = \`
-                    <div class="product-image-container">
-                        <img src="\${product.image}" onerror="this.onerror=null;this.src='https://placehold.co/400x300/1e293b/a8a8a8?text=Image+Not+Found';" alt="\${product.title}" class="product-image w-full h-auto rounded-2xl mb-4">
-                    </div>
-                    <div class="flex flex-col gap-4">
-                        <h2 class="text-2xl font-bold leading-snug text-white">\${product.title}</h2>
-                        <p class="text-slate-400 text-sm leading-relaxed">\${product.description}</p>
-                        \${priceSection}
-                        <a href="\${product.link}" 
-                           class="mt-4 w-full bg-blue-600 text-white text-center font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200" 
-                           target="_blank" 
-                           onclick="event.stopPropagation();">
-                            Buy Now
-                        </a>
-                    </div>
-                \`;
-                
-                productCard.addEventListener('click', () => {
-                    history.pushState(null, '', \`?product=\${product.id}\`); 
-                    handleRouting(); 
-                });
-                
-                productList.appendChild(productCard);
-            });
-
-            setupIntersectionObserver();
+        // Function to close the modal
+        function closeContactModal() {
+            document.getElementById('contact-modal').classList.add('hidden');
+            document.getElementById('contact-modal').classList.remove('flex');
         }
 
-
-        function renderProductPage(productId) {
-            const product = productsData.find(p => p.id === productId); 
-            if (!product) {
-                renderNotFound();
-                return;
-            }
-
-            document.title = product.seoTitle || product.title + ' | RXstore';
-            const metaDescription = document.querySelector('meta[name="description"]');
-            if (metaDescription) {
-                metaDescription.setAttribute('content', product.seoDescription || product.description);
-            }
-
-            const priceSection = product.oldPrice && product.discount ? \`
-                <div class="flex items-center gap-4 mt-4">
-                    <span class="text-4xl font-bold text-red-500">\${product.price}</span>
-                    <span class="text-2xl font-semibold line-through text-slate-500">\${product.oldPrice}</span>
-                    <span class="bg-red-500 text-sm font-bold py-1 px-3 rounded-full">\${product.discount}</span>
-                </div>
-            \` : \`
-                <div class="flex items-center gap-4 mt-4">
-                    <span class="text-4xl font-bold text-white">\${product.price}</span>
-                </div>
-            \`;
-
-            contentContainer.innerHTML = \`
-                <div class="flex flex-col lg:flex-row gap-8">
-                    <div class="lg:w-1/2">
-                        <img src="\${product.image}" onerror="this.onerror=null;this.src='https://placehold.co/800x600/1e293b/a8a8a8?text=Image+Not+Found';" alt="\${product.title}" class="w-full h-auto rounded-3xl shadow-lg">
-                    </div>
-                    <div class="lg:w-1/2 flex flex-col justify-center">
-                        <h1 class="text-4xl font-extrabold text-white mb-4">\${product.title}</h1> 
-                        <p class="text-slate-400 text-lg leading-relaxed mb-6">\${product.description}</p>
-                        \${priceSection}
-                        <div class="flex flex-col md:flex-row gap-4 mt-8">
-                            <a href="\${product.link}" class="w-full md:w-auto bg-blue-600 text-white text-center font-bold py-4 px-8 rounded-full hover:bg-blue-700 transition-colors duration-200" target="_blank">
-                                Buy Now
-                            </a>
-                            <button id="copy-link-btn" class="w-full md:w-auto bg-slate-700 text-white font-bold py-4 px-8 rounded-full hover:bg-slate-600 transition-colors duration-200">
-                                Copy Product Link
-                            </button>
-                        </div>
-                        <div id="copy-message" class="mt-4 text-green-400 hidden">Link copied!</div>
-                        <a href="javascript:void(0)" id="back-to-home-link" class="mt-6 text-blue-400 hover:text-blue-300 transition-colors duration-200">
-                            ← Back to home
-                        </a>
-                    </div>
-                </div>
-            \`;
-
-            document.getElementById('copy-link-btn').addEventListener('click', () => {
-                const url = \`\${window.location.origin}\${window.location.pathname}?product=\${product.id}\`; 
-                const tempInput = document.createElement('input');
-                document.body.appendChild(tempInput);
-                tempInput.value = url;
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                                
-                const message = document.getElementById('copy-message');
-                message.classList.remove('hidden');
-                setTimeout(() => {
-                    message.classList.add('hidden');
-                }, 2000);
-            });
-            
-            document.getElementById('back-to-home-link').addEventListener('click', () => {
-                history.pushState(null, '', location.pathname); 
-                handleRouting();
-            });
-        }
-
-
-        function renderNotFound() {
-            document.title = "404 - Product Not Found";
-            document.querySelector('meta[name="description"]').setAttribute('content', "The product you are looking for does not exist.");
-            
-            contentContainer.innerHTML = \`
-                <div class="text-center py-20">
-                    <h2 class="text-5xl font-bold text-white mb-4">404 - Product Not Found</h2>
-                    <p class="text-slate-400 text-lg">The product you are looking for does not exist.</p>
-                    <a href="." class="mt-6 inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-700 transition-colors duration-200" onclick="history.pushState(null, '', location.pathname); handleRouting(); return false;">Back to home</a>
-                </div>
-            \`;
-        }
-
-        function handleRouting() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('product');
-
-            if (productsData.length === 0 && !document.getElementById('loading-message')) {
-                return;
-            }
-
-            if (productId) {
-                renderProductPage(productId);
-            } else {
-                renderHome();
-            }
-        }
-
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.remove('product-card-hidden');
-                    entry.target.classList.add('product-card-visible');
-                    observer.unobserve(entry.target); 
-                }
-            });
-        }, { threshold: 0.1 });
-
-        function setupIntersectionObserver() {
-            document.querySelectorAll('.product-card-hidden').forEach(card => {
-                observer.observe(card);
-            });
-        }
-        
-        window.addEventListener('popstate', handleRouting);
-        
         document.addEventListener('DOMContentLoaded', () => {
-            fetchProductsAndRender();
+            const button = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
+            const mobileLink = document.getElementById('open-modal-mobile');
+            // The Hero button now links directly to the new community section
+            // const desktopHeroButton = document.getElementById('open-modal-desktop-hero'); 
+
+            // 1. Toggle Mobile Menu
+            button.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+
+            // 2. Open Modal from Mobile Menu link
+            mobileLink.addEventListener('click', openContactModal);
+            
+            // 3. Open Modal from Hero Section button is removed, now it links to #community-services
+            // desktopHeroButton.addEventListener('click', openContactModal);
+
+            // 4. Close Modal when clicking outside the content
+            document.getElementById('contact-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'contact-modal') {
+                    closeContactModal();
+                }
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
         });
     </script>
 </body>
