@@ -127,6 +127,8 @@
                     "price": 1800.00,
                     "description": "Full-cycle development of a native or cross-platform mobile application, tailored to your business needs.",
                     "coverUrl": "https://placehold.co/400x300/1C1C1C/FFFFFF?text=MOBILE+DEV+SERVICE",
+                    "provider": "Rx Development Team", // ADDED: Provider Name
+                    "deliverables": "Full source code, 3 months post-launch support, and app store submission.", // ADDED: Deliverables
                     "portfolioImages": [
                         "https://placehold.co/600x400/4B5563/FFFFFF?text=App+Design+Mockup"
                     ],
@@ -543,6 +545,7 @@ export default storeData;
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Title</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Provider</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Price (USD)</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Contacts</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Actions</th>
@@ -554,6 +557,7 @@ export default storeData;
                             return `
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-6 py-4 whitespace-nowrap">${s.title}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-primary-dark font-medium">${s.provider || 'N/A'}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-success-green font-bold">$${s.price.toFixed(2)}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-text-secondary">${contactCount} link(s)</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
@@ -583,6 +587,11 @@ export default storeData;
                     <input type="hidden" name="id" value="${service.id || generateId('s-')}">
 
                     <div>
+                        <label for="provider" class="block text-sm font-medium mb-2">Provider Name</label>
+                        <input type="text" id="provider" name="provider" value="${service.provider || ''}" required class="w-full input-style" placeholder="Example: Rx Team or John Doe">
+                    </div>
+
+                    <div>
                         <label for="title" class="block text-sm font-medium mb-2">Service Title</label>
                         <input type="text" id="title" name="title" value="${service.title || ''}" required class="w-full input-style">
                     </div>
@@ -595,6 +604,11 @@ export default storeData;
                     <div>
                         <label for="description" class="block text-sm font-medium mb-2">Detailed Service Description</label>
                         <textarea id="description" name="description" rows="5" required class="w-full input-style">${service.description || ''}</textarea>
+                    </div>
+
+                    <div>
+                        <label for="deliverables" class="block text-sm font-medium mb-2">What the client will receive (Deliverables)</label>
+                        <textarea id="deliverables" name="deliverables" rows="4" required class="w-full input-style" placeholder="List key outcomes: e.g., Source code, Design files, 1 hour consultation, etc.">${service.deliverables || ''}</textarea>
                     </div>
                     
                     <div>
@@ -653,7 +667,8 @@ export default storeData;
                 .map(url => url.trim())
                 .filter(url => url.startsWith('http'));
 
-            const { id, title, description, price, coverUrl, instagram, phone, whatsapp, telegram } = data;
+            // تم إضافة provider و deliverables إلى البيانات المستخلصة
+            const { id, title, description, price, coverUrl, provider, deliverables, instagram, phone, whatsapp, telegram } = data;
             const contacts = { instagram, phone, whatsapp, telegram };
             
             const filteredContacts = Object.keys(contacts).reduce((acc, key) => {
@@ -669,6 +684,8 @@ export default storeData;
                 description,
                 price: parseFloat(price),
                 coverUrl,
+                provider, // تم إضافته
+                deliverables, // تم إضافته
                 portfolioImages: portfolioImages,
                 contacts: filteredContacts
             };
