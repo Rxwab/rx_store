@@ -1,58 +1,84 @@
 /**
- * Consolidated Store Data 
- * This file is generated and updated by the Admin Panel (admin_panel.html)
- * * يحتوي على البيانات المنظمة لجميع الفئات والمنتجات والخدمات
- * ويتم تصديره كوحدة (module) ليتم استيراده في صفحات العرض
+ * هذا الملف يتم توليده وتحديثه تلقائياً بواسطة لوحة التحكم الإدارية (admin_panel.html).
+ * يحتوي على جميع بيانات المتجر في صيغة JavaScript Object.
  */
 const storeData = {
-    // --- بيانات الفئات (Categories) ---
+    // ----------------------------------------------------------------
+    // 1. Categories Data (فئات المنتجات والخدمات)
+    // - يتم استخدام هذه الفئات لتصنيف كل من المنتجات والخدمات.
+    // ----------------------------------------------------------------
     categories: [
-        { 
-            id: 'c-101', 
-            name: 'Digital Courses' 
-        },
-        { 
-            id: 'c-102', 
-            name: 'E-Books & Guides' 
-        }
+        { id: "cat-1", name: "E-Books & Guides" },
+        { id: "cat-2", name: "Web & Graphic Design" },
+        { id: "cat-3", name: "Programming Tools" },
+        { id: "cat-4", name: "Digital Art" }
     ],
-    
-    // --- بيانات المنتجات (Products) ---
+
+    // ----------------------------------------------------------------
+    // 2. Products Data (المنتجات المعروضة في index.html)
+    // ----------------------------------------------------------------
     products: [
         {
-            id: 'p-1001',
-            categoryId: 'c-101',
-            title: 'Advanced Backend Development Bootcamp',
-            price: 299.00,
-            description: 'A comprehensive, 10-module course covering Node.js, databases, and API security. Learn to build scalable web applications from scratch.',
+            id: "prod-101",
+            title: "Advanced CSS Mastery",
+            description: "كتاب إلكتروني شامل يغطي أحدث تقنيات CSS، مثل Flexbox وGrid، والتصميم المتجاوب للمحترفين.",
+            price: 49.99,
+            buyUrl: "https://example.com/buy/prod-101",
+            categoryId: "cat-1", // يجب أن يتطابق مع ID في قائمة categories
             imageUrls: [
-                'https://placehold.co/600x400/FFD700/1C1C1C?text=BACKEND+COURSE+COVER'
+                "https://placehold.co/400x400/FFD700/1C1C1C?text=CSS+Book"
             ],
-            buyUrl: 'https://checkout.example.com/backend-bootcamp'
+            isNew: true
+        },
+        {
+            id: "prod-102",
+            title: "Minimalist Web Template (React)",
+            description: "قالب React نظيف وعالي الأداء لبناء مواقع بورتفوليو احترافية بسرعة.",
+            price: 79.00,
+            buyUrl: "https://example.com/buy/prod-102",
+            categoryId: "cat-3", // يجب أن يتطابق مع ID في قائمة categories
+            imageUrls: [
+                "https://placehold.co/400x400/1C1C1C/FFD700?text=React+Template"
+            ],
+            isNew: false
         }
+        // أضف المزيد من المنتجات هنا...
     ],
-    
-    // --- بيانات الخدمات (Services) ---
+
+    // ----------------------------------------------------------------
+    // 3. Services Data (الخدمات المعروضة في community_services_showcase.html)
+    // ----------------------------------------------------------------
     services: [
         {
-            "id": "s-2001",
-            "title": "Custom Mobile App Development",
-            "price": 1800.00,
-            "description": "Full-cycle development of a native or cross-platform mobile application, tailored to your business needs, starting from wireframes to final deployment.",
-            "coverUrl": "https://placehold.co/400x300/1C1C1C/FFFFFF?text=MOBILE+DEV+SERVICE",
-            "provider": "Rx Development Team", // اسم موفر الخدمة
-            "deliverables": "Full source code, 3 months post-launch support, and app store submission assistance.", // ما سيتم تسليمه
-            "portfolioImages": [
-                "https://placehold.co/600x400/4B5563/FFFFFF?text=App+Design+Mockup"
-            ],
-            "contacts": {
-                "whatsapp": "https://wa.me/1234567890",
-                "telegram": "https://t.me/dev_telegram_contact",
-                "instagram": "https://instagram.com/dev_instagram_contact"
+            id: "serv-201",
+            title: "Professional Logo Design",
+            description: "باقة متكاملة لتصميم الشعار والهوية البصرية. تشمل 3 مفاهيم فريدة، مراجعات، وجميع ملفات المصدر.",
+            price: 150.00,
+            provider: "DesignMaster",
+            categoryId: "cat-2", // يجب أن يتطابق مع ID في قائمة categories
+            coverUrl: "https://placehold.co/600x400/3B82F6/FFFFFF?text=Logo+Design",
+            deliverables: "ملفات فيكتور (AI, EPS)، PNG، JPG، دليل العلامة التجارية PDF.",
+            contacts: {
+                telegram: "https://t.me/DesignMaster_username",
+                whatsapp: "https://wa.me/966500000000",
+                instagram: "https://instagram.com/designmaster_pro"
+            }
+        },
+        {
+            id: "serv-202",
+            title: "Custom Shopify Development",
+            description: "بناء متجر إلكتروني مخصص بالكامل باستخدام Shopify، محسّن للسرعة والهواتف المحمولة.",
+            price: 800.00,
+            provider: "EcomDev_Pro",
+            categoryId: "cat-3", // يجب أن يتطابق مع ID في قائمة categories
+            coverUrl: "https://placehold.co/600x400/10B981/FFFFFF?text=Shopify+Dev",
+            deliverables: "إعداد المتجر بالكامل، قالب مخصص، دعم لمدة 3 أشهر.",
+            contacts: {
+                telegram: "https://t.me/EcomDev_Pro_username",
+                whatsapp: "https://wa.me/966501111111",
+                instagram: "" // اتركها فارغة إذا لم يكن لديك حساب
             }
         }
+        // أضف المزيد من الخدمات هنا...
     ]
 };
-
-// Exporting the object for use in other files (like index.html and community_services_showcase.html)
-export default storeData;
