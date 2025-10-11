@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rx Store - Your Gateway to Knowledge, Tech, and Digital Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
-    
-    <script type="module" src="./store_data.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -18,7 +14,6 @@
                         'primary-yellow': '#FFD700', // Primary Gold/Yellow Accent
                         'primary-dark': '#1C1C1C', // Header Color
                         'secondary-gray': '#F5F5F5', // Light Background Color
-                        'text-secondary': '#4B5563', // Secondary text color
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -28,7 +23,7 @@
         }
     </script>
     <style>
-        /* Custom Styles for Modern Design (Unchanged) */
+        /* Custom Styles for Modern Design */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #ffffff;
@@ -44,8 +39,6 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
             flex: 0 0 280px;
-            background-color: white;
-            border-radius: 0.75rem;
         }
         .product-card:hover {
             transform: translateY(-5px);
@@ -87,7 +80,7 @@
 </head>
 <body class="text-primary-dark">
 
-    <header class="bg-white shadow-md sticky top-0 z-40">
+    <header class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
             <div class="text-2xl font-bold text-primary-dark flex items-center">
                 <span class="text-primary-yellow text-3xl mr-1">Rx</span> Store
@@ -95,25 +88,27 @@
 
             <nav class="hidden md:flex space-x-6 text-lg font-medium">
                 <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Home</a>
-                <a href="#products" class="text-primary-dark hover:text-primary-yellow transition duration-300">Products</a>
-                <a href="#services-list" class="text-primary-dark hover:text-primary-yellow transition duration-300">Our Services</a>
-                <a href="community_services_showcase.html" class="text-primary-dark hover:text-primary-yellow transition duration-300">Extra Services</a>
+                <a href="#product-sections" class="text-primary-dark hover:text-primary-yellow transition duration-300">Products</a>
+                <a href="community_services_showcase.html" class="text-primary-dark hover:text-primary-yellow transition duration-300">Our Services</a>
+                <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Blog</a>
             </nav>
+
+            <div class="hidden md:block w-24">
+                </div>
 
             <button id="mobile-menu-button" class="md:hidden p-2 text-primary-dark">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden shadow-lg bg-white">
+        <div id="mobile-menu" class="hidden md:hidden shadow-lg">
             <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300 border-t">Home</a>
-            <a href="#products" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Products</a>
-            <a href="#services-list" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Our Services</a>
-            <a href="community_services_showcase.html" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Extra Services</a>
-            
-            <button id="mobile-get-service-button" class="open-contact-modal-button w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300" onclick="window.location.href='community_services_showcase.html'">
-                Get a Service
-            </button>
+            <a href="#product-sections" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Products</a>
+            <a href="community_services_showcase.html" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Our Services</a>
+            <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Blog</a>
+            <a href="#" class="w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
+                Publish Your Service
+            </a>
         </div>
     </header>
 
@@ -127,314 +122,364 @@
                     Your gateway to integrated knowledge, technology, and digital services.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#products" class="bg-primary-yellow text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300 text-lg">
+                    <a href="#product-sections" class="bg-primary-yellow text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300 text-lg">
                         Browse Products
                     </a>
-                    <a href="#services-list" class="bg-primary-dark text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-700 transition duration-300 text-lg">
+                    <a href="community_services_showcase.html" class="bg-primary-dark text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-700 transition duration-300 text-lg">
                         Explore Our Services
-                    </a>
-                     <a href="community_services_showcase.html" class="bg-primary-yellow text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300 text-lg">
-                        Get a Service
                     </a>
                 </div>
             </div>
 
             <div class="md:w-1/2 flex justify-center md:justify-end order-1 md:order-2">
-                <img src="https://i.ibb.co/mVkT9J6h/Screenshot-20251010-212631.jpg" alt="Rx Store Dashboard Mockup" class="rounded-lg shadow-xl max-w-full h-auto">
+                <img src="https://i.ibb.co/mVkT9J6h/Screenshot-20251010-212631.jpg" alt="Screenshot 20251010 212631" class="rounded-lg shadow-xl max-w-full h-auto">
             </div>
         </div>
     </section>
 
     <section class="py-12 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center" id="category-showcase-icons">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <a href="#product-sections" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.208 5 7.5 5A6.5 6.5 0 003 11.5c0 1.615.477 3.111 1.253 4.331M12 6.253c1.168.776 2.792 1.253 4.5 1.253a6.5 6.5 0 014.5-6.747M12 19.253C13.168 18.477 14.792 18 16.5 18a6.5 6.5 0 004.5-6.747M12 19.253c-1.168.776-2.792 1.253-4.5 1.253a6.5 6.5 0 01-4.5-6.747"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">Digital Products</span>
+                </a>
+                <a href="#product-sections" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25M7 16h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v7a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">Tech & Gear</span>
+                </a>
+                <a href="#product-sections" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v14l-12 3zm0 0l-4-1m4 1v-5m0 5l4 1m-4-1h-5v-10h9v5"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">E-Books</span>
+                </a>
+                <a href="community_services_showcase.html" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
+                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 10v-4m0 0l4 4m-4-4l-4 4m4-4L6 4"></path></svg>
+                    </div>
+                    <span class="text-sm font-medium">Get a Service</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="product-sections" class="py-16 bg-secondary-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="product-list-container">
+                <p id="loading-message" class="text-center text-lg text-gray-500">Loading products from GitHub...</p>
+            </div>
+        </div>
+    </section>
+    
+    <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 items-center justify-center hidden modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-11/12 max-w-3xl transform transition-all duration-300 ease-in-out">
+            <div class="flex justify-between items-start mb-4">
+                <h2 id="modal-title" class="text-2xl font-bold text-primary-dark">Product Details</h2>
+                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="md:flex gap-6">
+                <div class="md:w-1/2 mb-4 md:mb-0">
+                    <img id="modal-image" src="" alt="Product Image" class="w-full h-auto rounded-lg object-cover shadow-md">
                 </div>
-        </div>
-    </section>
-    
-    <section id="products" class="py-16 bg-secondary-gray">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">答 Featured Products</h2>
-            <p class="text-gray-600 mb-8 text-left">Discover the best books, electronics, and digital products available now.</p>
-            
-            <div id="products-list-container" class="space-y-12">
-                <p id="loading-products" class="text-center text-lg text-text-secondary">Loading products...</p>
-            </div>
-            
-            <div id="no-products-message" class="hidden p-8 bg-white rounded-xl shadow-lg text-center mt-10">
-                <i data-lucide="package-x" class="w-8 h-8 mx-auto text-primary-yellow mb-4"></i>
-                <h3 class="text-xl font-semibold text-primary-dark">No Products Found</h3>
-                <p class="text-text-secondary mt-2">The store is currently empty. Please add products via the Admin Panel.</p>
-            </div>
-        </div>
-    </section>
-    
-    <section id="services-list" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-10 text-primary-dark">Our Core Digital Services</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-                In addition to products, we offer integrated services to help you build your online brand.
-            </p>
-
-            <div id="services-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <p id="loading-services" class="md:col-span-3 text-center text-lg text-text-secondary">Loading services...</p>
-            </div>
-        </div>
-    </section>
-
-    <div id="product-detail-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 items-center justify-center hidden">
-        <div class="bg-white rounded-xl shadow-2xl w-11/12 max-w-3xl overflow-hidden transform transition-all">
-            <div class="grid grid-cols-1 md:grid-cols-2">
-                <div class="p-6 md:p-8">
-                    <h3 id="modal-product-title" class="text-3xl font-bold text-primary-dark mb-4"></h3>
-                    <p id="modal-product-description" class="text-gray-600 mb-6"></p>
-                    <div class="flex items-center justify-between border-t border-gray-200 pt-4 mt-4">
-                        <span id="modal-product-price" class="text-3xl font-extrabold text-primary-yellow"></span>
-                        <a id="modal-buy-button" href="#" target="_blank" class="bg-primary-yellow text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300">
+                <div class="md:w-1/2">
+                    <p id="modal-category" class="text-sm text-primary-yellow font-semibold mb-1 uppercase"></p>
+                    <h3 id="modal-product-title" class="text-xl font-bold mb-3 text-primary-dark"></h3>
+                    <p id="modal-description" class="text-gray-600 mb-4 text-sm"></p>
+                    
+                    <div class="flex items-center justify-between border-t border-b py-3 mb-4">
+                        <span class="text-xl font-extrabold text-primary-dark">Price: <span id="modal-price" class="text-primary-yellow"></span></span>
+                        <a id="modal-buy-link" href="#" target="_blank" class="bg-primary-yellow text-primary-dark font-bold py-3 px-6 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300">
                             Buy Now
                         </a>
                     </div>
-                </div>
-                <div class="md:block hidden">
-                    <img id="modal-product-image" src="" alt="Product Image" class="w-full h-full object-cover">
+                    
+                    <div class="flex items-center space-x-3 text-sm text-gray-500">
+                        <button id="modal-share-button" class="flex items-center hover:text-primary-dark transition duration-300">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.87 9 12.43 9 12a3 3 0 00-3-3H4m0 9h2a3 3 0 003-3 3 3 0 00-3-3H4M20 13a3 3 0 00-3-3h-2m2 3a3 3 0 00-3 3h-2m-2-9a3 3 0 00-3 3H4"></path></svg>
+                            Share
+                        </button>
+                    </div>
                 </div>
             </div>
-            <button onclick="closeModal('product-detail-modal')" class="absolute top-4 right-4 text-gray-500 hover:text-gray-900 transition">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
         </div>
     </div>
 
-
-    <footer class="bg-primary-dark text-white py-10 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-gray-700 pb-8 mb-8">
-                <div>
-                    <h3 class="text-2xl font-bold text-primary-yellow mb-3">Rx Store</h3>
-                    <p class="text-sm text-gray-400">
-                        A selection of the best books, electronics, and digital services you need for growth and innovation.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-3">Quick Links</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Home</a></li>
-                        <li><a href="#products" class="hover:text-primary-yellow transition duration-300">Products</a></li>
-                        <li><a href="#services-list" class="hover:text-primary-yellow transition duration-300">Our Services</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-3">Support and Help</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Terms of Use</a></li>
-                        <li><a href="#" class="hover:text-primary-yellow transition duration-300">Contact Us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-3">Connect With Us</h4>
-                    <p class="text-sm text-gray-400">
-                        For inquiries and special requests
-                    </p>
-                    <a href="mailto:info@rxstore.com" class="text-primary-yellow block mt-2 hover:text-yellow-400">info@rxstore.com</a>
-                </div>
-            </div>
-            
-            <div class="text-center text-sm text-gray-500">
-                &copy; 2024 Rx Store. All rights reserved.
+    <footer class="bg-primary-dark text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; <span id="current-year"></span> Rx Store. All rights reserved.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-primary-yellow transition">Privacy Policy</a>
+                <a href="#" class="hover:text-primary-yellow transition">Terms of Use</a>
+                <a href="admin_panel.html" class="hover:text-primary-yellow transition font-bold">Admin Login</a>
             </div>
         </div>
     </footer>
 
     <script type="module">
-        // استيراد البيانات من الملف الذي تم نشره بواسطة لوحة التحكم
+        // Import data structure from the file generated by the admin panel
+        // Assumes 'store_data.js' is in the same directory.
+        // It should contain: export default { categories: [], products: [], services: [] };
+        
         let storeData = { categories: [], products: [], services: [] };
-        try {
-            const { default: loadedData } = await import('./store_data.js');
-            storeData = loadedData;
-        } catch (e) {
-            console.error('Error loading store_data.js. Using empty mock data.', e);
-        }
-
-        // --- Utility Functions ---
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-            document.getElementById(modalId).classList.remove('flex');
-            window.location.hash = ''; 
-        }
-
-        function openProductModal(product) {
-            const modal = document.getElementById('product-detail-modal');
-            
-            document.getElementById('modal-product-title').textContent = product.title;
-            document.getElementById('modal-product-description').textContent = product.description;
-            document.getElementById('modal-product-price').textContent = `$${product.price.toFixed(2)}`;
-            document.getElementById('modal-buy-button').href = product.buyUrl;
-            document.getElementById('modal-product-image').src = product.imageUrls[0] || 'https://placehold.co/600x400/E5E7EB/4B5563?text=Image+Missing';
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            window.location.hash = product.id; 
-            lucide.createIcons();
-        }
-
-        // --- Rendering Functions ---
-
+        const loadingMessage = document.getElementById('loading-message');
+        const productListContainer = document.getElementById('product-list-container');
+        
         /**
-         * تعرض الأقسام ديناميكيًا في شريط الأيقونات العلوي.
+         * Fetches data from store_data.js. Using a fetch request instead of module
+         * import ensures it works reliably in various hosting environments, especially GH pages.
          */
-        function renderCategories() {
-            const container = document.getElementById('category-showcase-icons');
-            const icons = ['book', 'monitor', 'headphones', 'server', 'palette', 'graduation-cap', 'tag', 'folder'];
-            
-            const categoriesToDisplay = storeData.categories.slice(0, 8); 
-
-            if (categoriesToDisplay.length === 0) {
-                container.innerHTML = `<p class="col-span-4 text-center text-text-secondary">No categories defined yet. Please add them in the Admin Panel.</p>`;
-                return;
-            }
-
-            container.innerHTML = categoriesToDisplay.map((c, index) => {
-                const iconName = icons[index % icons.length]; 
-                return `
-                    <a href="#${c.id}" class="group block p-4 rounded-xl hover:bg-secondary-gray transition duration-300">
-                        <div class="p-4 bg-primary-yellow/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2 group-hover:bg-primary-yellow/30">
-                            <i data-lucide="${iconName}" class="w-8 h-8 text-primary-yellow"></i>
-                        </div>
-                        <p class="font-semibold text-sm mt-1">${c.name}</p>
-                    </a>
-                `;
-            }).join('');
-            lucide.createIcons();
-        }
-
-
-        /**
-         * تعرض جميع المنتجات مجمعة حسب القسم.
-         */
-        function renderProducts() {
-            const container = document.getElementById('products-list-container');
-            const products = storeData.products;
-            const categories = storeData.categories;
-            container.innerHTML = '';
-            
-            document.getElementById('loading-products').classList.add('hidden');
-
-            if (products.length === 0) {
-                document.getElementById('no-products-message').classList.remove('hidden');
-                return;
-            }
-
-            // تجميع المنتجات حسب القسم
-            const groupedProducts = {};
-            categories.forEach(c => groupedProducts[c.id] = { ...c, products: [] });
-            
-            // إضافة منتجات إلى أقسامها
-            products.forEach(p => {
-                const categoryId = p.categoryId || 'uncategorized'; 
-                if (!groupedProducts[categoryId]) {
-                    groupedProducts[categoryId] = { id: 'uncategorized', name: 'Uncategorized Products', products: [] };
+        async function fetchStoreData() {
+            try {
+                // Fetch the file content
+                const response = await fetch('store_data.js');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                groupedProducts[categoryId].products.push(p);
-            });
+                const text = await response.text();
+                
+                // Extract the JSON string from the file content (assuming the file format is maintained)
+                const jsonMatch = text.match(/const storeData = (\{[\s\S]*?\});/);
 
-            // عرض كل قسم يحتوي على منتجات
-            Object.values(groupedProducts).filter(g => g.products.length > 0).forEach(group => {
-                const sectionHtml = `
-                    <div id="${group.id}" class="product-group-section">
-                        <h3 class="text-2xl font-bold mb-4 border-b border-gray-200 pb-2">${group.name}</h3>
-                        <div class="carousel-container flex space-x-6">
-                            ${group.products.map(p => `
-                                <div class="product-card flex flex-col p-4">
-                                    <img src="${p.imageUrls[0] || 'https://placehold.co/300x200/E5E7EB/4B5563?text=No+Image'}" alt="${p.title}" class="w-full h-40 object-cover rounded-lg mb-4">
-                                    <h4 class="font-bold text-lg mb-1 truncate">${p.title}</h4>
-                                    <p class="text-sm text-gray-500 mb-3 line-clamp-2">${p.description}</p>
-                                    <div class="mt-auto flex justify-between items-center pt-2">
-                                        <span class="text-xl font-bold text-primary-yellow">$${p.price.toFixed(2)}</span>
-                                        <button data-product-id="${p.id}" class="open-product-modal bg-primary-dark text-white text-sm font-semibold py-2 px-4 rounded-full hover:bg-gray-700 transition">
-                                            View Details
-                                        </button>
-                                    </div>
-                                </div>
-                            `).join('')}
+                if (jsonMatch && jsonMatch[1]) {
+                    // Clean up the JSON string to ensure valid parsing (remove trailing semicolon if present)
+                    const jsonString = jsonMatch[1].trim().replace(/;$/, '');
+                    
+                    // Parse the extracted JSON string
+                    return JSON.parse(jsonString);
+                } else {
+                    throw new Error('Could not parse storeData object from file.');
+                }
+            } catch (e) {
+                console.error("Error loading store data:", e);
+                loadingMessage.textContent = '❌ Error loading products. Please check the console for details.';
+                loadingMessage.classList.add('text-danger-red');
+                return null; // Return null on failure
+            }
+        }
+
+        // Helper to get category name
+        function getCategoryName(categoryId) {
+            const category = storeData.categories.find(c => c.id === categoryId);
+            return category ? category.name : 'Digital Product';
+        }
+
+        // Render functions
+        function renderProductCard(product) {
+            const categoryName = getCategoryName(product.categoryId);
+            
+            // Use the first image URL in the array, or a placeholder if none exists
+            const imageUrl = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/400x400/FFD700/1C1C1C?text=No+Image';
+
+            return `
+                <div 
+                    class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4 cursor-pointer" 
+                    data-product-id="${product.id}"
+                    onclick="openProductModal(
+                        '${product.id}', 
+                        '${product.title.replace(/'/g, "\\'")}', 
+                        '${product.description.replace(/'/g, "\\'")}', 
+                        '${product.buyUrl.replace(/'/g, "\\'")}', 
+                        '${imageUrl}', 
+                        '${product.price.toFixed(2)}',
+                        '${categoryName.replace(/'/g, "\\'")}'
+                    )">
+                    <div class="relative">
+                        <img src="${imageUrl}" alt="${product.title}" class="w-full h-48 object-cover rounded-lg mb-4">
+                        ${product.isNew ? '<span class="absolute top-2 right-2 bg-success-green text-white text-xs font-bold px-3 py-1 rounded-full">New</span>' : ''}
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-xs text-primary-yellow font-bold uppercase">${categoryName}</p>
+                        <h3 class="text-lg font-bold truncate">${product.title}</h3>
+                        <p class="text-sm text-gray-600 line-clamp-2">${product.description}</p>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xl font-extrabold text-primary-dark">$${product.price.toFixed(2)}</span>
+                            <span class="bg-primary-dark text-white text-sm font-semibold py-2 px-4 rounded-full hover:bg-gray-700 transition duration-300">
+                                View Details
+                            </span>
                         </div>
                     </div>
-                `;
-                container.innerHTML += sectionHtml;
-            });
-            
-            // إضافة مستمعين لفتح المودال
-            document.querySelectorAll('.open-product-modal').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const productId = e.currentTarget.dataset.productId;
-                    const product = storeData.products.find(p => p.id === productId);
-                    if (product) {
-                        openProductModal(product);
-                    }
-                });
-            });
+                </div>
+            `;
         }
 
-
-        /**
-         * تعرض أول 3 خدمات من البيانات.
-         */
-        function renderServices() {
-            const container = document.getElementById('services-container');
-            const services = storeData.services.slice(0, 3); 
-            container.innerHTML = '';
+        function renderProductSections(data) {
+            productListContainer.innerHTML = '';
             
-            document.getElementById('loading-services').classList.add('hidden');
+            // 1. Group products by category
+            const groupedProducts = data.products.reduce((acc, product) => {
+                const categoryId = product.categoryId || 'uncategorized';
+                if (!acc[categoryId]) {
+                    acc[categoryId] = [];
+                }
+                acc[categoryId].push(product);
+                return acc;
+            }, {});
 
-
-            if (services.length === 0) {
-                container.innerHTML = `<p class="md:col-span-3 text-center text-text-secondary">No core services published yet. <a href="community_services_showcase.html" class="text-primary-yellow font-semibold hover:underline">View the Services Showcase</a>.</p>`;
-                return;
+            // 2. Iterate over categories to build sections
+            const sortedCategories = data.categories.sort((a, b) => a.name.localeCompare(b.name));
+            
+            if (sortedCategories.length === 0 && data.products.length === 0) {
+                 productListContainer.innerHTML = '<p class="text-center text-lg text-gray-500">No products or categories have been published yet.</p>';
+                 return;
             }
 
-            container.innerHTML = services.map(s => `
-                <div class="bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden text-center p-6">
-                    <img src="${s.coverUrl || 'https://placehold.co/400x300/1C1C1C/FFFFFF?text=SERVICE+COVER'}" alt="${s.title}" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <h4 class="text-xl font-bold mb-2">${s.title}</h4>
-                    <p class="text-gray-500 mb-4 line-clamp-3">${s.description}</p>
-                    <span class="text-2xl font-extrabold text-primary-yellow block mb-4">$${s.price.toFixed(2)}</span>
-                    <a href="community_services_showcase.html#${s.id}" class="bg-primary-dark text-white font-bold py-2 px-6 rounded-full hover:bg-gray-700 transition duration-300">
-                        View Service Details
-                    </a>
-                </div>
-            `).join('');
+            sortedCategories.forEach(category => {
+                const products = groupedProducts[category.id] || [];
+                if (products.length > 0) {
+                    const sectionHtml = `
+                        <section id="category-${category.id}" class="mb-12">
+                            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">${category.name}</h2>
+                            <p class="text-gray-600 mb-8 text-left">Explore our latest items in the ${category.name} collection.</p>
+                            <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
+                                ${products.map(renderProductCard).join('')}
+                            </div>
+                        </section>
+                    `;
+                    productListContainer.insertAdjacentHTML('beforeend', sectionHtml);
+                }
+            });
+
+            // 3. Handle uncategorized products (optional section)
+            const uncategorizedProducts = groupedProducts['uncategorized'] || [];
+            if (uncategorizedProducts.length > 0) {
+                const uncategorizedSectionHtml = `
+                    <section id="category-uncategorized" class="mb-12 border-t pt-8 border-gray-300">
+                        <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">Other Products</h2>
+                        <p class="text-gray-600 mb-8 text-left">Items without a specific category.</p>
+                        <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
+                            ${uncategorizedProducts.map(renderProductCard).join('')}
+                        </div>
+                    </section>
+                `;
+                productListContainer.insertAdjacentHTML('beforeend', uncategorizedSectionHtml);
+            }
+            
+            // If the container is still empty after rendering
+            if (productListContainer.innerHTML === '') {
+                productListContainer.innerHTML = '<p class="text-center text-lg text-gray-500">No products have been published yet.</p>';
+            }
         }
 
-        // --- Initialization ---
+        // Modal functions (Updated to use dynamic data)
+        const productModal = document.getElementById('product-modal');
+        const modalTitle = document.getElementById('modal-product-title');
+        const modalCategory = document.getElementById('modal-category');
+        const modalImage = document.getElementById('modal-image');
+        const modalDescription = document.getElementById('modal-description');
+        const modalPrice = document.getElementById('modal-price');
+        const modalBuyLink = document.getElementById('modal-buy-link');
+        const modalShareButton = document.getElementById('modal-share-button');
 
-        window.onload = () => {
-            renderCategories();
-            renderProducts();
-            renderServices();
-            lucide.createIcons();
+        window.openProductModal = function (id, title, description, buyUrl, imageUrl, price, categoryName) {
+            modalTitle.textContent = title;
+            modalCategory.textContent = categoryName;
+            modalImage.src = imageUrl;
+            modalDescription.textContent = description;
+            modalPrice.textContent = `$${price}`;
+            modalBuyLink.href = buyUrl;
             
-            // تفعيل قائمة الجوال
+            // Set hash for sharable link
+            window.location.hash = id;
+
+            productModal.classList.remove('hidden');
+            productModal.classList.add('flex');
+            
+            modalShareButton.onclick = () => {
+                shareProduct(window.location.href);
+            };
+        }
+
+        window.closeProductModal = function () {
+            productModal.classList.add('hidden');
+            productModal.classList.remove('flex');
+            // Remove hash on close
+            history.replaceState(null, null, ' ');
+        }
+        
+        function shareProduct(linkToCopy) {
+            if (navigator.share) {
+                navigator.share({
+                    title: modalTitle.textContent,
+                    text: modalDescription.textContent.substring(0, 100) + '...',
+                    url: linkToCopy
+                }).then(() => {
+                    alert('Link shared successfully!');
+                }).catch(error => {
+                    console.error('Sharing failed:', error);
+                });
+            } else {
+                navigator.clipboard.writeText(linkToCopy).then(() => {
+                    alert('Share link copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    alert(`Copy failed. Please manually copy this link: ${linkToCopy}`);
+                });
+            }
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Set current year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Mobile menu toggle
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
             
-            // Auto-open product detail modal if URL hash matches a product ID
+            // --- Data Loading and Rendering ---
+            const data = await fetchStoreData();
+            if (data) {
+                storeData = data;
+                loadingMessage.classList.add('hidden');
+                renderProductSections(storeData);
+            } else {
+                 loadingMessage.textContent = 'Failed to load store data. Please ensure "store_data.js" is accessible.';
+                 loadingMessage.classList.remove('text-gray-500');
+                 loadingMessage.classList.add('text-danger-red');
+            }
+
+            // --- URL Hash Check (Deep linking) ---
             const checkURLHash = () => {
-                const hash = window.location.hash.substring(1); 
-                if (hash) {
+                const hash = window.location.hash.substring(1); // Get hash without '#'
+                if (hash && storeData.products) {
                     const product = storeData.products.find(p => p.id === hash);
                     if (product) {
-                        openProductModal(product);
+                        const categoryName = getCategoryName(product.categoryId);
+                        const imageUrl = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/400x400/FFD700/1C1C1C?text=No+Image';
+
+                        // Use setTimeout to ensure the modal functions are defined and data is loaded
+                        setTimeout(() => {
+                            openProductModal(
+                                product.id, 
+                                product.title, 
+                                product.description, 
+                                product.buyUrl, 
+                                imageUrl, 
+                                product.price.toFixed(2),
+                                categoryName
+                            );
+                        }, 100); 
                     }
                 }
             };
             
-            checkURLHash();
-            window.addEventListener('hashchange', checkURLHash);
-        };
+            // Check hash after data is potentially loaded
+            if (data) {
+                checkURLHash();
+                window.addEventListener('hashchange', checkURLHash);
+            }
+        });
     </script>
 </body>
 </html>
