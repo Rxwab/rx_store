@@ -110,7 +110,8 @@
             <a href="#products" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Products</a>
             <a href="#services-list" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Our Services</a>
             <a href="community_services_showcase.html" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Extra Services</a>
-            <button id="mobile-get-service-button" class="open-contact-modal-button w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
+            
+            <button id="mobile-get-service-button" class="open-contact-modal-button w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300" onclick="window.location.href='community_services_showcase.html'">
                 Get a Service
             </button>
         </div>
@@ -247,15 +248,12 @@
 
     <script type="module">
         // استيراد البيانات من الملف الذي تم نشره بواسطة لوحة التحكم
-        // يجب أن يكون هذا الملف موجودًا ويحتوي على الكائن `storeData`
         let storeData = { categories: [], products: [], services: [] };
         try {
-             // افتراض أن الملف store_data.js موجود ويحتوي على 'export default storeData;'
             const { default: loadedData } = await import('./store_data.js');
             storeData = loadedData;
         } catch (e) {
             console.error('Error loading store_data.js. Using empty mock data.', e);
-            // قد تظهر رسالة "No Products Found" إذا فشل التحميل
         }
 
         // --- Utility Functions ---
@@ -263,7 +261,7 @@
         function closeModal(modalId) {
             document.getElementById(modalId).classList.add('hidden');
             document.getElementById(modalId).classList.remove('flex');
-            window.location.hash = ''; // Clear URL hash when closing modal
+            window.location.hash = ''; 
         }
 
         function openProductModal(product) {
@@ -277,7 +275,7 @@
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            window.location.hash = product.id; // Set URL hash for sharing
+            window.location.hash = product.id; 
             lucide.createIcons();
         }
 
@@ -288,10 +286,9 @@
          */
         function renderCategories() {
             const container = document.getElementById('category-showcase-icons');
-            // مجموعة من الأيقونات لاستخدامها بالتناوب في عرض الأقسام
             const icons = ['book', 'monitor', 'headphones', 'server', 'palette', 'graduation-cap', 'tag', 'folder'];
             
-            const categoriesToDisplay = storeData.categories.slice(0, 8); // عرض 8 أقسام كحد أقصى
+            const categoriesToDisplay = storeData.categories.slice(0, 8); 
 
             if (categoriesToDisplay.length === 0) {
                 container.innerHTML = `<p class="col-span-4 text-center text-text-secondary">No categories defined yet. Please add them in the Admin Panel.</p>`;
@@ -299,7 +296,7 @@
             }
 
             container.innerHTML = categoriesToDisplay.map((c, index) => {
-                const iconName = icons[index % icons.length]; // تدوير الأيقونات
+                const iconName = icons[index % icons.length]; 
                 return `
                     <a href="#${c.id}" class="group block p-4 rounded-xl hover:bg-secondary-gray transition duration-300">
                         <div class="p-4 bg-primary-yellow/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2 group-hover:bg-primary-yellow/30">
@@ -337,7 +334,6 @@
             products.forEach(p => {
                 const categoryId = p.categoryId || 'uncategorized'; 
                 if (!groupedProducts[categoryId]) {
-                    // إنشاء قسم غير مصنف افتراضي
                     groupedProducts[categoryId] = { id: 'uncategorized', name: 'Uncategorized Products', products: [] };
                 }
                 groupedProducts[categoryId].products.push(p);
@@ -386,7 +382,7 @@
          */
         function renderServices() {
             const container = document.getElementById('services-container');
-            const services = storeData.services.slice(0, 3); // عرض 3 خدمات كحد أقصى على الصفحة الرئيسية
+            const services = storeData.services.slice(0, 3); 
             container.innerHTML = '';
             
             document.getElementById('loading-services').classList.add('hidden');
@@ -425,7 +421,7 @@
                 mobileMenu.classList.toggle('hidden');
             });
             
-            // فتح مودال المنتج تلقائيًا إذا كان هناك ID في رابط URL
+            // Auto-open product detail modal if URL hash matches a product ID
             const checkURLHash = () => {
                 const hash = window.location.hash.substring(1); 
                 if (hash) {
