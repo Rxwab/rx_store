@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rx Store Admin Dashboard</title>
+    <title>لوحة تحكم Rx Store - الإعدادات وعرض البيانات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script>
-        // Use Rx Store branding colors (Gold/Yellow and Dark)
+        // تكوين Tailwind
         tailwind.config = {
             theme: {
                 extend: {
@@ -18,7 +18,7 @@
                         'primary-bg': '#FFFFFF',     // Main Light Background
                         'card-bg': '#FAFAFA',        // Card Background
                         'text-dark': '#1C1C1C',      // Main Text Color
-                        'text-secondary': '#4B5563', // Secondary Text/Placeholder
+                        'text-secondary': '#4B5563', // Secondary Text
                         'danger-red': '#EF4444', 
                         'success-green': '#10B981',
                     },
@@ -34,6 +34,7 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--tw-colors-primary-bg); 
             color: var(--tw-colors-text-dark);
+            min-height: 100vh;
         }
         .input-style {
             background-color: #FFFFFF;
@@ -41,266 +42,102 @@
             color: var(--tw-colors-text-dark);
             padding: 0.75rem;
             border-radius: 0.5rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s;
+            text-align: right; /* محاذاة النص لليمين */
         }
         .input-style:focus {
             border-color: var(--tw-colors-primary-yellow);
             box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.5);
             outline: none;
         }
-        .tab-button {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem 0.5rem 0 0;
-            transition: all 0.2s;
-            font-weight: 600;
-            color: var(--tw-colors-text-secondary);
-        }
-        .tab-button.active {
-            background-color: var(--tw-colors-card-bg);
-            border-bottom: 3px solid var(--tw-colors-primary-yellow);
-            color: var(--tw-colors-primary-dark);
-        }
-        /* Style for the lock screen overlay */
-        .lock-overlay {
-            min-height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background-color: #fcfcfc;
-            border: 2px dashed #FFD700;
-            border-radius: 1rem;
-            padding: 2rem;
+        /* لتنسيق محتوى JSON */
+        #data-display pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            padding: 1rem;
+            background-color: #1C1C1C;
+            color: #FFFFFF;
+            border-radius: 0.5rem;
+            direction: ltr; /* لضمان عرض الكود بشكل صحيح */
+            text-align: left;
         }
     </style>
 </head>
 
-<body class="min-h-screen flex">
-    <div class="flex-grow p-4 md:p-10">
+<body class="p-4 md:p-10">
+    <header class="mb-10 border-b border-gray-200 pb-4">
+        <h1 class="text-3xl font-bold text-primary-dark flex items-center justify-end">
+            لوحة تحكم Rx Store
+            <i data-lucide="settings" class="w-7 h-7 mr-3 text-primary-yellow fill-primary-yellow/50 ml-3"></i>
+        </h1>
+        <p class="text-text-secondary mt-1 text-right">إدارة التوكن وعرض البيانات المنشورة.</p>
+    </header>
 
-        <div class="bg-card-bg p-6 rounded-xl shadow-lg mb-10 border border-primary-yellow/30">
-            <h2 class="text-xl font-bold text-primary-dark mb-4 flex items-center">
-                <i data-lucide="github" class="w-6 h-6 mr-2 text-primary-dark"></i>
-                GitHub Publishing Configuration
-            </h2>
-            <p class="text-sm text-danger-red font-semibold mb-4">
-                ⚠️ **الأمان:** يجب إدخال التوكن، واسم المالك (Owner)، واسم المستودع (Repo) لفتح لوحة التحكم وبدء الإدارة والنشر.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="github-token" class="block text-sm font-medium text-text-dark mb-1">GitHub Personal Access Token (PAT)</label>
-                    <input type="password" id="github-token" placeholder="أدخل التوكن (PAT) هنا" class="input-style w-full">
-                </div>
-                <div>
-                    <label for="github-owner" class="block text-sm font-medium text-text-dark mb-1">Repository Owner (اسم المستخدم)</label>
-                    <input type="text" id="github-owner" placeholder="مثال: Rxwab" class="input-style w-full" value="Rxwab">
-                </div>
-                <div>
-                    <label for="github-repo" class="block text-sm font-medium text-text-dark mb-1">Repository Name (اسم المستودع)</label>
-                    <input type="text" id="github-repo" placeholder="مثال: rx_store" class="input-style w-full" value="rx_store">
-                </div>
-                <div>
-                    <label for="github-path" class="block text-sm font-medium text-text-dark mb-1">مسار ملف البيانات</label>
-                    <input type="text" id="github-path" value="store_data.js" class="w-full input-style" readonly>
-                </div>
+    <section class="mb-10 p-6 bg-card-bg rounded-xl shadow-lg border border-gray-100">
+        <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2 flex items-center justify-end">
+            <span class="ml-2">إعدادات GitHub</span>
+            <i data-lucide="github" class="w-6 h-6 text-primary-dark"></i>
+        </h2>
+        <form id="settings-form" class="space-y-4">
+            <div>
+                <label for="githubToken" class="block text-sm font-medium mb-2 text-right">GitHub Personal Access Token</label>
+                <input type="password" id="githubToken" name="githubToken" required class="w-full input-style" placeholder="أدخل التوكن الخاص بك">
+                <p class="text-xs text-text-secondary mt-1 text-right">يجب أن يكون لديه صلاحية (repo:contents) للوصول للملفات.</p>
             </div>
-            <p id="config-status" class="mt-3 text-sm text-danger-red">يرجى ملء الحقول لفتح لوحة التحكم.</p>
-        </div>
+             <div>
+                <label for="githubUsername" class="block text-sm font-medium mb-2 text-right">اسم مستخدم GitHub</label>
+                <input type="text" id="githubUsername" name="githubUsername" required class="w-full input-style" placeholder="مثال: YOUR_USERNAME">
+            </div>
+             <div>
+                <label for="repoName" class="block text-sm font-medium mb-2 text-right">اسم المستودع (Repository Name)</label>
+                <input type="text" id="repoName" name="repoName" required class="w-full input-style" placeholder="مثال: rx-store-gh-pages">
+            </div>
+            <div>
+                <label for="filePath" class="block text-sm font-medium mb-2 text-right">مسار ملف البيانات</label>
+                <input type="text" id="filePath" name="filePath" value="store_data.js" required class="w-full input-style" disabled>
+            </div>
+            
+            <div class="flex justify-start pt-4">
+                <button type="submit" class="flex items-center px-6 py-2 bg-success-green text-white rounded-lg hover:bg-green-600 transition shadow-md font-semibold">
+                    <span class="ml-2">حفظ الإعدادات</span>
+                    <i data-lucide="save" class="w-5 h-5"></i>
+                </button>
+                <button type="button" onclick="clearSettings()" class="flex items-center px-6 py-2 bg-danger-red text-white rounded-lg hover:bg-red-600 transition shadow-md font-semibold mr-2">
+                    <span class="ml-2">مسح الإعدادات</span>
+                    <i data-lucide="trash" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </form>
+    </section>
 
-
-        <header class="mb-10 border-b border-gray-200 pb-4">
-            <h1 class="text-3xl font-bold text-primary-dark flex items-center">
-                <i data-lucide="gem" class="w-7 h-7 mr-3 text-primary-yellow fill-primary-yellow/50"></i>
-                Rx Store Unified Administration
-            </h1>
-            <p class="text-text-secondary mt-1">Manage Categories, Products, and Services in one place.</p>
-        </header>
+    <section class="p-6 bg-card-bg rounded-xl shadow-lg border border-gray-100">
+        <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2 flex items-center justify-end">
+            <span class="ml-2">عرض البيانات المنشورة حالياً</span>
+            <i data-lucide="eye" class="w-6 h-6 text-primary-dark"></i>
+        </h2>
         
-        <div id="unlocked-content-wrapper" class="hidden">
-            <div class="mb-6 flex space-x-2 border-b border-gray-200">
-                <button class="tab-button" data-tab="categories" onclick="switchTab('categories')">Categories</button>
-                <button class="tab-button" data-tab="products" onclick="switchTab('products')">Products</button>
-                <button class="tab-button" data-tab="services" onclick="switchTab('services')">Services</button>
-            </div>
-    
-            <div id="content-area" class="space-y-10">
-            </div>
+        <div class="text-right mb-4">
+             <p id="status-message" class="text-text-secondary">يرجى حفظ التوكن أولاً ثم النقر على زر التحميل.</p>
         </div>
+        
+        <button id="load-data-btn" onclick="fetchAndDisplayPublishedData()" disabled class="flex items-center px-6 py-2 bg-primary-yellow text-primary-dark rounded-lg hover:bg-yellow-500 transition shadow-md font-semibold justify-end">
+             <span class="ml-2">تحميل البيانات من GitHub</span>
+             <i data-lucide="refresh-ccw" class="w-5 h-5"></i>
+        </button>
 
-        <div id="locked-content-overlay" class="lock-overlay">
-            <div class="space-y-4">
-                <i data-lucide="lock" class="w-12 h-12 mx-auto text-primary-dark"></i>
-                <h3 class="text-xl font-bold text-primary-dark">Admin Panel Locked</h3>
-                <p class="text-text-secondary">أدخل التوكن واسم المالك والمستودع في حقول الإعدادات أعلاه للمتابعة.</p>
+        <div id="data-display" class="mt-6">
             </div>
-        </div>
-    </div>
+    </section>
 
-    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center hidden" role="dialog" aria-modal="true">
-        <div class="bg-white p-6 rounded-xl shadow-2xl w-11/12 max-w-md border border-gray-200">
-            <h3 class="text-xl font-bold mb-4 text-danger-red">Confirm Deletion</h3>
-            <p id="confirmation-message" class="text-text-secondary mb-6">Are you sure you want to delete this item? This action cannot be undone.</p>
-            <div class="flex justify-end space-x-4">
-                <button onclick="closeModal('confirmation-modal')" class="px-4 py-2 bg-gray-200 text-primary-dark rounded-lg hover:bg-gray-300 transition">Cancel</button>
-                <button id="confirm-delete-btn" class="px-4 py-2 bg-danger-red text-white rounded-lg hover:bg-red-600 transition">Confirm Delete</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="message-box" class="fixed bottom-4 right-4 z-50"></div>
+    <div id="message-box" class="fixed bottom-4 left-4 z-50"></div>
 
     <script>
         lucide.createIcons();
-    </script>
-
-    <script>
-        // --- MOCK INITIAL DATA ---
-        let storeData = {
-            categories: [
-                { id: 'c-101', name: 'Digital Courses' },
-                { id: 'c-102', name: 'E-Books & Guides' }
-            ],
-            products: [
-                { id: 'p-1001', categoryId: 'c-101', title: 'Advanced Backend Development Bootcamp', price: 299.00, description: 'A comprehensive, 10-module course covering Node.js, databases, and API security.', imageUrls: [ 'https://placehold.co/600x400/FFD700/1C1C1C?text=BACKEND+COURSE+COVER' ], buyUrl: 'https://checkout.example.com/backend-bootcamp' }
-            ],
-            services: [
-                { "id": "s-2001", "title": "Custom Mobile App Development", "price": 1800.00, "description": "Full-cycle development of a native or cross-platform mobile application, tailored to your business needs.", "coverUrl": "https://placehold.co/400x300/1C1C1C/FFFFFF?text=Mobile+App+Service", "provider": "Rx Development Team", "deliverables": "Full source code, 3 months post-launch support, and app store submission assistance.", "portfolioImages": [], "contacts": { "telegram": "https://t.me/rxdev", "whatsapp": "https://wa.me/123456789", "instagram": "https://instagram.com/rxdev" } }
-            ]
-        }; 
-
-        const contentArea = document.getElementById('content-area');
-        
-        // ----------------------------------------------------------------
-        // 1. SECURITY & GitHub Publishing Logic
-        // ----------------------------------------------------------------
-
-        const PATH_TO_DATA_FILE = 'store_data.js';
-        let activeTab = 'products'; 
-        
-        /**
-         * يتحقق من حقول التوكن وبيانات المستودع ويقوم بفتح أو قفل لوحة التحكم بناءً عليها.
-         */
-        function checkAndLockPanel() {
-            const token = document.getElementById('github-token').value.trim();
-            const owner = document.getElementById('github-owner').value.trim();
-            const repo = document.getElementById('github-repo').value.trim();
-            const lockedContent = document.getElementById('locked-content-overlay');
-            const unlockedContent = document.getElementById('unlocked-content-wrapper');
-            const statusEl = document.getElementById('config-status');
-
-            // إذا كانت جميع الحقول الأساسية مملوءة، يتم فتح اللوحة
-            if (token && owner && repo) {
-                lockedContent.classList.add('hidden');
-                unlockedContent.classList.remove('hidden');
-                statusEl.textContent = '✅ الإعدادات كاملة. لوحة التحكم مفتوحة.';
-                statusEl.className = 'mt-3 text-sm text-success-green';
-                
-                // إعادة عرض التاب النشط لضمان تحميل المحتوى
-                switchTab(activeTab); 
-            } else {
-                lockedContent.classList.remove('hidden');
-                unlockedContent.classList.add('hidden');
-                statusEl.textContent = '❌ يرجى ملء التوكن، واسم المالك، والمستودع لفتح لوحة التحكم.';
-                statusEl.className = 'mt-3 text-sm text-danger-red';
-            }
-        }
-
-        /**
-         * تنشر الحالة الحالية لـ storeData إلى GitHub باستخدام التوكن المُدخل.
-         * @param {string} commitMessage - رسالة الالتزام (Commit) إلى Git.
-         */
-        async function publishToGitHub(commitMessage) {
-            // جلب البيانات مباشرةً من حقول الإدخال عند النشر
-            const config = {
-                token: document.getElementById('github-token').value.trim(),
-                owner: document.getElementById('github-owner').value.trim(),
-                repo: document.getElementById('github-repo').value.trim(),
-            };
-
-            const statusEl = document.getElementById('config-status');
-            statusEl.textContent = 'يتم النشر... يرجى الانتظار.';
-            statusEl.className = 'mt-3 text-sm text-primary-yellow animate-pulse';
-
-            // إعادة فحص الأمن قبل النشر
-            if (!config.token || !config.owner || !config.repo) {
-                statusEl.textContent = 'فشل النشر: يجب إدخال التوكن واسم المالك واسم المستودع.';
-                statusEl.className = 'mt-3 text-sm text-danger-red';
-                checkAndLockPanel(); // قفل اللوحة إذا كانت البيانات غير مكتملة
-                return;
-            }
-
-            try {
-                // 1. تجهيز المحتوى الجديد
-                const dataString = JSON.stringify(storeData, null, 4);
-                const fileContent = `/**
- * Consolidated Store Data (Generated)
- * This file is generated and updated by the Admin Panel (admin_panel.html)
- * Last Updated: ${new Date().toISOString()}
- */
-const storeData = ${dataString};
-
-// Exporting the object for use in other files (if using modules)
-export default storeData;
-`;
-                // تحويل المحتوى إلى Base64
-                const contentBase64 = btoa(unescape(encodeURIComponent(fileContent)));
-
-                // 2. الحصول على SHA الحالي للملف (مطلوب للتحديث)
-                const shaUrl = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${PATH_TO_DATA_FILE}`;
-                let currentSha = null;
-
-                const shaResponse = await fetch(shaUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `token ${config.token}`,
-                        'Accept': 'application/vnd.github.v3+json`
-                    }
-                });
-
-                if (shaResponse.ok) {
-                    const shaData = await shaResponse.json();
-                    currentSha = shaData.sha;
-                } else if (shaResponse.status !== 404) {
-                     throw new Error(`Failed to get file SHA: ${shaResponse.status} - ${shaResponse.statusText}`);
-                }
-                
-                // 3. إرسال التغييرات (PUT Request)
-                const commitBody = {
-                    message: commitMessage,
-                    content: contentBase64,
-                    sha: currentSha,
-                    branch: 'main'
-                };
-                
-                const updateResponse = await fetch(shaUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${config.token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(commitBody)
-                });
-
-                if (!updateResponse.ok) {
-                    const errorDetails = await updateResponse.json();
-                    throw new Error(`GitHub API Error: ${updateResponse.status} - ${errorDetails.message}`);
-                }
-
-                statusEl.textContent = `تم النشر بنجاح إلى GitHub! Commit: ${commitMessage}`;
-                statusEl.className = 'mt-3 text-sm text-success-green';
-                
-            } catch (error) {
-                console.error("Publishing Error:", error);
-                statusEl.textContent = `فشل النشر: ${error.message}. تحقق من التوكن وصلاحياته.`;
-                statusEl.className = 'mt-3 text-sm text-danger-red';
-            }
-        }
-
 
         // ----------------------------------------------------------------
-        // 2. Utility Functions (Notifications, Modals, IDs)
+        // 1. Utility Functions (Notifications)
         // ----------------------------------------------------------------
-        
+
         function showNotification(message, type = 'info') {
             const container = document.getElementById('message-box');
             const notif = document.createElement('div');
@@ -309,17 +146,17 @@ export default storeData;
 
             if (type === 'success') {
                 colorClass = 'bg-success-green';
-                icon = '<i data-lucide="check-circle" class="w-5 h-5 mr-2"></i>';
+                icon = '<i data-lucide="check-circle" class="w-5 h-5 ml-2"></i>';
             } else if (type === 'error') {
                 colorClass = 'bg-danger-red';
-                icon = '<i data-lucide="x-circle" class="w-5 h-5 mr-2"></i>';
+                icon = '<i data-lucide="x-circle" class="w-5 h-5 ml-2"></i>';
             } else {
                 colorClass = 'bg-primary-yellow text-primary-dark';
-                icon = '<i data-lucide="info" class="w-5 h-5 mr-2"></i>';
+                icon = '<i data-lucide="info" class="w-5 h-5 ml-2"></i>';
             }
 
-            notif.className = `p-4 rounded-lg shadow-lg flex items-center mb-3 transition duration-300 opacity-100 ${colorClass} ${type === 'info' ? 'text-primary-dark' : 'text-white'}`;
-            notif.innerHTML = `${icon}<span>${message}</span>`;
+            notif.className = `p-4 rounded-lg shadow-lg flex items-center mb-3 transition duration-300 opacity-100 ${colorClass} ${type === 'info' ? 'text-primary-dark' : 'text-white'} text-right`;
+            notif.innerHTML = `<span>${message}</span>${icon}`;
             
             container.prepend(notif);
             lucide.createIcons(notif); 
@@ -330,526 +167,129 @@ export default storeData;
             }, 3000);
         }
 
-        function closeModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
+        // ----------------------------------------------------------------
+        // 2. Settings Logic (Token, Username, Repo)
+        // ----------------------------------------------------------------
+
+        const form = document.getElementById('settings-form');
+        const loadDataBtn = document.getElementById('load-data-btn');
+        const githubTokenInput = document.getElementById('githubToken');
+        const githubUsernameInput = document.getElementById('githubUsername');
+        const repoNameInput = document.getElementById('repoName');
+        const statusMessage = document.getElementById('status-message');
+
+        function loadSettings() {
+            githubTokenInput.value = localStorage.getItem('githubToken') || '';
+            githubUsernameInput.value = localStorage.getItem('githubUsername') || '';
+            repoNameInput.value = localStorage.getItem('repoName') || '';
+            
+            checkSettingsStatus();
         }
         
-        function showDeleteConfirmation(type, id, title, productCount = 0) {
-            const modal = document.getElementById('confirmation-modal');
-            const messageEl = document.getElementById('confirmation-message');
-            const confirmBtn = document.getElementById('confirm-delete-btn');
-            
-            let message = `Are you sure you want to delete **${title}**? This action cannot be undone.`;
-            if (type === 'category' && productCount > 0) {
-                message += `<br><span class="font-bold text-danger-red">WARNING:</span> This category has ${productCount} products which will become uncategorized.`;
-            }
-            
-            messageEl.innerHTML = message;
-            confirmBtn.onclick = () => handleDeleteConfirmed(type, id, title);
-            
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+        function checkSettingsStatus() {
+            const isReady = githubTokenInput.value && githubUsernameInput.value && repoNameInput.value;
+            loadDataBtn.disabled = !isReady;
+            statusMessage.innerHTML = isReady 
+                ? '✅ الإعدادات كاملة. انقر على زر "تحميل البيانات" لعرض المنشور حالياً.'
+                : '❌ يرجى ملء جميع الحقول وحفظ الإعدادات لتمكين تحميل البيانات.';
         }
 
-        function handleDeleteConfirmed(type, id, title) {
-            closeModal('confirmation-modal');
-
-            if (type === 'category') {
-                storeData.categories = storeData.categories.filter(c => c.id !== id);
-                storeData.products = storeData.products.map(p => {
-                    if (p.categoryId === id) {
-                        return { ...p, categoryId: null }; 
-                    }
-                    return p;
-                });
-                publishToGitHub(`Delete category: ${title}. Products were uncategorized.`);
-                renderCategoriesView();
-            } else if (type === 'product') {
-                storeData.products = storeData.products.filter(p => p.id !== id);
-                publishToGitHub(`Delete product: ${title}`);
-                renderProductsView();
-            } else if (type === 'service') {
-                storeData.services = storeData.services.filter(s => s.id !== id);
-                publishToGitHub(`Delete service: ${title}`);
-                renderServicesView();
-            }
-        }
-
-        function generateId(prefix = 'id-') {
-            return prefix + Date.now() + '-' + Math.floor(Math.random() * 1000);
-        }
-
-        // ----------------------------------------------------------------
-        // 3. Tab Management
-        // ----------------------------------------------------------------
-
-        function switchTab(tabName) {
-            // تحقق أمني قبل التبديل: لا تقم بالتبديل إذا كانت اللوحة مقفلة
-            if (document.getElementById('locked-content-overlay').classList.contains('hidden')) {
-                activeTab = tabName;
-                
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.classList.remove('active');
-                    if (btn.getAttribute('data-tab') === tabName) {
-                        btn.classList.add('active');
-                    }
-                });
-    
-                if (tabName === 'categories') {
-                    renderCategoriesView();
-                } else if (tabName === 'products') {
-                    renderProductsView();
-                } else if (tabName === 'services') {
-                    renderServicesView();
-                }
-            }
-        }
-        
-        // ----------------------------------------------------------------
-        // 4. CATEGORIES Logic
-        // ----------------------------------------------------------------
-        
-        function renderCategoriesView() {
-            contentArea.innerHTML = `
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold">Category Management</h2>
-                    <button onclick="renderCategoryForm()" class="flex items-center px-4 py-2 bg-success-green rounded-lg text-white hover:bg-green-600 transition shadow-md">
-                        <i data-lucide="folder-plus" class="w-5 h-5 mr-2"></i>
-                        Add New Category
-                    </button>
-                </div>
-                <div class="bg-card-bg rounded-xl shadow-lg border border-gray-100 overflow-x-auto">
-                    ${renderCategoriesTable()}
-                </div>
-                <div id="category-form-container" class="mt-8 hidden"></div>
-            `;
-            lucide.createIcons();
-        }
-
-        function renderCategoriesTable() {
-            if (storeData.categories.length === 0) {
-                return '<p class="p-6 text-center text-text-secondary">No categories defined yet.</p>';
-            }
-            return `
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Products Count</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        ${storeData.categories.map(c => {
-                            const productCount = storeData.products.filter(p => p.categoryId === c.id).length;
-                            return `
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-xs text-text-secondary">${c.id}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap font-medium">${c.name}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${productCount}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-                                        <button onclick="renderCategoryForm('${c.id}')" class="text-primary-yellow hover:text-yellow-700 mr-3 font-semibold">Edit</button>
-                                        <button onclick="showDeleteConfirmation('category', '${c.id}', '${c.name}', ${productCount})" class="text-danger-red hover:text-red-600">Delete</button>
-                                    </td>
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        function renderCategoryForm(categoryId = null) {
-            const container = document.getElementById('category-form-container');
-            container.classList.remove('hidden');
-
-            const isEdit = categoryId !== null;
-            const category = isEdit ? storeData.categories.find(c => c.id === categoryId) : {};
-
-            container.innerHTML = `
-                <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2">${isEdit ? `Edit Category: ${category.name}` : 'Add New Category'}</h2>
-                <form id="category-form" class="space-y-6 bg-card-bg p-6 rounded-xl shadow-lg border border-gray-100">
-                    <input type="hidden" name="id" value="${category.id || generateId('c-')}">
-
-                    <div>
-                        <label for="name" class="block text-sm font-medium mb-2">Category Name</label>
-                        <input type="text" id="name" name="name" value="${category.name || ''}" required class="w-full input-style">
-                    </div>
-                    
-                    <div class="flex justify-end space-x-4 pt-4">
-                        <button type="button" onclick="document.getElementById('category-form-container').classList.add('hidden'); renderCategoriesView();" class="px-6 py-2 bg-gray-200 text-primary-dark rounded-lg hover:bg-gray-300 transition">Cancel</button>
-                        <button type="submit" class="flex items-center px-6 py-2 bg-primary-yellow text-primary-dark rounded-lg hover:bg-yellow-500 transition shadow-md font-semibold">
-                            <i data-lucide="${isEdit ? 'save' : 'send'}" class="w-5 h-5 mr-2"></i>
-                            ${isEdit ? 'Save Changes' : 'Add Category'}
-                        </button>
-                    </div>
-                </form>
-            `;
-            lucide.createIcons();
-            document.getElementById('category-form').addEventListener('submit', handleCategorySubmit);
-        }
-
-        function handleCategorySubmit(e) {
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
+            localStorage.setItem('githubToken', githubTokenInput.value);
+            localStorage.setItem('githubUsername', githubUsernameInput.value);
+            localStorage.setItem('repoName', repoNameInput.value);
+            showNotification('تم حفظ إعدادات GitHub بنجاح!', 'success');
+            checkSettingsStatus();
+        });
 
-            const isEdit = storeData.categories.some(c => c.id === data.id);
-
-            if (isEdit) {
-                storeData.categories = storeData.categories.map(c => c.id === data.id ? data : c);
-                publishToGitHub(`Update category: ${data.name}`);
-            } else {
-                storeData.categories.push(data);
-                publishToGitHub(`New category added: ${data.name}`);
-            }
-
-            document.getElementById('category-form-container').classList.add('hidden');
-            renderCategoriesView();
+        function clearSettings() {
+             localStorage.removeItem('githubToken');
+             localStorage.removeItem('githubUsername');
+             localStorage.removeItem('repoName');
+             githubTokenInput.value = '';
+             githubUsernameInput.value = '';
+             repoNameInput.value = '';
+             document.getElementById('data-display').innerHTML = ''; // مسح العرض
+             showNotification('تم مسح جميع الإعدادات المحفوظة.', 'info');
+             checkSettingsStatus();
         }
 
-        // ----------------------------------------------------------------
-        // 5. PRODUCTS Logic
-        // ----------------------------------------------------------------
-        
-        function getCategoryName(id) {
-            const category = storeData.categories.find(c => c.id === id);
-            return category ? category.name : 'Uncategorized';
-        }
 
-        function renderProductsView() {
-            if (storeData.categories.length === 0) {
-                 contentArea.innerHTML = `
-                    <div class="p-8 bg-card-bg rounded-xl shadow-lg text-center border border-gray-100">
-                        <i data-lucide="alert-triangle" class="w-8 h-8 mx-auto text-danger-red mb-4"></i>
-                        <h3 class="text-xl font-semibold text-primary-dark">Cannot Add Products</h3>
-                        <p class="text-text-secondary mt-2">Please define at least one category first in the "Categories" tab.</p>
-                        <button onclick="switchTab('categories')" class="mt-4 px-4 py-2 bg-primary-yellow text-primary-dark rounded-lg hover:bg-yellow-500 transition font-semibold">Go to Categories</button>
-                    </div>
-                `;
-                lucide.createIcons();
+        // ----------------------------------------------------------------
+        // 3. Display Published Data Logic
+        // ----------------------------------------------------------------
+
+        async function fetchAndDisplayPublishedData() {
+            const githubToken = localStorage.getItem('githubToken');
+            const username = localStorage.getItem('githubUsername');
+            const repo = localStorage.getItem('repoName');
+            const filePath = 'store_data.js'; // المسار ثابت لملف البيانات
+            const dataDisplay = document.getElementById('data-display');
+            dataDisplay.innerHTML = '<p class="text-center text-primary-yellow">جاري تحميل البيانات...</p>';
+
+            if (!githubToken || !username || !repo) {
+                showNotification('يرجى حفظ إعدادات GitHub أولاً.', 'error');
+                dataDisplay.innerHTML = '';
                 return;
             }
 
-            contentArea.innerHTML = `
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold">Product Management</h2>
-                    <button onclick="renderProductForm()" class="flex items-center px-4 py-2 bg-primary-yellow text-primary-dark rounded-lg hover:bg-yellow-500 transition shadow-md font-semibold">
-                        <i data-lucide="package-plus" class="w-5 h-5 mr-2"></i>
-                        Add New Product
-                    </button>
-                </div>
-                <div class="bg-card-bg rounded-xl shadow-lg border border-gray-100 overflow-x-auto">
-                    ${renderProductsTable()}
-                </div>
-                <div id="product-form-container" class="mt-8 hidden"></div>
-            `;
-            lucide.createIcons();
-        }
+            // يتم جلب محتوى الملف باستخدام GitHub API لضمان جلب آخر نسخة من الفرع الافتراضي
+            const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${filePath}`;
 
-        function renderProductsTable() {
-            if (storeData.products.length === 0) {
-                return '<p class="p-6 text-center text-text-secondary">No products published yet. Start by adding one!</p>';
+            try {
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'Authorization': `token ${githubToken}`,
+                        'Accept': 'application/vnd.github.v3.raw' // لطلب المحتوى الخام مباشرة
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+                }
+
+                // المحتوى الخام (Text) لملف store_data.js
+                const rawContent = await response.text();
+                
+                // البحث عن الجزء الذي يحتوي على JSON (بداية ونهاية storeData = ...)
+                const match = rawContent.match(/const storeData = (\{[\s\S]*?\});/);
+                
+                let dataObject = {};
+                if (match && match[1]) {
+                    // محاولة تحليل JSON
+                    try {
+                        // استخدام eval هو حل سريع هنا ولكنه غير آمن في بيئات الإنتاج غير الموثوقة.
+                        // بما أن المصدر هو ملف المستخدم نفسه، سنستخدمه لتبسيط العملية.
+                        dataObject = (0, eval)(`(${match[1]})`);
+                    } catch (e) {
+                        dataDisplay.innerHTML = '<p class="text-danger-red">❌ خطأ في تحليل محتوى ملف store_data.js. ربما لم يتم نشره بشكل صحيح أو صيغة JSON خاطئة.</p>';
+                        return;
+                    }
+                } else {
+                    dataDisplay.innerHTML = '<p class="text-danger-red">❌ لم يتم العثور على متغير `storeData` في الملف المنشور.</p>';
+                    return;
+                }
+                
+                // عرض البيانات في شكل JSON منسق
+                const formattedJson = JSON.stringify(dataObject, null, 2);
+                dataDisplay.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-3 text-right">محتوى ملف store_data.js الحالي:</h3>
+                    <pre dir="ltr">${formattedJson}</pre>
+                `;
+                showNotification('✅ تم تحميل البيانات المنشورة بنجاح.', 'success');
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+                dataDisplay.innerHTML = `<p class="text-danger-red">❌ فشل التحميل. ${error.message}. تأكد من صلاحية التوكن وتفاصيل المستودع.</p>`;
+                showNotification('فشل في تحميل البيانات. راجع وحدة التحكم.', 'error');
             }
-            return `
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Title</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Category</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Price (USD)</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        ${storeData.products.map(p => `
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap">${p.title}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-success-green">${getCategoryName(p.categoryId)}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-primary-yellow font-bold">$${p.price.toFixed(2)}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-                                        <button onclick="renderProductForm('${p.id}')" class="text-primary-yellow hover:text-yellow-700 mr-3 font-semibold">Edit</button>
-                                        <button onclick="showDeleteConfirmation('product', '${p.id}', '${p.title}')" class="text-danger-red hover:text-red-600">Delete</button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-        
-        function renderProductForm(productId = null) {
-            const container = document.getElementById('product-form-container');
-            container.classList.remove('hidden');
-
-            const isEdit = productId !== null;
-            const product = isEdit ? storeData.products.find(p => p.id === productId) : { imageUrls: [] };
-            
-            const imageUrls = (product.imageUrls || []).join('\n');
-
-            const categoryOptions = storeData.categories.map(c => `
-                <option value="${c.id}" ${product.categoryId === c.id ? 'selected' : ''}>${c.name}</option>
-            `).join('');
-
-            container.innerHTML = `
-                <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2">${isEdit ? `Edit Product: ${product.title}` : 'Add New Product'}</h2>
-                <form id="product-form" class="space-y-6 bg-card-bg p-6 rounded-xl shadow-lg border border-gray-100">
-                    <input type="hidden" name="id" value="${product.id || generateId('p-')}">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="title" class="block text-sm font-medium mb-2">Product Title</label>
-                            <input type="text" id="title" name="title" value="${product.title || ''}" required class="w-full input-style">
-                        </div>
-                        <div>
-                            <label for="categoryId" class="block text-sm font-medium mb-2">Category</label>
-                            <select id="categoryId" name="categoryId" required class="w-full input-style appearance-none bg-no-repeat bg-[right_0.75rem_center] bg-[length:1.5rem_1.5rem] pr-10" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');">
-                                ${categoryOptions}
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="price" class="block text-sm font-medium mb-2">Price (USD)</label>
-                        <input type="number" id="price" name="price" value="${product.price || ''}" required step="0.01" class="w-full input-style">
-                    </div>
-
-                    <div>
-                        <label for="description" class="block text-sm font-medium mb-2">Product Description</label>
-                        <textarea id="description" name="description" rows="4" required class="w-full input-style">${product.description || ''}</textarea>
-                    </div>
-
-                    <div>
-                        <label for="buyUrl" class="block text-sm font-medium mb-2">Purchase/Buy Link (Checkout URL)</label>
-                        <input type="url" id="buyUrl" name="buyUrl" value="${product.buyUrl || ''}" required class="w-full input-style" placeholder="https://checkout.example.com/product">
-                    </div>
-                    
-                    <h3 class="text-lg font-semibold pt-4 border-t border-gray-200">Product Images</h3>
-                    <div>
-                        <label for="imageUrls" class="block text-sm font-medium mb-2">Image URLs (One URL per line)</label>
-                        <textarea id="imageUrls" name="imageUrls" rows="4" class="w-full input-style" placeholder="https://example.com/product-main.jpg\nhttps://example.com/product-screenshot.png">${imageUrls}</textarea>
-                    </div>
-                    
-                    <div class="flex justify-end space-x-4 pt-4">
-                        <button type="button" onclick="document.getElementById('product-form-container').classList.add('hidden'); renderProductsView();" class="px-6 py-2 bg-gray-200 text-primary-dark rounded-lg hover:bg-gray-300 transition">Cancel</button>
-                        <button type="submit" class="flex items-center px-6 py-2 bg-primary-yellow text-primary-dark rounded-lg hover:bg-yellow-500 transition shadow-md font-semibold">
-                            <i data-lucide="${isEdit ? 'save' : 'package-plus'}" class="w-5 h-5 mr-2"></i>
-                            ${isEdit ? 'Save Product' : 'Add Product'}
-                        </button>
-                    </div>
-                </form>
-            `;
-            lucide.createIcons();
-            document.getElementById('product-form').addEventListener('submit', handleProductSubmit);
         }
 
-        function handleProductSubmit(e) {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-
-            // Process image URLs
-            data.imageUrls = data.imageUrls.split('\n').map(url => url.trim()).filter(url => url.length > 0);
-            // Ensure price is a number
-            data.price = parseFloat(data.price);
-            
-            const isEdit = storeData.products.some(p => p.id === data.id);
-
-            if (isEdit) {
-                storeData.products = storeData.products.map(p => p.id === data.id ? data : p);
-                publishToGitHub(`Update product: ${data.title}`);
-            } else {
-                storeData.products.push(data);
-                publishToGitHub(`New product added: ${data.title}`);
-            }
-
-            document.getElementById('product-form-container').classList.add('hidden');
-            renderProductsView();
-        }
-
-        // ----------------------------------------------------------------
-        // 6. SERVICES Logic
-        // ----------------------------------------------------------------
-
-        function renderServicesView() {
-            contentArea.innerHTML = `
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold">Service Management</h2>
-                    <button onclick="renderServiceForm()" class="flex items-center px-4 py-2 bg-success-green rounded-lg text-white hover:bg-green-600 transition shadow-md">
-                        <i data-lucide="wrench-sccrewdriver" class="w-5 h-5 mr-2"></i>
-                        Add New Service
-                    </button>
-                </div>
-                <div class="bg-card-bg rounded-xl shadow-lg border border-gray-100 overflow-x-auto">
-                    ${renderServicesTable()}
-                </div>
-                <div id="service-form-container" class="mt-8 hidden"></div>
-            `;
-            lucide.createIcons();
-        }
-
-        function renderServicesTable() {
-            if (storeData.services.length === 0) {
-                return '<p class="p-6 text-center text-text-secondary">No services defined yet.</p>';
-            }
-            return `
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Title</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Provider</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Price (USD)</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        ${storeData.services.map(s => `
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap">${s.title}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-text-secondary">${s.provider}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-primary-yellow font-bold">$${s.price.toFixed(2)}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-                                        <button onclick="renderServiceForm('${s.id}')" class="text-primary-yellow hover:text-yellow-700 mr-3 font-semibold">Edit</button>
-                                        <button onclick="showDeleteConfirmation('service', '${s.id}', '${s.title}')" class="text-danger-red hover:text-red-600">Delete</button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        function renderServiceForm(serviceId = null) {
-            const container = document.getElementById('service-form-container');
-            container.classList.remove('hidden');
-
-            const isEdit = serviceId !== null;
-            const defaultContacts = { telegram: '', whatsapp: '', instagram: '' };
-            const service = isEdit 
-                ? storeData.services.find(s => s.id === serviceId) 
-                : { contacts: defaultContacts };
-            
-            // Ensure contacts object exists
-            const contacts = service.contacts || defaultContacts;
-            
-            container.innerHTML = `
-                <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2">${isEdit ? `Edit Service: ${service.title}` : 'Add New Service'}</h2>
-                <form id="service-form" class="space-y-6 bg-card-bg p-6 rounded-xl shadow-lg border border-gray-100">
-                    <input type="hidden" name="id" value="${service.id || generateId('s-')}">
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="title" class="block text-sm font-medium mb-2">Service Title</label>
-                            <input type="text" id="title" name="title" value="${service.title || ''}" required class="w-full input-style">
-                        </div>
-                        <div>
-                            <label for="provider" class="block text-sm font-medium mb-2">Provider Name (اسم مقدم الخدمة)</label>
-                            <input type="text" id="provider" name="provider" value="${service.provider || ''}" required class="w-full input-style">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="price" class="block text-sm font-medium mb-2">Price (USD)</label>
-                        <input type="number" id="price" name="price" value="${service.price || ''}" required step="0.01" class="w-full input-style">
-                    </div>
-
-                    <div>
-                        <label for="description" class="block text-sm font-medium mb-2">Service Description (الوصف)</label>
-                        <textarea id="description" name="description" rows="4" required class="w-full input-style">${service.description || ''}</textarea>
-                    </div>
-
-                    <div>
-                        <label for="deliverables" class="block text-sm font-medium mb-2">Deliverables (ما سيحصل عليه العميل)</label>
-                        <textarea id="deliverables" name="deliverables" rows="3" class="w-full input-style" placeholder="مثال: Full source code, 3 months support">${service.deliverables || ''}</textarea>
-                    </div>
-
-                    <div>
-                        <label for="coverUrl" class="block text-sm font-medium mb-2">Cover Image URL (صورة الغلاف)</label>
-                        <input type="url" id="coverUrl" name="coverUrl" value="${service.coverUrl || ''}" required class="w-full input-style" placeholder="https://example.com/service-cover.jpg">
-                    </div>
-                    
-                    <h3 class="text-lg font-semibold pt-4 border-t border-gray-200">Contact Links (روابط التواصل)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            <label for="telegram" class="block text-sm font-medium mb-2">Telegram URL</label>
-                            <input type="url" id="telegram" name="telegram" value="${contacts.telegram || ''}" class="w-full input-style" placeholder="https://t.me/username">
-                        </div>
-                        <div>
-                            <label for="whatsapp" class="block text-sm font-medium mb-2">WhatsApp URL</label>
-                            <input type="url" id="whatsapp" name="whatsapp" value="${contacts.whatsapp || ''}" class="w-full input-style" placeholder="https://wa.me/123456789">
-                        </div>
-                        <div>
-                            <label for="instagram" class="block text-sm font-medium mb-2">Instagram URL</label>
-                            <input type="url" id="instagram" name="instagram" value="${contacts.instagram || ''}" class="w-full input-style" placeholder="https://instagram.com/username">
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-4 pt-4">
-                        <button type="button" onclick="document.getElementById('service-form-container').classList.add('hidden'); renderServicesView();" class="px-6 py-2 bg-gray-200 text-primary-dark rounded-lg hover:bg-gray-300 transition">Cancel</button>
-                        <button type="submit" class="flex items-center px-6 py-2 bg-success-green text-white rounded-lg hover:bg-green-700 transition shadow-md font-semibold">
-                            <i data-lucide="${isEdit ? 'save' : 'wrench-sccrewdriver'}" class="w-5 h-5 mr-2"></i>
-                            ${isEdit ? 'Save Service' : 'Add Service'}
-                        </button>
-                    </div>
-                </form>
-            `;
-            lucide.createIcons();
-            document.getElementById('service-form').addEventListener('submit', handleServiceSubmit);
-        }
-
-        function handleServiceSubmit(e) {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-
-            // Structure contact links correctly
-            const contacts = {
-                telegram: data.telegram || '',
-                whatsapp: data.whatsapp || '',
-                instagram: data.instagram || ''
-            };
-            
-            // Clean up the main data object
-            delete data.telegram;
-            delete data.whatsapp;
-            delete data.instagram;
-            
-            // Re-add contacts and ensure price is a number
-            data.contacts = contacts;
-            data.price = parseFloat(data.price);
-
-            const isEdit = storeData.services.some(s => s.id === data.id);
-
-            if (isEdit) {
-                storeData.services = storeData.services.map(s => s.id === data.id ? data : s);
-                publishToGitHub(`Update service: ${data.title}`);
-            } else {
-                storeData.services.push(data);
-                publishToGitHub(`New service added: ${data.title}`);
-            }
-
-            document.getElementById('service-form-container').classList.add('hidden');
-            renderServicesView();
-        }
-
-        // ----------------------------------------------------------------
-        // 7. Initialization
-        // ----------------------------------------------------------------
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            // إضافة مستمعي الأحداث لحقول الإعدادات لفتح/قفل اللوحة
-            ['github-token', 'github-owner', 'github-repo'].forEach(id => {
-                document.getElementById(id).addEventListener('input', checkAndLockPanel);
-            });
-            
-            // التحقق الأولي عند تحميل الصفحة
-            checkAndLockPanel();
-        });
+        // **********************************
+        // ******* INITIALIZATION ***********
+        // **********************************
+        window.onload = loadSettings;
 
     </script>
 </body>
