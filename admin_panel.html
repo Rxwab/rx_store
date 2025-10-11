@@ -60,11 +60,54 @@
             border-bottom: 3px solid var(--tw-colors-primary-yellow);
             color: var(--tw-colors-primary-dark);
         }
+        /* Style for the lock screen overlay */
+        .lock-overlay {
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #fcfcfc;
+            border: 2px dashed #FFD700;
+            border-radius: 1rem;
+            padding: 2rem;
+        }
     </style>
 </head>
 
 <body class="min-h-screen flex">
     <div class="flex-grow p-4 md:p-10">
+
+        <div class="bg-card-bg p-6 rounded-xl shadow-lg mb-10 border border-primary-yellow/30">
+            <h2 class="text-xl font-bold text-primary-dark mb-4 flex items-center">
+                <i data-lucide="github" class="w-6 h-6 mr-2 text-primary-dark"></i>
+                GitHub Publishing Configuration
+            </h2>
+            <p class="text-sm text-danger-red font-semibold mb-4">
+                ⚠️ **الأمان:** يجب إدخال التوكن، واسم المالك (Owner)، واسم المستودع (Repo) لفتح لوحة التحكم وبدء الإدارة والنشر.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="github-token" class="block text-sm font-medium text-text-dark mb-1">GitHub Personal Access Token (PAT)</label>
+                    <input type="password" id="github-token" placeholder="أدخل التوكن (PAT) هنا" class="input-style w-full">
+                </div>
+                <div>
+                    <label for="github-owner" class="block text-sm font-medium text-text-dark mb-1">Repository Owner (اسم المستخدم)</label>
+                    <input type="text" id="github-owner" placeholder="مثال: Rxwab" class="input-style w-full" value="Rxwab">
+                </div>
+                <div>
+                    <label for="github-repo" class="block text-sm font-medium text-text-dark mb-1">Repository Name (اسم المستودع)</label>
+                    <input type="text" id="github-repo" placeholder="مثال: rx_store" class="input-style w-full" value="rx_store">
+                </div>
+                <div>
+                    <label for="github-path" class="block text-sm font-medium text-text-dark mb-1">مسار ملف البيانات</label>
+                    <input type="text" id="github-path" value="store_data.js" class="w-full input-style" readonly>
+                </div>
+            </div>
+            <p id="config-status" class="mt-3 text-sm text-danger-red">يرجى ملء الحقول لفتح لوحة التحكم.</p>
+        </div>
+
+
         <header class="mb-10 border-b border-gray-200 pb-4">
             <h1 class="text-3xl font-bold text-primary-dark flex items-center">
                 <i data-lucide="gem" class="w-7 h-7 mr-3 text-primary-yellow fill-primary-yellow/50"></i>
@@ -72,15 +115,25 @@
             </h1>
             <p class="text-text-secondary mt-1">Manage Categories, Products, and Services in one place.</p>
         </header>
-
-        <div class="mb-6 flex space-x-2 border-b border-gray-200">
-            <button class="tab-button" data-tab="categories" onclick="switchTab('categories')">Categories</button>
-            <button class="tab-button" data-tab="products" onclick="switchTab('products')">Products</button>
-            <button class="tab-button" data-tab="services" onclick="switchTab('services')">Services</button>
+        
+        <div id="unlocked-content-wrapper" class="hidden">
+            <div class="mb-6 flex space-x-2 border-b border-gray-200">
+                <button class="tab-button" data-tab="categories" onclick="switchTab('categories')">Categories</button>
+                <button class="tab-button" data-tab="products" onclick="switchTab('products')">Products</button>
+                <button class="tab-button" data-tab="services" onclick="switchTab('services')">Services</button>
+            </div>
+    
+            <div id="content-area" class="space-y-10">
+            </div>
         </div>
 
-        <div id="content-area" class="space-y-10">
+        <div id="locked-content-overlay" class="lock-overlay">
+            <div class="space-y-4">
+                <i data-lucide="lock" class="w-12 h-12 mx-auto text-primary-dark"></i>
+                <h3 class="text-xl font-bold text-primary-dark">Admin Panel Locked</h3>
+                <p class="text-text-secondary">أدخل التوكن واسم المالك والمستودع في حقول الإعدادات أعلاه للمتابعة.</p>
             </div>
+        </div>
     </div>
 
     <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center hidden" role="dialog" aria-modal="true">
@@ -108,74 +161,146 @@
                 { id: 'c-102', name: 'E-Books & Guides' }
             ],
             products: [
-                {
-                    id: 'p-1001',
-                    categoryId: 'c-101',
-                    title: 'Advanced Backend Development Bootcamp',
-                    price: 299.00,
-                    description: 'A comprehensive, 10-module course covering Node.js, databases, and API security.',
-                    imageUrls: [
-                        'https://placehold.co/600x400/FFD700/1C1C1C?text=BACKEND+COURSE+COVER'
-                    ],
-                    buyUrl: 'https://checkout.example.com/backend-bootcamp'
-                }
+                { id: 'p-1001', categoryId: 'c-101', title: 'Advanced Backend Development Bootcamp', price: 299.00, description: 'A comprehensive, 10-module course covering Node.js, databases, and API security.', imageUrls: [ 'https://placehold.co/600x400/FFD700/1C1C1C?text=BACKEND+COURSE+COVER' ], buyUrl: 'https://checkout.example.com/backend-bootcamp' }
             ],
             services: [
-                {
-                    "id": "s-2001",
-                    "title": "Custom Mobile App Development",
-                    "price": 1800.00,
-                    "description": "Full-cycle development of a native or cross-platform mobile application, tailored to your business needs.",
-                    "coverUrl": "https://placehold.co/400x300/1C1C1C/FFFFFF?text=MOBILE+DEV+SERVICE",
-                    "provider": "Rx Development Team", // ADDED: Provider Name
-                    "deliverables": "Full source code, 3 months post-launch support, and app store submission.", // ADDED: Deliverables
-                    "portfolioImages": [
-                        "https://placehold.co/600x400/4B5563/FFFFFF?text=App+Design+Mockup"
-                    ],
-                    "contacts": {
-                        "whatsapp": "https://wa.me/1234567890",
-                        "telegram": "dev_telegram_contact"
-                    }
-                }
+                { "id": "s-2001", "title": "Custom Mobile App Development", "price": 1800.00, "description": "Full-cycle development of a native or cross-platform mobile application, tailored to your business needs.", "coverUrl": "https://placehold.co/400x300/1C1C1C/FFFFFF?text=Mobile+App+Service", "provider": "Rx Development Team", "deliverables": "Full source code, 3 months post-launch support, and app store submission assistance.", "portfolioImages": [], "contacts": { "telegram": "https://t.me/rxdev", "whatsapp": "https://wa.me/123456789", "instagram": "https://instagram.com/rxdev" } }
             ]
         }; 
 
         const contentArea = document.getElementById('content-area');
         
         // ----------------------------------------------------------------
-        // 1. GitHub File Generation and Publish Logic
+        // 1. SECURITY & GitHub Publishing Logic
         // ----------------------------------------------------------------
+
+        const PATH_TO_DATA_FILE = 'store_data.js';
+        let activeTab = 'products'; 
         
-        function generateStoreFileContent() {
-            const dataString = JSON.stringify(storeData, null, 4); 
-            return `/**
- * Consolidated Store Data (English)
+        /**
+         * يتحقق من حقول التوكن وبيانات المستودع ويقوم بفتح أو قفل لوحة التحكم بناءً عليها.
+         */
+        function checkAndLockPanel() {
+            const token = document.getElementById('github-token').value.trim();
+            const owner = document.getElementById('github-owner').value.trim();
+            const repo = document.getElementById('github-repo').value.trim();
+            const lockedContent = document.getElementById('locked-content-overlay');
+            const unlockedContent = document.getElementById('unlocked-content-wrapper');
+            const statusEl = document.getElementById('config-status');
+
+            // إذا كانت جميع الحقول الأساسية مملوءة، يتم فتح اللوحة
+            if (token && owner && repo) {
+                lockedContent.classList.add('hidden');
+                unlockedContent.classList.remove('hidden');
+                statusEl.textContent = '✅ الإعدادات كاملة. لوحة التحكم مفتوحة.';
+                statusEl.className = 'mt-3 text-sm text-success-green';
+                
+                // إعادة عرض التاب النشط لضمان تحميل المحتوى
+                switchTab(activeTab); 
+            } else {
+                lockedContent.classList.remove('hidden');
+                unlockedContent.classList.add('hidden');
+                statusEl.textContent = '❌ يرجى ملء التوكن، واسم المالك، والمستودع لفتح لوحة التحكم.';
+                statusEl.className = 'mt-3 text-sm text-danger-red';
+            }
+        }
+
+        /**
+         * تنشر الحالة الحالية لـ storeData إلى GitHub باستخدام التوكن المُدخل.
+         * @param {string} commitMessage - رسالة الالتزام (Commit) إلى Git.
+         */
+        async function publishToGitHub(commitMessage) {
+            // جلب البيانات مباشرةً من حقول الإدخال عند النشر
+            const config = {
+                token: document.getElementById('github-token').value.trim(),
+                owner: document.getElementById('github-owner').value.trim(),
+                repo: document.getElementById('github-repo').value.trim(),
+            };
+
+            const statusEl = document.getElementById('config-status');
+            statusEl.textContent = 'يتم النشر... يرجى الانتظار.';
+            statusEl.className = 'mt-3 text-sm text-primary-yellow animate-pulse';
+
+            // إعادة فحص الأمن قبل النشر
+            if (!config.token || !config.owner || !config.repo) {
+                statusEl.textContent = 'فشل النشر: يجب إدخال التوكن واسم المالك واسم المستودع.';
+                statusEl.className = 'mt-3 text-sm text-danger-red';
+                checkAndLockPanel(); // قفل اللوحة إذا كانت البيانات غير مكتملة
+                return;
+            }
+
+            try {
+                // 1. تجهيز المحتوى الجديد
+                const dataString = JSON.stringify(storeData, null, 4);
+                const fileContent = `/**
+ * Consolidated Store Data (Generated)
  * This file is generated and updated by the Admin Panel (admin_panel.html)
+ * Last Updated: ${new Date().toISOString()}
  */
 const storeData = ${dataString};
 
-// Exporting the object for use in other files
+// Exporting the object for use in other files (if using modules)
 export default storeData;
 `;
+                // تحويل المحتوى إلى Base64
+                const contentBase64 = btoa(unescape(encodeURIComponent(fileContent)));
+
+                // 2. الحصول على SHA الحالي للملف (مطلوب للتحديث)
+                const shaUrl = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${PATH_TO_DATA_FILE}`;
+                let currentSha = null;
+
+                const shaResponse = await fetch(shaUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `token ${config.token}`,
+                        'Accept': 'application/vnd.github.v3+json`
+                    }
+                });
+
+                if (shaResponse.ok) {
+                    const shaData = await shaResponse.json();
+                    currentSha = shaData.sha;
+                } else if (shaResponse.status !== 404) {
+                     throw new Error(`Failed to get file SHA: ${shaResponse.status} - ${shaResponse.statusText}`);
+                }
+                
+                // 3. إرسال التغييرات (PUT Request)
+                const commitBody = {
+                    message: commitMessage,
+                    content: contentBase64,
+                    sha: currentSha,
+                    branch: 'main'
+                };
+                
+                const updateResponse = await fetch(shaUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${config.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(commitBody)
+                });
+
+                if (!updateResponse.ok) {
+                    const errorDetails = await updateResponse.json();
+                    throw new Error(`GitHub API Error: ${updateResponse.status} - ${errorDetails.message}`);
+                }
+
+                statusEl.textContent = `تم النشر بنجاح إلى GitHub! Commit: ${commitMessage}`;
+                statusEl.className = 'mt-3 text-sm text-success-green';
+                
+            } catch (error) {
+                console.error("Publishing Error:", error);
+                statusEl.textContent = `فشل النشر: ${error.message}. تحقق من التوكن وصلاحياته.`;
+                statusEl.className = 'mt-3 text-sm text-danger-red';
+            }
         }
 
-        async function publishToGitHub(commitMessage) {
-            const fileContent = generateStoreFileContent();
-            const filePath = 'store_data.js';
-
-            // --- START: GITHUB API MOCK ---
-            // Replace this with your actual GitHub API call.
-            console.log(`[GitHub API MOCK] Publishing file: ${filePath} with message: ${commitMessage}`);
-            
-            await new Promise(resolve => setTimeout(resolve, 500)); 
-            showNotification(`Data published successfully! File: ${filePath}`, 'success');
-            // --- END: GITHUB API MOCK ---
-        }
 
         // ----------------------------------------------------------------
         // 2. Utility Functions (Notifications, Modals, IDs)
         // ----------------------------------------------------------------
-
+        
         function showNotification(message, type = 'info') {
             const container = document.getElementById('message-box');
             const notif = document.createElement('div');
@@ -213,38 +338,81 @@ export default storeData;
             }
         }
         
+        function showDeleteConfirmation(type, id, title, productCount = 0) {
+            const modal = document.getElementById('confirmation-modal');
+            const messageEl = document.getElementById('confirmation-message');
+            const confirmBtn = document.getElementById('confirm-delete-btn');
+            
+            let message = `Are you sure you want to delete **${title}**? This action cannot be undone.`;
+            if (type === 'category' && productCount > 0) {
+                message += `<br><span class="font-bold text-danger-red">WARNING:</span> This category has ${productCount} products which will become uncategorized.`;
+            }
+            
+            messageEl.innerHTML = message;
+            confirmBtn.onclick = () => handleDeleteConfirmed(type, id, title);
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function handleDeleteConfirmed(type, id, title) {
+            closeModal('confirmation-modal');
+
+            if (type === 'category') {
+                storeData.categories = storeData.categories.filter(c => c.id !== id);
+                storeData.products = storeData.products.map(p => {
+                    if (p.categoryId === id) {
+                        return { ...p, categoryId: null }; 
+                    }
+                    return p;
+                });
+                publishToGitHub(`Delete category: ${title}. Products were uncategorized.`);
+                renderCategoriesView();
+            } else if (type === 'product') {
+                storeData.products = storeData.products.filter(p => p.id !== id);
+                publishToGitHub(`Delete product: ${title}`);
+                renderProductsView();
+            } else if (type === 'service') {
+                storeData.services = storeData.services.filter(s => s.id !== id);
+                publishToGitHub(`Delete service: ${title}`);
+                renderServicesView();
+            }
+        }
+
         function generateId(prefix = 'id-') {
-            return prefix + Date.now() + '-' + Math.floor(Math.random() * 100);
+            return prefix + Date.now() + '-' + Math.floor(Math.random() * 1000);
         }
 
         // ----------------------------------------------------------------
         // 3. Tab Management
         // ----------------------------------------------------------------
-        let activeTab = 'products'; 
 
         function switchTab(tabName) {
-            activeTab = tabName;
-            
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('data-tab') === tabName) {
-                    btn.classList.add('active');
+            // تحقق أمني قبل التبديل: لا تقم بالتبديل إذا كانت اللوحة مقفلة
+            if (document.getElementById('locked-content-overlay').classList.contains('hidden')) {
+                activeTab = tabName;
+                
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-tab') === tabName) {
+                        btn.classList.add('active');
+                    }
+                });
+    
+                if (tabName === 'categories') {
+                    renderCategoriesView();
+                } else if (tabName === 'products') {
+                    renderProductsView();
+                } else if (tabName === 'services') {
+                    renderServicesView();
                 }
-            });
-
-            if (tabName === 'categories') {
-                renderCategoriesView();
-            } else if (tabName === 'products') {
-                renderProductsView();
-            } else if (tabName === 'services') {
-                renderServicesView();
             }
         }
         
         // ----------------------------------------------------------------
         // 4. CATEGORIES Logic
         // ----------------------------------------------------------------
-
+        
         function renderCategoriesView() {
             contentArea.innerHTML = `
                 <div class="flex justify-between items-center mb-6">
@@ -348,7 +516,7 @@ export default storeData;
         // ----------------------------------------------------------------
         // 5. PRODUCTS Logic
         // ----------------------------------------------------------------
-
+        
         function getCategoryName(id) {
             const category = storeData.categories.find(c => c.id === id);
             return category ? category.name : 'Uncategorized';
@@ -465,14 +633,13 @@ export default storeData;
                     <div>
                         <label for="imageUrls" class="block text-sm font-medium mb-2">Image URLs (One URL per line)</label>
                         <textarea id="imageUrls" name="imageUrls" rows="4" class="w-full input-style" placeholder="https://example.com/product-main.jpg\nhttps://example.com/product-screenshot.png">${imageUrls}</textarea>
-                        <p class="text-xs text-text-secondary mt-1">Direct URL links only. First URL is used as the cover image.</p>
                     </div>
-
+                    
                     <div class="flex justify-end space-x-4 pt-4">
                         <button type="button" onclick="document.getElementById('product-form-container').classList.add('hidden'); renderProductsView();" class="px-6 py-2 bg-gray-200 text-primary-dark rounded-lg hover:bg-gray-300 transition">Cancel</button>
                         <button type="submit" class="flex items-center px-6 py-2 bg-primary-yellow text-primary-dark rounded-lg hover:bg-yellow-500 transition shadow-md font-semibold">
-                            <i data-lucide="${isEdit ? 'save' : 'send'}" class="w-5 h-5 mr-2"></i>
-                            ${isEdit ? 'Save Changes' : 'Publish Product'}
+                            <i data-lucide="${isEdit ? 'save' : 'package-plus'}" class="w-5 h-5 mr-2"></i>
+                            ${isEdit ? 'Save Product' : 'Add Product'}
                         </button>
                     </div>
                 </form>
@@ -480,37 +647,27 @@ export default storeData;
             lucide.createIcons();
             document.getElementById('product-form').addEventListener('submit', handleProductSubmit);
         }
-        
+
         function handleProductSubmit(e) {
             e.preventDefault();
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
 
-            const imageUrlsString = data.imageUrls || '';
-            const imageUrls = imageUrlsString.split('\n')
-                .map(url => url.trim())
-                .filter(url => url.startsWith('http'));
-
-            const productData = {
-                id: data.id,
-                categoryId: data.categoryId,
-                title: data.title,
-                price: parseFloat(data.price),
-                description: data.description,
-                buyUrl: data.buyUrl,
-                imageUrls: imageUrls
-            };
-
+            // Process image URLs
+            data.imageUrls = data.imageUrls.split('\n').map(url => url.trim()).filter(url => url.length > 0);
+            // Ensure price is a number
+            data.price = parseFloat(data.price);
+            
             const isEdit = storeData.products.some(p => p.id === data.id);
 
             if (isEdit) {
-                storeData.products = storeData.products.map(p => p.id === data.id ? productData : p);
+                storeData.products = storeData.products.map(p => p.id === data.id ? data : p);
                 publishToGitHub(`Update product: ${data.title}`);
             } else {
-                storeData.products.push(productData);
+                storeData.products.push(data);
                 publishToGitHub(`New product added: ${data.title}`);
             }
-            
+
             document.getElementById('product-form-container').classList.add('hidden');
             renderProductsView();
         }
@@ -523,22 +680,22 @@ export default storeData;
             contentArea.innerHTML = `
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-semibold">Service Management</h2>
-                    <button onclick="renderServiceForm()" class="flex items-center px-4 py-2 bg-primary-yellow text-primary-dark rounded-lg hover:bg-yellow-500 transition shadow-md font-semibold">
-                        <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
-                        Publish New Service
+                    <button onclick="renderServiceForm()" class="flex items-center px-4 py-2 bg-success-green rounded-lg text-white hover:bg-green-600 transition shadow-md">
+                        <i data-lucide="wrench-sccrewdriver" class="w-5 h-5 mr-2"></i>
+                        Add New Service
                     </button>
                 </div>
                 <div class="bg-card-bg rounded-xl shadow-lg border border-gray-100 overflow-x-auto">
                     ${renderServicesTable()}
                 </div>
-                 <div id="service-form-container" class="mt-8 hidden"></div>
+                <div id="service-form-container" class="mt-8 hidden"></div>
             `;
             lucide.createIcons();
         }
 
         function renderServicesTable() {
             if (storeData.services.length === 0) {
-                return '<p class="p-6 text-center text-text-secondary">No services published yet. Start by adding one!</p>';
+                return '<p class="p-6 text-center text-text-secondary">No services defined yet.</p>';
             }
             return `
                 <table class="min-w-full divide-y divide-gray-200">
@@ -547,26 +704,21 @@ export default storeData;
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Title</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Provider</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Price (USD)</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Contacts</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        ${storeData.services.map(s => {
-                            const contactCount = Object.keys(s.contacts || {}).length;
-                            return `
+                        ${storeData.services.map(s => `
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-6 py-4 whitespace-nowrap">${s.title}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-primary-dark font-medium">${s.provider || 'N/A'}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-success-green font-bold">$${s.price.toFixed(2)}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-text-secondary">${contactCount} link(s)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-text-secondary">${s.provider}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-primary-yellow font-bold">$${s.price.toFixed(2)}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
                                         <button onclick="renderServiceForm('${s.id}')" class="text-primary-yellow hover:text-yellow-700 mr-3 font-semibold">Edit</button>
                                         <button onclick="showDeleteConfirmation('service', '${s.id}', '${s.title}')" class="text-danger-red hover:text-red-600">Delete</button>
                                     </td>
                                 </tr>
-                            `;
-                        }).join('')}
+                            `).join('')}
                     </tbody>
                 </table>
             `;
@@ -577,78 +729,71 @@ export default storeData;
             container.classList.remove('hidden');
 
             const isEdit = serviceId !== null;
-            const service = isEdit ? storeData.services.find(s => s.id === serviceId) : { contacts: {}, portfolioImages: [] };
-
-            const portfolioUrls = (service.portfolioImages || []).join('\n'); 
-
+            const defaultContacts = { telegram: '', whatsapp: '', instagram: '' };
+            const service = isEdit 
+                ? storeData.services.find(s => s.id === serviceId) 
+                : { contacts: defaultContacts };
+            
+            // Ensure contacts object exists
+            const contacts = service.contacts || defaultContacts;
+            
             container.innerHTML = `
-                <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2">${isEdit ? `Edit Service: ${service.title}` : 'Publish New Service'}</h2>
+                <h2 class="text-2xl font-semibold mb-6 border-b border-gray-200 pb-2">${isEdit ? `Edit Service: ${service.title}` : 'Add New Service'}</h2>
                 <form id="service-form" class="space-y-6 bg-card-bg p-6 rounded-xl shadow-lg border border-gray-100">
                     <input type="hidden" name="id" value="${service.id || generateId('s-')}">
 
-                    <div>
-                        <label for="provider" class="block text-sm font-medium mb-2">Provider Name</label>
-                        <input type="text" id="provider" name="provider" value="${service.provider || ''}" required class="w-full input-style" placeholder="Example: Rx Team or John Doe">
-                    </div>
-
-                    <div>
-                        <label for="title" class="block text-sm font-medium mb-2">Service Title</label>
-                        <input type="text" id="title" name="title" value="${service.title || ''}" required class="w-full input-style">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="title" class="block text-sm font-medium mb-2">Service Title</label>
+                            <input type="text" id="title" name="title" value="${service.title || ''}" required class="w-full input-style">
+                        </div>
+                        <div>
+                            <label for="provider" class="block text-sm font-medium mb-2">Provider Name (اسم مقدم الخدمة)</label>
+                            <input type="text" id="provider" name="provider" value="${service.provider || ''}" required class="w-full input-style">
+                        </div>
                     </div>
                     
                     <div>
-                        <label for="price" class="block text-sm font-medium mb-2">Service Price (USD)</label>
+                        <label for="price" class="block text-sm font-medium mb-2">Price (USD)</label>
                         <input type="number" id="price" name="price" value="${service.price || ''}" required step="0.01" class="w-full input-style">
                     </div>
 
                     <div>
-                        <label for="description" class="block text-sm font-medium mb-2">Detailed Service Description</label>
-                        <textarea id="description" name="description" rows="5" required class="w-full input-style">${service.description || ''}</textarea>
+                        <label for="description" class="block text-sm font-medium mb-2">Service Description (الوصف)</label>
+                        <textarea id="description" name="description" rows="4" required class="w-full input-style">${service.description || ''}</textarea>
                     </div>
 
                     <div>
-                        <label for="deliverables" class="block text-sm font-medium mb-2">What the client will receive (Deliverables)</label>
-                        <textarea id="deliverables" name="deliverables" rows="4" required class="w-full input-style" placeholder="List key outcomes: e.g., Source code, Design files, 1 hour consultation, etc.">${service.deliverables || ''}</textarea>
+                        <label for="deliverables" class="block text-sm font-medium mb-2">Deliverables (ما سيحصل عليه العميل)</label>
+                        <textarea id="deliverables" name="deliverables" rows="3" class="w-full input-style" placeholder="مثال: Full source code, 3 months support">${service.deliverables || ''}</textarea>
+                    </div>
+
+                    <div>
+                        <label for="coverUrl" class="block text-sm font-medium mb-2">Cover Image URL (صورة الغلاف)</label>
+                        <input type="url" id="coverUrl" name="coverUrl" value="${service.coverUrl || ''}" required class="w-full input-style" placeholder="https://example.com/service-cover.jpg">
                     </div>
                     
-                    <div>
-                        <label for="coverUrl" class="block text-sm font-medium mb-2">Service Cover Image URL</label>
-                        <input type="url" id="coverUrl" name="coverUrl" value="${service.coverUrl || ''}" required class="w-full input-style" placeholder="https://example.com/cover.jpg">
-                    </div>
-
-                    <h3 class="text-lg font-semibold pt-4 border-t border-gray-200">Portfolio Images</h3>
-                    <div>
-                        <label for="portfolioImages" class="block text-sm font-medium mb-2">Portfolio Image URLs (One URL per line)</label>
-                        <textarea id="portfolioImages" name="portfolioImages" rows="4" class="w-full input-style" placeholder="https://example.com/work1.jpg\nhttps://example.com/work2.png">${portfolioUrls}</textarea>
-                        <p class="text-xs text-text-secondary mt-1">Direct URL links only. Separate each URL with a new line.</p>
-                    </div>
-
-
-                    <h3 class="text-lg font-semibold pt-4 border-t border-gray-200">Contact Links (Optional)</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <h3 class="text-lg font-semibold pt-4 border-t border-gray-200">Contact Links (روابط التواصل)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label for="contact-instagram" class="block text-sm font-medium mb-2 flex items-center"><i data-lucide="instagram" class="w-4 h-4 mr-2"></i> Instagram (Username/Link)</label>
-                            <input type="text" id="contact-instagram" name="instagram" value="${service.contacts.instagram || ''}" class="w-full input-style">
+                            <label for="telegram" class="block text-sm font-medium mb-2">Telegram URL</label>
+                            <input type="url" id="telegram" name="telegram" value="${contacts.telegram || ''}" class="w-full input-style" placeholder="https://t.me/username">
                         </div>
                         <div>
-                            <label for="contact-phone" class="block text-sm font-medium mb-2 flex items-center"><i data-lucide="phone" class="w-4 h-4 mr-2"></i> Phone Number</label>
-                            <input type="tel" id="contact-phone" name="phone" value="${service.contacts.phone || ''}" class="w-full input-style">
+                            <label for="whatsapp" class="block text-sm font-medium mb-2">WhatsApp URL</label>
+                            <input type="url" id="whatsapp" name="whatsapp" value="${contacts.whatsapp || ''}" class="w-full input-style" placeholder="https://wa.me/123456789">
                         </div>
                         <div>
-                            <label for="contact-whatsapp" class="block text-sm font-medium mb-2 flex items-center"><i data-lucide="message-square" class="w-4 h-4 mr-2"></i> WhatsApp (Link)</label>
-                            <input type="url" id="contact-whatsapp" name="whatsapp" value="${service.contacts.whatsapp || ''}" class="w-full input-style" placeholder="https://wa.me/XXXXXXXXX">
-                        </div>
-                        <div>
-                            <label for="contact-telegram" class="block text-sm font-medium mb-2 flex items-center"><i data-lucide="send" class="w-4 h-4 mr-2"></i> Telegram (Username/Link)</label>
-                            <input type="text" id="contact-telegram" name="telegram" value="${service.contacts.telegram || ''}" class="w-full input-style">
+                            <label for="instagram" class="block text-sm font-medium mb-2">Instagram URL</label>
+                            <input type="url" id="instagram" name="instagram" value="${contacts.instagram || ''}" class="w-full input-style" placeholder="https://instagram.com/username">
                         </div>
                     </div>
 
                     <div class="flex justify-end space-x-4 pt-4">
                         <button type="button" onclick="document.getElementById('service-form-container').classList.add('hidden'); renderServicesView();" class="px-6 py-2 bg-gray-200 text-primary-dark rounded-lg hover:bg-gray-300 transition">Cancel</button>
-                        <button type="submit" class="flex items-center px-6 py-2 bg-primary-yellow text-primary-dark rounded-lg hover:bg-yellow-500 transition shadow-md font-semibold">
-                            <i data-lucide="${isEdit ? 'save' : 'send'}" class="w-5 h-5 mr-2"></i>
-                            ${isEdit ? 'Save Changes' : 'Publish Service'}
+                        <button type="submit" class="flex items-center px-6 py-2 bg-success-green text-white rounded-lg hover:bg-green-700 transition shadow-md font-semibold">
+                            <i data-lucide="${isEdit ? 'save' : 'wrench-sccrewdriver'}" class="w-5 h-5 mr-2"></i>
+                            ${isEdit ? 'Save Service' : 'Add Service'}
                         </button>
                     </div>
                 </form>
@@ -662,42 +807,30 @@ export default storeData;
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
 
-            const portfolioUrlsString = data.portfolioImages || '';
-            const portfolioImages = portfolioUrlsString.split('\n')
-                .map(url => url.trim())
-                .filter(url => url.startsWith('http'));
-
-            // تم إضافة provider و deliverables إلى البيانات المستخلصة
-            const { id, title, description, price, coverUrl, provider, deliverables, instagram, phone, whatsapp, telegram } = data;
-            const contacts = { instagram, phone, whatsapp, telegram };
-            
-            const filteredContacts = Object.keys(contacts).reduce((acc, key) => {
-                if (contacts[key]) {
-                    acc[key] = contacts[key];
-                }
-                return acc;
-            }, {});
-
-            const serviceData = {
-                id,
-                title,
-                description,
-                price: parseFloat(price),
-                coverUrl,
-                provider, // تم إضافته
-                deliverables, // تم إضافته
-                portfolioImages: portfolioImages,
-                contacts: filteredContacts
+            // Structure contact links correctly
+            const contacts = {
+                telegram: data.telegram || '',
+                whatsapp: data.whatsapp || '',
+                instagram: data.instagram || ''
             };
+            
+            // Clean up the main data object
+            delete data.telegram;
+            delete data.whatsapp;
+            delete data.instagram;
+            
+            // Re-add contacts and ensure price is a number
+            data.contacts = contacts;
+            data.price = parseFloat(data.price);
 
-            const isEdit = storeData.services.some(s => s.id === id);
+            const isEdit = storeData.services.some(s => s.id === data.id);
 
             if (isEdit) {
-                storeData.services = storeData.services.map(s => s.id === id ? serviceData : s);
-                publishToGitHub(`Update service: ${title}`);
+                storeData.services = storeData.services.map(s => s.id === data.id ? data : s);
+                publishToGitHub(`Update service: ${data.title}`);
             } else {
-                storeData.services.push(serviceData);
-                publishToGitHub(`New service added: ${title}`);
+                storeData.services.push(data);
+                publishToGitHub(`New service added: ${data.title}`);
             }
 
             document.getElementById('service-form-container').classList.add('hidden');
@@ -705,61 +838,18 @@ export default storeData;
         }
 
         // ----------------------------------------------------------------
-        // 7. Deletion Logic (Universal)
+        // 7. Initialization
         // ----------------------------------------------------------------
-
-        function showDeleteConfirmation(type, id, title, productCount = 0) {
-            const modal = document.getElementById('confirmation-modal');
-            const message = document.getElementById('confirmation-message');
-            const confirmBtn = document.getElementById('confirm-delete-btn');
-
-            let customMessage = `Are you sure you want to delete the ${type}: <strong>${title}</strong>? This action cannot be undone.`;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // إضافة مستمعي الأحداث لحقول الإعدادات لفتح/قفل اللوحة
+            ['github-token', 'github-owner', 'github-repo'].forEach(id => {
+                document.getElementById(id).addEventListener('input', checkAndLockPanel);
+            });
             
-            if (type === 'category' && productCount > 0) {
-                customMessage += `<br><br><span class="text-primary-yellow font-semibold">Warning: This category has ${productCount} associated product(s). These products will become uncategorized.</span>`;
-            }
-
-            message.innerHTML = customMessage;
-
-            confirmBtn.onclick = null;
-            confirmBtn.onclick = () => handleDeleteConfirmed(type, id, title);
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function handleDeleteConfirmed(type, id, title) {
-            closeModal('confirmation-modal');
-
-            if (type === 'category') {
-                storeData.categories = storeData.categories.filter(c => c.id !== id);
-                storeData.products = storeData.products.map(p => {
-                    if (p.categoryId === id) {
-                        return { ...p, categoryId: null }; 
-                    }
-                    return p;
-                });
-                publishToGitHub(`Delete category: ${title}. Products were uncategorized.`);
-                renderCategoriesView();
-            } else if (type === 'product') {
-                storeData.products = storeData.products.filter(p => p.id !== id);
-                publishToGitHub(`Delete product: ${title}`);
-                renderProductsView();
-            } else if (type === 'service') {
-                storeData.services = storeData.services.filter(s => s.id !== id);
-                publishToGitHub(`Delete service: ${title}`);
-                renderServicesView();
-            }
-        }
-
-        // ----------------------------------------------------------------
-        // 8. Initialization
-        // ----------------------------------------------------------------
-
-        window.onload = () => {
-            // Initial render: start on the Products tab
-            switchTab('products');
-        };
+            // التحقق الأولي عند تحميل الصفحة
+            checkAndLockPanel();
+        });
 
     </script>
 </body>
