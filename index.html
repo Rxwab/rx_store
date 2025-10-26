@@ -3,483 +3,474 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rx Store - Your Gateway to Knowledge, Tech, and Digital Services</title>
+    <title>Rxstore - Build Your Site Service</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary-yellow': '#FFD700', // Primary Gold/Yellow Accent
-                        'primary-dark': '#1C1C1C', // Header Color
-                        'secondary-gray': '#F5F5F5', // Light Background Color
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
-        /* Custom Styles for Modern Design */
+        :root {
+            --color-primary: #38bdf8; /* Electric Blue */
+            --color-secondary: #c084fc; /* Neon Purple */
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
+            background-color: #000;
         }
-        .hero-section {
-            background-color: #FAFAFA;
-            min-height: 500px;
-            padding: 4rem 0;
-            display: flex;
-            align-items: center;
-        }
-        .product-card {
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            flex: 0 0 280px;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-        }
+        .category-scroll::-webkit-scrollbar { height: 4px; }
+        .category-scroll::-webkit-scrollbar-thumb { background-color: #1f2937; border-radius: 2px; }
+        .category-scroll::-webkit-scrollbar-track { background-color: #000; }
 
-        .carousel-container {
-            overflow-x: scroll;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 1rem;
-        }
-
-        .carousel-container::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .carousel-container::-webkit-scrollbar-thumb {
-            background-color: #d1d5db;
-            border-radius: 10px;
-        }
-
-        /* Responsive card sizing */
-        @media (max-width: 640px) {
-            .product-card {
-                flex: 0 0 45%;
+        @media (max-width: 768px) {
+            .mobile-fixed-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 50;
+                background-color: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(8px);
+                border-top: 1px solid #1f2937;
             }
         }
-        @media (min-width: 641px) and (max-width: 1024px) {
-            .product-card {
-                flex: 0 0 300px;
-            }
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
     </style>
-    <meta property="og:title" content="Rx Store - Your Gateway to Knowledge, Tech, and Services" />
-    <meta property="og:description" content="Explore, discover, and create. The best books, electronics, and design/website services." />
-    <meta property="og:image" content="https://placehold.co/1200x630/E5E7EB/5C5E60?text=Rx+Store+Cover" />
-    <meta property="og:url" content="https://your-rxstore-url.github.io/" />
 </head>
-<body class="text-primary-dark">
+<body class="text-gray-100 bg-black min-h-screen" onload="navigate('home', 'All')">
 
-    <header class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
-            <div class="text-2xl font-bold text-primary-dark flex items-center">
-                <span class="text-primary-yellow text-3xl mr-1">Rx</span> Store
-            </div>
+    <div id="app-container" class="min-h-screen">
+        <header id="main-header" class="sticky w-full top-0 z-50 bg-black/90 backdrop-blur-md border-b border-gray-800">
+            <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <div class="text-2xl font-black tracking-widest text-sky-400">Rxstore</div>
+                
+                <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                    <a href="#" onclick="navigate('home'); return false;" class="nav-link px-3 py-1.5 transition duration-200 hover:text-sky-400 border-b-2 border-transparent" data-view="home">Home</a>
+                    
+                    <a href="#" onclick="navigate('my-service'); return false;" class="nav-link px-3 py-1.5 transition duration-200 hover:text-sky-400 border-b-2 border-transparent" data-view="my-service">Build Your Site</a>
+                    
+                    <a href="#" onclick="navigate('contact'); return false;" class="nav-link px-3 py-1.5 transition duration-200 hover:text-sky-400 border-b-2 border-transparent" data-view="contact">Contact Us</a>
+                </div>
 
-            <nav class="hidden md:flex space-x-6 text-lg font-medium">
-                <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Home</a>
-                <a href="#product-sections" class="text-primary-dark hover:text-primary-yellow transition duration-300">Products</a>
-                <a href="community_services_showcase.html" class="text-primary-dark hover:text-primary-yellow transition duration-300">Our Services</a>
-                <a href="#" class="text-primary-dark hover:text-primary-yellow transition duration-300">Blog</a>
+                <div class="flex items-center space-x-4">
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-full hover:bg-gray-800 transition" aria-label="Toggle Menu">
+                        <i data-lucide="menu" class="w-5 h-5 text-sky-400"></i>
+                    </button>
+                </div>
             </nav>
 
-            <div class="hidden md:block w-24">
+            <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-black/95 border-t border-gray-800 shadow-xl">
+                <div class="px-2 pt-2 pb-3 space-y-1 text-center">
+                    <a href="#" onclick="navigate('home'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800 hover:text-sky-400">Home</a>
+                    <a href="#" onclick="navigate('my-service'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800 hover:text-sky-400">Build Your Site</a>
+                    <a href="#" onclick="navigate('contact'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800 hover:text-sky-400">Contact Us</a>
                 </div>
+            </div>
+        </header>
 
-            <button id="mobile-menu-button" class="md:hidden p-2 text-primary-dark">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
+        <main class="pt-20 pb-10 md:pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="frontend-view">
+                </div>
+        </main>
+
+        <div id="custom-alert-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-[100] space-y-3"></div>
+
+        <div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[110] invisible opacity-0" onclick="hideContactModal(event)">
+            <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-full max-w-md mx-4 transform transition-transform duration-300 scale-95" id="contact-modal-content">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-3 mb-4">
+                    <h3 class="text-2xl font-bold text-sky-400" id="modal-title">Request Service</h3>
+                    <button onclick="hideContactModal()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-800">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <p class="text-gray-300 mb-6" id="modal-message">Please choose your preferred method to start the conversation.</p>
+                
+                <div class="space-y-4" id="contact-links-container">
+                    </div>
+            </div>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden shadow-lg">
-            <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300 border-t">Home</a>
-            <a href="#product-sections" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Products</a>
-            <a href="community_services_showcase.html" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Our Services</a>
-            <a href="#" class="block px-4 py-2 text-primary-dark hover:bg-secondary-gray transition duration-300">Blog</a>
-            <a href="#" class="w-full text-center block py-3 bg-primary-yellow text-primary-dark font-bold hover:bg-yellow-400 transition duration-300">
-                Publish Your Service
-            </a>
+        <div class="mobile-fixed-nav md:hidden p-2">
+            <div class="flex justify-around text-xs">
+                <a href="#" onclick="navigate('home'); return false;" class="mobile-nav-link flex flex-col items-center p-2 text-gray-400 hover:text-sky-400" data-view="home">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    Home
+                </a>
+                <a href="#" onclick="navigate('my-service'); return false;" class="mobile-nav-link flex flex-col items-center p-2 text-gray-400 hover:text-sky-400" data-view="my-service">
+                    <i data-lucide="monitor" class="w-5 h-5"></i>
+                    My Site
+                </a>
+                <a href="#" onclick="navigate('contact'); return false;" class="mobile-nav-link flex flex-col items-center p-2 text-gray-400 hover:text-sky-400" data-view="contact">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                    Contact
+                </a>
+            </div>
         </div>
-    </header>
 
-    <section class="hero-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
-            <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0 order-2 md:order-1">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-primary-dark mb-4">
-                    Explore. Discover. Create.
-                </h1>
-                <p class="text-xl text-gray-600 mb-8">
-                    Your gateway to integrated knowledge, technology, and digital services.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#product-sections" class="bg-primary-yellow text-primary-dark font-bold py-3 px-8 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300 text-lg">
-                        Browse Products
+    </div>
+
+    <script>
+        // ====================================================
+        // MOCK DATA & STATE MANAGEMENT 
+        // ====================================================
+
+        let currentView = 'home'; 
+        
+        // Products Array (Empty as requested)
+        /* START_PRODUCTS_DATA */
+        let products = [];
+        /* END_PRODUCTS_DATA */
+
+        // Community Services Array (Empty as requested)
+        /* START_SERVICES_DATA */
+        let userServices = [];
+        /* END_SERVICES_DATA */
+
+        // My Custom Service Data (Website Building)
+        let customServicesData = {
+            title: "Exclusive Rxstore Service: Build Your Professional Website",
+            description: "We offer an end-to-end solution for building your own website at competitive prices with a 100% responsive design for both PC and mobile. Get your personal store or website with a professional touch.",
+            websiteBuilding: {
+                full: 250,
+                frontend: 125,
+                backend: 125,
+            }
+        };
+        
+        // My Contact Info (Managed by Admin)
+        /* START_SETTINGS_CONTACT */
+        let settingsContact = {
+            whatsapp: "https://wa.me/15550000000",
+            instagram: "https://instagram.com/rxstore_official_us",
+            telegram: "https://t.me/RxstoreAdminUS"
+        };
+        /* END_SETTINGS_CONTACT */
+
+
+        // ====================================================
+        // HELPER FUNCTIONS 
+        // ====================================================
+        
+        /** Generates HTML for a custom alert notification */
+        const alertCustom = (title, message, type = 'success') => {
+            const container = document.getElementById('custom-alert-container');
+            let bgColor, icon;
+
+            switch (type) {
+                case 'success': bgColor = 'bg-emerald-500'; icon = 'check-circle'; break;
+                case 'error': bgColor = 'bg-red-500'; icon = 'alert-triangle'; break;
+                case 'info': default: bgColor = 'bg-sky-500'; icon = 'info'; break;
+            }
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `${bgColor} p-4 rounded-xl shadow-2xl text-white max-w-sm mx-auto flex items-center space-x-4 border border-white/20 opacity-0 transition-opacity duration-300`;
+            alertDiv.style.minWidth = '250px';
+            alertDiv.innerHTML = `
+                <i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0 mr-3"></i>
+                <div class="flex-grow text-left">
+                    <h4 class="font-bold">${title}</h4>
+                    <p class="text-sm">${message}</p>
+                </div>
+            `;
+            container.appendChild(alertDiv);
+            lucide.createIcons();
+            setTimeout(() => alertDiv.style.opacity = 1, 10);
+            setTimeout(() => {
+                alertDiv.style.opacity = 0;
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 5000);
+        };
+
+        // ====================================================
+        // CONTACT MODAL LOGIC 
+        // ====================================================
+
+        /** Shows the contact modal */
+        const showContactModal = (id, type) => {
+            let contactDetails, providerName;
+
+            if (type === 'my-service') {
+                // Get data from the new contact object
+                contactDetails = settingsContact;
+                providerName = "Rxstore Management";
+            } else {
+                // Only 'my-service' type is supported now, since community services are removed
+                return;
+            }
+
+            const modal = document.getElementById('contact-modal');
+            const titleElement = document.getElementById('modal-title');
+            const messageElement = document.getElementById('modal-message');
+            const linksContainer = document.getElementById('contact-links-container');
+            
+            titleElement.textContent = `Contact ${providerName}`;
+            messageElement.textContent = `Please click one of the icons below to start a direct chat with ${providerName}.`;
+            
+            let linksHTML = '';
+            
+            // WhatsApp Link
+            if (contactDetails.whatsapp) {
+                linksHTML += `
+                    <a href="${contactDetails.whatsapp}" target="_blank" class="flex items-center space-x-4 p-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold transition duration-200">
+                        <i data-lucide="message-square-text" class="w-6 h-6 mr-4"></i>
+                        <span class="text-lg">WhatsApp</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5 ml-auto"></i>
                     </a>
-                    <a href="community_services_showcase.html" class="bg-primary-dark text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-700 transition duration-300 text-lg">
-                        Explore Our Services
+                `;
+            }
+            // Instagram Link
+            if (contactDetails.instagram && contactDetails.instagram.includes('instagram.com')) {
+                 linksHTML += `
+                    <a href="${contactDetails.instagram}" target="_blank" class="flex items-center space-x-4 p-3 rounded-lg bg-pink-600 hover:bg-pink-700 text-white font-semibold transition duration-200">
+                        <i data-lucide="instagram" class="w-6 h-6 mr-4"></i>
+                        <span class="text-lg">Instagram</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5 ml-auto"></i>
                     </a>
-                </div>
-            </div>
+                `;
+            }
+            // Telegram Link
+            if (contactDetails.telegram && contactDetails.telegram.includes('t.me')) {
+                 linksHTML += `
+                    <a href="${contactDetails.telegram}" target="_blank" class="flex items-center space-x-4 p-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition duration-200">
+                        <i data-lucide="send" class="w-6 h-6 mr-4"></i>
+                        <span class="text-lg">Telegram</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5 ml-auto"></i>
+                    </a>
+                `;
+            }
 
-            <div class="md:w-1/2 flex justify-center md:justify-end order-1 md:order-2">
-                <img src="https://i.ibb.co/mVkT9J6h/Screenshot-20251010-212631.jpg" alt="Screenshot 20251010 212631" class="rounded-lg shadow-xl max-w-full h-auto">
-            </div>
-        </div>
-    </section>
+            linksContainer.innerHTML = linksHTML;
+            lucide.createIcons();
 
-    <section class="py-12 bg-white">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <a href="#product-sections" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
-                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.208 5 7.5 5A6.5 6.5 0 003 11.5c0 1.615.477 3.111 1.253 4.331M12 6.253c1.168.776 2.792 1.253 4.5 1.253a6.5 6.5 0 014.5-6.747M12 19.253C13.168 18.477 14.792 18 16.5 18a6.5 6.5 0 004.5-6.747M12 19.253c-1.168.776-2.792 1.253-4.5 1.253a6.5 6.5 0 01-4.5-6.747"></path></svg>
-                    </div>
-                    <span class="text-sm font-medium">Digital Products</span>
-                </a>
-                <a href="#product-sections" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
-                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25M7 16h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v7a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <span class="text-sm font-medium">Tech & Gear</span>
-                </a>
-                <a href="#product-sections" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
-                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v14l-12 3zm0 0l-4-1m4 1v-5m0 5l4 1m-4-1h-5v-10h9v5"></path></svg>
-                    </div>
-                    <span class="text-sm font-medium">E-Books</span>
-                </a>
-                <a href="community_services_showcase.html" class="flex flex-col items-center hover:text-primary-yellow transition duration-300">
-                    <div class="p-4 rounded-full bg-secondary-gray text-primary-dark mb-2">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 10v-4m0 0l4 4m-4-4l-4 4m4-4L6 4"></path></svg>
-                    </div>
-                    <span class="text-sm font-medium">Get a Service</span>
-                </a>
-            </div>
-        </div>
-    </section>
+            // Show the modal
+            modal.classList.remove('invisible', 'opacity-0');
+            modal.querySelector('#contact-modal-content').classList.remove('scale-95');
+        };
 
-    <section id="product-sections" class="py-16 bg-secondary-gray">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div id="product-list-container">
-                <p id="loading-message" class="text-center text-lg text-gray-500">Loading products from GitHub...</p>
-            </div>
-        </div>
-    </section>
-    
-    <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 items-center justify-center hidden modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-11/12 max-w-3xl transform transition-all duration-300 ease-in-out">
-            <div class="flex justify-between items-start mb-4">
-                <h2 id="modal-title" class="text-2xl font-bold text-primary-dark">Product Details</h2>
-                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
+        /** Hides the contact modal */
+        const hideContactModal = (event) => {
+            const modal = document.getElementById('contact-modal');
+            
+            // Check if click is on the backdrop
+            if (!event || event.target.id === 'contact-modal') {
+                modal.querySelector('#contact-modal-content').classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('invisible', 'opacity-0');
+                }, 300); 
+            }
+        };
 
-            <div class="md:flex gap-6">
-                <div class="md:w-1/2 mb-4 md:mb-0">
-                    <img id="modal-image" src="" alt="Product Image" class="w-full h-auto rounded-lg object-cover shadow-md">
-                </div>
-                <div class="md:w-1/2">
-                    <p id="modal-category" class="text-sm text-primary-yellow font-semibold mb-1 uppercase"></p>
-                    <h3 id="modal-product-title" class="text-xl font-bold mb-3 text-primary-dark"></h3>
-                    <p id="modal-description" class="text-gray-600 mb-4 text-sm"></p>
+        // ====================================================
+        // VIEW RENDERING FUNCTIONS 
+        // ====================================================
+
+        /** Update navigation active state */
+        const updateNavState = () => {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('data-view') === currentView) {
+                    link.classList.add('text-sky-400', 'border-sky-400');
+                    link.classList.remove('border-transparent');
+                } else {
+                    link.classList.remove('text-sky-400', 'border-sky-400');
+                    link.classList.add('border-transparent');
+                }
+            });
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                if (link.getAttribute('data-view') === currentView) {
+                    link.classList.add('text-sky-400');
+                    link.classList.remove('text-gray-400');
+                } else {
+                    link.classList.remove('text-sky-400');
+                    link.classList.add('text-gray-400');
+                }
+            });
+            document.getElementById('mobile-menu').classList.add('hidden');
+            document.getElementById('mobile-menu-btn').querySelector('i').setAttribute('data-lucide', 'menu');
+            lucide.createIcons();
+        };
+
+        /** Render Home Page (simplified) */
+        const renderHomeView = () => {
+            const content = `
+                <section class="text-center py-16 md:py-24 bg-gray-900 rounded-2xl shadow-xl border border-gray-800 mb-12 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-color-gray-900)_0%,_var(--tw-color-black)_100%)] opacity-80"></div>
+                    <div class="relative z-10 p-4">
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight text-white">
+                            Welcome to <span class="text-sky-400">Rxstore</span>
+                        </h1>
+                        <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+                            Your exclusive source for building professional, high-performance websites.
+                        </p>
+                        <div class="flex justify-center flex-wrap gap-4">
+                            <button onclick="navigate('my-service')" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 flex items-center space-x-2">
+                                <i data-lucide="monitor" class="w-5 h-5 mr-2"></i>
+                                <span>Explore Site Building Service</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="mb-12 text-center">
+                    <h2 class="text-3xl font-extrabold text-white mb-6 border-l-4 border-sky-400 pl-3 inline-block">Featured Products</h2>
                     
-                    <div class="flex items-center justify-between border-t border-b py-3 mb-4">
-                        <span class="text-xl font-extrabold text-primary-dark">Price: <span id="modal-price" class="text-primary-yellow"></span></span>
-                        <a id="modal-buy-link" href="#" target="_blank" class="bg-primary-yellow text-primary-dark font-bold py-3 px-6 rounded-full shadow-lg hover:bg-yellow-400 transition duration-300">
-                            Buy Now
-                        </a>
+                    <div class="bg-gray-900 p-8 rounded-xl border border-gray-800">
+                         <i data-lucide="package-x" class="w-12 h-12 text-gray-600 mx-auto mb-4"></i>
+                         <p class="text-xl text-gray-500 py-4">We currently focus only on our exclusive "Build Your Site" service. Products section is empty.</p>
+                    </div>
+                </section>
+            `;
+            document.getElementById('frontend-view').innerHTML = content;
+            lucide.createIcons();
+        };
+
+        /** Render My Service Page: Build Your Site */
+        const renderMyServiceView = () => {
+            const content = `
+                <h1 class="text-4xl font-extrabold text-white mb-10 border-l-4 border-sky-400 pl-3">Build Your Site</h1>
+                
+                <div class="bg-gray-900 p-6 md:p-10 rounded-xl shadow-2xl border border-sky-600 mb-12">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <i data-lucide="monitor-dot" class="w-8 h-8 text-sky-400"></i>
+                        <h2 class="text-3xl font-extrabold text-white">${customServicesData.title}</h2>
+                    </div>
+                    <p class="text-gray-400 mb-8">${customServicesData.description}</p>
+                    <p class="text-lg font-bold text-sky-300 mb-4">We guarantee 100% responsive design for all screens (PC & Mobile).</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center border-t border-b border-gray-700 py-6 mb-8">
+                        <div class="p-4 rounded-lg bg-gray-800 shadow-md">
+                            <i data-lucide="layout-grid" class="w-8 h-8 text-sky-400 mx-auto mb-3"></i>
+                            <h3 class="text-xl font-bold text-white mb-1">Full Stack Website</h3>
+                            <p class="text-2xl font-extrabold text-white">$${customServicesData.websiteBuilding.full.toFixed(2)}</p>
+                        </div>
+                        <div class="p-4 rounded-lg bg-gray-800 shadow-md">
+                            <i data-lucide="layers" class="w-8 h-8 text-purple-400 mx-auto mb-3"></i>
+                            <h3 class="text-xl font-bold text-white mb-1">Frontend Only</h3>
+                            <p class="text-2xl font-extrabold text-white">$${customServicesData.websiteBuilding.frontend.toFixed(2)}</p>
+                        </div>
+                         <div class="p-4 rounded-lg bg-gray-800 shadow-md">
+                            <i data-lucide="server" class="w-8 h-8 text-emerald-400 mx-auto mb-3"></i>
+                            <h3 class="text-xl font-bold text-white mb-1">Backend Only</h3>
+                            <p class="text-2xl font-extrabold text-white">$${customServicesData.websiteBuilding.backend.toFixed(2)}</p>
+                        </div>
                     </div>
                     
-                    <div class="flex items-center space-x-3 text-sm text-gray-500">
-                        <button id="modal-share-button" class="flex items-center hover:text-primary-dark transition duration-300">
-                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.87 9 12.43 9 12a3 3 0 00-3-3H4m0 9h2a3 3 0 003-3 3 3 0 00-3-3H4M20 13a3 3 0 00-3-3h-2m2 3a3 3 0 00-3 3h-2m-2-9a3 3 0 00-3 3H4"></path></svg>
-                            Share
+                    <div class="text-center">
+                        <button onclick="showContactModal(null, 'my-service')" class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition duration-300 transform hover:scale-[1.02] flex items-center justify-center space-x-2 mx-auto">
+                            <i data-lucide="phone-call" class="w-5 h-5 mr-2"></i>
+                            <span>Request Service Now (Contact Me)</span>
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            `;
+            document.getElementById('frontend-view').innerHTML = content;
+            lucide.createIcons();
+        };
 
-    <footer class="bg-primary-dark text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>&copy; <span id="current-year"></span> Rx Store. All rights reserved.</p>
-            <div class="mt-4 space-x-4">
-                <a href="#" class="hover:text-primary-yellow transition">Privacy Policy</a>
-                <a href="#" class="hover:text-primary-yellow transition">Terms of Use</a>
-                <a href="admin_panel.html" class="hover:text-primary-yellow transition font-bold">Admin Login</a>
-            </div>
-        </div>
-    </footer>
-
-    <script type="module">
-        // Import data structure from the file generated by the admin panel
-        // Assumes 'store_data.js' is in the same directory.
-        // It should contain: export default { categories: [], products: [], services: [] };
-        
-        let storeData = { categories: [], products: [], services: [] };
-        const loadingMessage = document.getElementById('loading-message');
-        const productListContainer = document.getElementById('product-list-container');
-        
-        /**
-         * Fetches data from store_data.js. Using a fetch request instead of module
-         * import ensures it works reliably in various hosting environments, especially GH pages.
-         */
-        async function fetchStoreData() {
-            try {
-                // Fetch the file content
-                const response = await fetch('store_data.js');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const text = await response.text();
-                
-                // Extract the JSON string from the file content (assuming the file format is maintained)
-                const jsonMatch = text.match(/const storeData = (\{[\s\S]*?\});/);
-
-                if (jsonMatch && jsonMatch[1]) {
-                    // Clean up the JSON string to ensure valid parsing (remove trailing semicolon if present)
-                    const jsonString = jsonMatch[1].trim().replace(/;$/, '');
+        /** Render Contact Page */
+        const renderContactView = () => {
+             const content = `
+                <h1 class="text-4xl font-extrabold text-white mb-10 border-l-4 border-sky-400 pl-3">Contact Us</h1>
+                <div class="bg-gray-900 p-8 rounded-xl shadow-2xl border border-gray-800 max-w-2xl mx-auto">
+                    <p class="text-lg text-gray-400 mb-8 text-center">We are here to answer all your inquiries regarding our custom website building service.</p>
                     
-                    // Parse the extracted JSON string
-                    return JSON.parse(jsonString);
-                } else {
-                    throw new Error('Could not parse storeData object from file.');
-                }
-            } catch (e) {
-                console.error("Error loading store data:", e);
-                loadingMessage.textContent = '❌ Error loading products. Please check the console for details.';
-                loadingMessage.classList.add('text-danger-red');
-                return null; // Return null on failure
-            }
-        }
+                    <form onsubmit="event.preventDefault(); alertCustom('Thank You','Your message has been received successfully. We will contact you soon.','success'); this.reset();">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+                                <input type="text" id="name" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                                <input type="email" id="email" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-300 mb-2">Message</label>
+                                <textarea id="message" rows="5" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 transform hover:scale-[1.01]">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
 
-        // Helper to get category name
-        function getCategoryName(categoryId) {
-            const category = storeData.categories.find(c => c.id === categoryId);
-            return category ? category.name : 'Digital Product';
-        }
-
-        // Render functions
-        function renderProductCard(product) {
-            const categoryName = getCategoryName(product.categoryId);
-            
-            // Use the first image URL in the array, or a placeholder if none exists
-            const imageUrl = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/400x400/FFD700/1C1C1C?text=No+Image';
-
-            return `
-                <div 
-                    class="product-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 p-4 cursor-pointer" 
-                    data-product-id="${product.id}"
-                    onclick="openProductModal(
-                        '${product.id}', 
-                        '${product.title.replace(/'/g, "\\'")}', 
-                        '${product.description.replace(/'/g, "\\'")}', 
-                        '${product.buyUrl.replace(/'/g, "\\'")}', 
-                        '${imageUrl}', 
-                        '${product.price.toFixed(2)}',
-                        '${categoryName.replace(/'/g, "\\'")}'
-                    )">
-                    <div class="relative">
-                        <img src="${imageUrl}" alt="${product.title}" class="w-full h-48 object-cover rounded-lg mb-4">
-                        ${product.isNew ? '<span class="absolute top-2 right-2 bg-success-green text-white text-xs font-bold px-3 py-1 rounded-full">New</span>' : ''}
-                    </div>
-                    <div class="space-y-2">
-                        <p class="text-xs text-primary-yellow font-bold uppercase">${categoryName}</p>
-                        <h3 class="text-lg font-bold truncate">${product.title}</h3>
-                        <p class="text-sm text-gray-600 line-clamp-2">${product.description}</p>
-                        <div class="flex justify-between items-center pt-2">
-                            <span class="text-xl font-extrabold text-primary-dark">$${product.price.toFixed(2)}</span>
-                            <span class="bg-primary-dark text-white text-sm font-semibold py-2 px-4 rounded-full hover:bg-gray-700 transition duration-300">
-                                View Details
-                            </span>
+                    <div class="mt-10 border-t border-gray-800 pt-8 text-center">
+                        <h3 class="text-xl font-bold text-white mb-4">Or Contact Us Directly:</h3>
+                        <div class="flex justify-center space-x-6">
+                            <a href="${settingsContact.whatsapp}" target="_blank" class="text-white hover:text-green-500 transition flex flex-col items-center">
+                                <i data-lucide="message-square-text" class="w-8 h-8"></i>
+                                <span class="text-sm mt-1">WhatsApp</span>
+                            </a>
+                            <a href="${settingsContact.instagram}" target="_blank" class="text-white hover:text-pink-500 transition flex flex-col items-center">
+                                <i data-lucide="instagram" class="w-8 h-8"></i>
+                                <span class="text-sm mt-1">Instagram</span>
+                            </a>
+                            <a href="${settingsContact.telegram}" target="_blank" class="text-white hover:text-blue-500 transition flex flex-col items-center">
+                                <i data-lucide="send" class="w-8 h-8"></i>
+                                <span class="text-sm mt-1">Telegram</span>
+                            </a>
                         </div>
                     </div>
                 </div>
             `;
-        }
+            document.getElementById('frontend-view').innerHTML = content;
+            lucide.createIcons();
+        };
 
-        function renderProductSections(data) {
-            productListContainer.innerHTML = '';
-            
-            // 1. Group products by category
-            const groupedProducts = data.products.reduce((acc, product) => {
-                const categoryId = product.categoryId || 'uncategorized';
-                if (!acc[categoryId]) {
-                    acc[categoryId] = [];
-                }
-                acc[categoryId].push(product);
-                return acc;
-            }, {});
+        // ====================================================
+        // ROUTER / NAVIGATION 
+        // ====================================================
 
-            // 2. Iterate over categories to build sections
-            const sortedCategories = data.categories.sort((a, b) => a.name.localeCompare(b.name));
+        /** Main navigation function */
+        const navigate = (view) => {
+            currentView = view;
             
-            if (sortedCategories.length === 0 && data.products.length === 0) {
-                 productListContainer.innerHTML = '<p class="text-center text-lg text-gray-500">No products or categories have been published yet.</p>';
-                 return;
+            switch (view) {
+                case 'home':
+                    renderHomeView();
+                    break;
+                case 'my-service':
+                    renderMyServiceView();
+                    break;
+                case 'contact':
+                    renderContactView();
+                    break;
+                default:
+                    renderHomeView();
+                    break;
             }
+            updateNavState(); // Update nav bar
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
+        };
 
-            sortedCategories.forEach(category => {
-                const products = groupedProducts[category.id] || [];
-                if (products.length > 0) {
-                    const sectionHtml = `
-                        <section id="category-${category.id}" class="mb-12">
-                            <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">${category.name}</h2>
-                            <p class="text-gray-600 mb-8 text-left">Explore our latest items in the ${category.name} collection.</p>
-                            <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
-                                ${products.map(renderProductCard).join('')}
-                            </div>
-                        </section>
-                    `;
-                    productListContainer.insertAdjacentHTML('beforeend', sectionHtml);
-                }
-            });
-
-            // 3. Handle uncategorized products (optional section)
-            const uncategorizedProducts = groupedProducts['uncategorized'] || [];
-            if (uncategorizedProducts.length > 0) {
-                const uncategorizedSectionHtml = `
-                    <section id="category-uncategorized" class="mb-12 border-t pt-8 border-gray-300">
-                        <h2 class="text-3xl font-bold mb-4 text-primary-dark text-left">Other Products</h2>
-                        <p class="text-gray-600 mb-8 text-left">Items without a specific category.</p>
-                        <div class="carousel-container flex space-x-4 overflow-x-auto p-4 -mx-4">
-                            ${uncategorizedProducts.map(renderProductCard).join('')}
-                        </div>
-                    </section>
-                `;
-                productListContainer.insertAdjacentHTML('beforeend', uncategorizedSectionHtml);
-            }
-            
-            // If the container is still empty after rendering
-            if (productListContainer.innerHTML === '') {
-                productListContainer.innerHTML = '<p class="text-center text-lg text-gray-500">No products have been published yet.</p>';
-            }
-        }
-
-        // Modal functions (Updated to use dynamic data)
-        const productModal = document.getElementById('product-modal');
-        const modalTitle = document.getElementById('modal-product-title');
-        const modalCategory = document.getElementById('modal-category');
-        const modalImage = document.getElementById('modal-image');
-        const modalDescription = document.getElementById('modal-description');
-        const modalPrice = document.getElementById('modal-price');
-        const modalBuyLink = document.getElementById('modal-buy-link');
-        const modalShareButton = document.getElementById('modal-share-button');
-
-        window.openProductModal = function (id, title, description, buyUrl, imageUrl, price, categoryName) {
-            modalTitle.textContent = title;
-            modalCategory.textContent = categoryName;
-            modalImage.src = imageUrl;
-            modalDescription.textContent = description;
-            modalPrice.textContent = `$${price}`;
-            modalBuyLink.href = buyUrl;
-            
-            // Set hash for sharable link
-            window.location.hash = id;
-
-            productModal.classList.remove('hidden');
-            productModal.classList.add('flex');
-            
-            modalShareButton.onclick = () => {
-                shareProduct(window.location.href);
-            };
-        }
-
-        window.closeProductModal = function () {
-            productModal.classList.add('hidden');
-            productModal.classList.remove('flex');
-            // Remove hash on close
-            history.replaceState(null, null, ' ');
-        }
+        // ====================================================
+        // EVENT LISTENERS 
+        // ====================================================
         
-        function shareProduct(linkToCopy) {
-            if (navigator.share) {
-                navigator.share({
-                    title: modalTitle.textContent,
-                    text: modalDescription.textContent.substring(0, 100) + '...',
-                    url: linkToCopy
-                }).then(() => {
-                    alert('Link shared successfully!');
-                }).catch(error => {
-                    console.error('Sharing failed:', error);
-                });
-            } else {
-                navigator.clipboard.writeText(linkToCopy).then(() => {
-                    alert('Share link copied to clipboard!');
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                    alert(`Copy failed. Please manually copy this link: ${linkToCopy}`);
-                });
-            }
-        }
-
-        // Initialization
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Set current year in footer
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            // Mobile menu toggle
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
+        // Mobile Menu Toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => {
+
+            mobileMenuBtn.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
-            });
-            
-            // --- Data Loading and Rendering ---
-            const data = await fetchStoreData();
-            if (data) {
-                storeData = data;
-                loadingMessage.classList.add('hidden');
-                renderProductSections(storeData);
-            } else {
-                 loadingMessage.textContent = 'Failed to load store data. Please ensure "store_data.js" is accessible.';
-                 loadingMessage.classList.remove('text-gray-500');
-                 loadingMessage.classList.add('text-danger-red');
-            }
-
-            // --- URL Hash Check (Deep linking) ---
-            const checkURLHash = () => {
-                const hash = window.location.hash.substring(1); // Get hash without '#'
-                if (hash && storeData.products) {
-                    const product = storeData.products.find(p => p.id === hash);
-                    if (product) {
-                        const categoryName = getCategoryName(product.categoryId);
-                        const imageUrl = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/400x400/FFD700/1C1C1C?text=No+Image';
-
-                        // Use setTimeout to ensure the modal functions are defined and data is loaded
-                        setTimeout(() => {
-                            openProductModal(
-                                product.id, 
-                                product.title, 
-                                product.description, 
-                                product.buyUrl, 
-                                imageUrl, 
-                                product.price.toFixed(2),
-                                categoryName
-                            );
-                        }, 100); 
-                    }
+                const icon = mobileMenuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.setAttribute('data-lucide', 'menu');
+                } else {
+                    icon.setAttribute('data-lucide', 'x');
                 }
-            };
-            
-            // Check hash after data is potentially loaded
-            if (data) {
-                checkURLHash();
-                window.addEventListener('hashchange', checkURLHash);
-            }
+                lucide.createIcons();
+            });
+
+            // Close menu on link click
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuBtn.querySelector('i').setAttribute('data-lucide', 'menu');
+                    lucide.createIcons();
+                });
+            });
         });
+
     </script>
 </body>
 </html>
