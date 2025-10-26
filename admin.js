@@ -2,6 +2,7 @@
 // ADMIN PANEL STATE & GITHUB CONFIG
 // ====================================================
 
+// These variables will hold the live data arrays/objects fetched from index.html
 let adminProducts = [];
 let adminUserServices = [];
 let adminSettingsContact = {};
@@ -44,7 +45,8 @@ const updateStatusDisplay = () => {
 // ====================================================
 
 /**
- * Fetches index.html content and extracts the data arrays/objects.
+ * Fetches index.html content and extracts the three data sections.
+ * Initializes admin data for editing.
  */
 const fetchAndParseData = async () => {
     const config = getGitHubConfig();
@@ -66,7 +68,7 @@ const fetchAndParseData = async () => {
         const fileContent = atob(data.content.replace(/\n/g, ''));
         fileSha = data.sha; 
         
-        // Extract data using the new markers
+        // Extract all three data sections using the markers
         const productsMatch = fileContent.match(/\/\* START_PRODUCTS_DATA \*\/[\s\S]*?(let products = [\s\S]*?);[\s\S]*?\/\* END_PRODUCTS_DATA \*\//);
         const servicesMatch = fileContent.match(/\/\* START_SERVICES_DATA \*\/[\s\S]*?(let userServices = [\s\S]*?);[\s\S]*?\/\* END_SERVICES_DATA \*\//);
         const contactMatch = fileContent.match(/\/\* START_SETTINGS_CONTACT \*\/[\s\S]*?(let settingsContact = [\s\S]*?);[\s\S]*?\/\* END_SETTINGS_CONTACT \*\//);
@@ -83,10 +85,10 @@ const fetchAndParseData = async () => {
             adminUserServices = tempScope.userServices || [];
             adminSettingsContact = tempScope.settingsContact || {};
 
-            alert('✅ Live data fetched from index.html successfully!');
+            alert('✅ Live data fetched from index.html successfully! You can now manage your contact info.');
             changeAdminView('contact'); // Move to contact management
         } else {
-            throw new Error("Failed to find START/END markers in index.html. Please ensure index.html is correctly updated.");
+            throw new Error("Failed to find all START/END markers in index.html. Ensure all three sections are present.");
         }
 
     } catch (error) {
@@ -96,12 +98,12 @@ const fetchAndParseData = async () => {
 };
 
 /**
- * Creates the modification and sends it to GitHub API.
+ * Updates the file on GitHub by replacing the content between all markers.
  */
 const updateFileOnGitHub = async (commitMessage) => {
     const config = getGitHubConfig();
     if (!config || !fileSha) {
-        alert('Error: GitHub settings or file SHA not available. Please save settings first.');
+        alert('Error: GitHub settings or file SHA not available. Please save settings and fetch data first.');
         return false;
     }
     
@@ -118,7 +120,7 @@ const updateFileOnGitHub = async (commitMessage) => {
     const freshContent = atob(freshData.content.replace(/\n/g, ''));
     const currentSha = freshData.sha; 
 
-    // 2. Prepare the new code blocks
+    // 2. Prepare the new code blocks, using pretty print for readability if user edits manually later.
     const newProductsCode = `let products = ${JSON.stringify(adminProducts, null, 4)};`;
     const newServicesCode = `let userServices = ${JSON.stringify(adminUserServices, null, 4)};`;
     const newContactCode = `let settingsContact = ${JSON.stringify(adminSettingsContact, null, 4)};`;
@@ -147,13 +149,6 @@ const updateFileOnGitHub = async (commitMessage) => {
     const contentBase64 = btoa(updatedContent);
 
     // 5. Send PUT request to update the file
-    const payload = {
-        message: commitMessage,
-        content: contentBase64,
-        sha: currentSha, 
-        branch: branch
-    };
-
     const updateUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${FILE_PATH}`;
     const updateResponse = await fetch(updateUrl, {
         method: 'PUT',
@@ -166,8 +161,8 @@ const updateFileOnGitHub = async (commitMessage) => {
 
     if (updateResponse.ok) {
         const result = await updateResponse.json();
-        fileSha = result.content.sha; // Update SHA
-        alert('✅ Published successfully! Changes will appear on GitHub Pages shortly.');
+        fileSha = result.content.sha; // Update SHA for next commit
+        alert('✅ Published successfully! Changes will appear on your website shortly.');
         return true;
     } else {
         const errorData = await updateResponse.json();
@@ -185,7 +180,7 @@ const updateFileOnGitHub = async (commitMessage) => {
 const generateInputField = (id, label, type, value = '', required = true, placeholder = '') => `
     <div>
         <label for="${id}" class="block text-sm font-medium text-gray-300 mb-2">${label}</label>
-        <input type="${type}" id="${id}" name="${id}" value="${value}" ${required ? 'required' : ''} placeholder="${placeholder}" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+        <input type="${type}" id="${id}" name="${id}" value="${value}" ${required ? 'required' : ''} placeholder="${placeholder}" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition" dir="ltr">
     </div>
 `;
 
@@ -204,7 +199,7 @@ const renderConfigurationView = () => {
                 ${generateInputField('repo', 'Repository Name', 'text', githubConfig.repo || '', true)}
                 ${generateInputField('branch', 'Branch Name (e.g., main or gh-pages)', 'text', githubConfig.branch || 'main', true)}
                 <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200">
-                    Save Settings and Fetch Data
+                    Save Settings and Fetch Live Data
                 </button>
             </form>
         </div>
@@ -218,7 +213,7 @@ const renderConfigurationView = () => {
     lucide.createIcons();
 };
 
-/** Save config to Local Storage */
+/** Save config to Local Storage and fetch data */
 const saveConfig = () => {
     const form = document.getElementById('config-form');
     const newConfig = {
@@ -238,6 +233,7 @@ const saveConfig = () => {
     }
 };
 
+/** Main view switcher */
 const changeAdminView = (view) => {
     const title = document.getElementById('admin-title');
     
@@ -265,7 +261,7 @@ const changeAdminView = (view) => {
 };
 
 // ====================================================
-// CONTACT MANAGEMENT (CRUD-like)
+// CONTACT MANAGEMENT LOGIC
 // ====================================================
 
 const renderContactManagement = () => {
@@ -275,17 +271,26 @@ const renderContactManagement = () => {
     const formHTML = `
         <div class="admin-section p-6 rounded-xl shadow-lg">
             <h3 class="text-2xl font-bold text-sky-400 mb-4">Links for "Build Your Site" and "Contact Us" pages</h3>
-            <p class="text-sm text-gray-400 mb-6">These links will be used when a customer clicks the "Contact Me" button on your site.</p>
+            <p class="text-sm text-gray-400 mb-6">These links will be used when a customer clicks the "Contact Me" button on your site. Use full URL format (e.g., https://wa.me/...).</p>
             
             <form id="contact-form" class="space-y-4">
-                ${generateInputField('contact-whatsapp', 'WhatsApp Link (Full URL, e.g., https://wa.me/15550000000)', 'url', contact.whatsapp || '', true, 'https://wa.me/15550000000')}
-                ${generateInputField('contact-instagram', 'Instagram Link (Full URL, e.g., https://instagram.com/myusername)', 'url', contact.instagram || '', true, 'https://instagram.com/myusername')}
-                ${generateInputField('contact-telegram', 'Telegram Link (Full URL, e.g., https://t.me/myusername)', 'url', contact.telegram || '', true, 'https://t.me/myusername')}
+                ${generateInputField('contact-whatsapp', 'WhatsApp Link (Full URL)', 'url', contact.whatsapp || '', true, 'https://wa.me/15550000000')}
+                ${generateInputField('contact-instagram', 'Instagram Link (Full URL)', 'url', contact.instagram || '', true, 'https://instagram.com/myusername')}
+                ${generateInputField('contact-telegram', 'Telegram Link (Full URL)', 'url', contact.telegram || '', true, 'https://t.me/myusername')}
                 
                 <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 mt-6">
                     Update Contact Info and Publish
                 </button>
             </form>
+            
+            <div class="mt-8 pt-4 border-t border-gray-700">
+                <h3 class="text-lg font-bold text-white mb-2">Note on Products & Services:</h3>
+                <p class="text-sm text-gray-400">The current status of Products and Community Services is: 
+                    <span class="font-bold text-sky-300">${adminProducts.length} Product(s)</span> and 
+                    <span class="font-bold text-purple-300">${adminUserServices.length} Service(s)</span> in index.html.
+                    To add/edit them, you must currently edit the arrays in the <code>index.html</code> file manually. The 'Publish' button above will preserve those arrays along with your contact changes.
+                </p>
+            </div>
         </div>
     `;
     container.innerHTML = formHTML;
@@ -309,7 +314,7 @@ const saveContactSettings = async () => {
     if (newContact.whatsapp && newContact.instagram && newContact.telegram) {
         adminSettingsContact = newContact;
         
-        // 💥 Automatic Publishing
+        // Automatic Publishing, updates all 3 sections (Products, Services, Contact)
         await updateFileOnGitHub(`Update: My contact links via admin panel.`);
     } else {
         alert('All contact links are required.');
