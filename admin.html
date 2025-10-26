@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rxstore - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #000; }
+        .admin-section { background-color: #1f2937; border: 1px solid #374151; }
+        .sidebar { background-color: #0f172a; }
+        [data-lucide] { margin-top: 0; } 
+        .modal-edit {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+    </style>
+</head>
+<body class="text-gray-100 bg-black min-h-screen">
+
+    <div class="flex min-h-screen">
+        <div class="sidebar w-64 p-6 hidden md:block border-r border-gray-800 sticky top-0 h-screen">
+            <h1 class="text-2xl font-black tracking-widest text-sky-400 mb-8 border-b border-gray-700 pb-4">Rxstore Admin</h1>
+            <nav class="space-y-3">
+                <button onclick="changeAdminView('config')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="config">
+                    <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                    GitHub Configuration
+                </button>
+                <button onclick="changeAdminView('contact')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="contact">
+                    <i data-lucide="phone-call" class="w-5 h-5 mr-3"></i>
+                    Manage My Contact Info
+                </button>
+            </nav>
+            <div id="live-status" class="mt-8 p-3 bg-gray-700/50 rounded-lg text-xs text-center text-red-400 font-bold">
+                (Token Not Entered)
+            </div>
+        </div>
+
+        <main class="flex-1 p-4 md:p-10">
+            <h2 class="text-3xl font-extrabold text-white mb-8" id="admin-title">Admin Panel</h2>
+            
+            <div id="admin-view">
+                </div>
+
+            <div id="edit-modal" class="modal-edit fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+                <div class="bg-gray-900 rounded-xl shadow-2xl p-6 w-full max-w-2xl mx-4 transform transition-transform duration-300" onclick="event.stopPropagation()">
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-3 mb-4">
+                        <h3 class="text-2xl font-bold text-sky-400" id="modal-title-text"></h3>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-800">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                    <form id="edit-form" class="space-y-4"></form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    
+    <script src="admin.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            if (typeof changeAdminView === 'function') {
+                changeAdminView('config'); // Start with the config screen
+            }
+        });
+    </script>
+</body>
+</html>
