@@ -124,6 +124,7 @@
     <script>
         // ====================================================
         // MOCK DATA & STATE MANAGEMENT 
+        // NOTE: THESE ARRAYS ARE MAINTAINED BY THE ADMIN PANEL (admin.js)
         // ====================================================
 
         let currentView = 'home'; 
@@ -174,6 +175,7 @@
             'Audio': 'Audio',
             'Projectors': 'Projectors',
             'Accessories': 'Accessories',
+            'Other': 'Other',
         };
         
         /** Generates HTML for a custom alert notification */
@@ -215,13 +217,13 @@
                         <h3 class="text-xl font-bold mb-2 text-sky-400">${product.title}</h3>
                         <p class="text-gray-400 text-sm mb-4 line-clamp-2">${product.description}</p>
                         <div class="flex items-center mt-4 space-x-3">
-                            <span class="text-2xl font-extrabold text-white">$${product.price.toFixed(2)}</span>
+                            <span class="text-2xl font-extrabold text-white">$${parseFloat(product.price).toFixed(2)}</span>
                             
                             <a href="${product.affiliateUrl}" target="_blank" class="flex-1 text-center bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200">
                                 <span>Buy Now</span>
                             </a>
                             
-                            <button onclick="navigate('product-details', ${product.id})" class="text-white bg-gray-700 hover:bg-gray-600 font-semibold py-2 px-4 rounded-lg transition duration-200">
+                            <button onclick="navigate('product-details', '${product.id}')" class="text-white bg-gray-700 hover:bg-gray-600 font-semibold py-2 px-4 rounded-lg transition duration-200">
                                 <i data-lucide="more-horizontal" class="w-5 h-5"></i>
                             </button>
                         </div>
@@ -242,15 +244,15 @@
                         <p class="text-gray-400 text-sm mb-4 line-clamp-3">${service.shortDescription}</p>
                     </div>
                     <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between items-center">
-                        <span class="text-2xl font-extrabold text-white">$${service.price.toFixed(2)}</span>
+                        <span class="text-2xl font-extrabold text-white">$${parseFloat(service.price).toFixed(2)}</span>
                         
-                        <button onclick="navigate('service-details', ${service.id})" class="text-sky-400 hover:text-sky-300 transition duration-200 flex items-center space-x-1.5 text-sm font-semibold">
+                        <button onclick="navigate('service-details', '${service.id}')" class="text-sky-400 hover:text-sky-300 transition duration-200 flex items-center space-x-1.5 text-sm font-semibold">
                             <span>Details</span>
                             <i data-lucide="chevrons-right" class="w-4 h-4"></i>
                         </button>
                     </div>
                     
-                    <button onclick="showContactModal(${service.id}, 'community')" class="mt-4 w-full text-center py-2 px-4 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition duration-200 flex items-center justify-center space-x-1.5 font-bold">
+                    <button onclick="showContactModal('${service.id}', 'community')" class="mt-4 w-full text-center py-2 px-4 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition duration-200 flex items-center justify-center space-x-1.5 font-bold">
                         <i data-lucide="phone-call" class="w-4 h-4 mr-2"></i>
                         <span>Request Service Now</span>
                     </button>
@@ -275,11 +277,12 @@
                 // Community services
                 const service = userServices.find(s => s.id === id);
                 if (!service) return;
-                // Note: Community services currently use simple handles/numbers which need mapping
+                
+                // Map short handles/numbers to full URLs
                 contactDetails = {
-                    whatsapp: service.contact.whatsapp.startsWith('https') ? service.contact.whatsapp : `https://wa.me/${service.contact.whatsapp}`,
-                    instagram: service.contact.instagram.startsWith('https') ? service.contact.instagram : `https://instagram.com/${service.contact.instagram}`,
-                    telegram: service.contact.telegram.startsWith('https') ? service.contact.telegram : `https://t.me/${service.contact.telegram}`
+                    whatsapp: service.contact.whatsapp.startsWith('http') ? service.contact.whatsapp : `https://wa.me/${service.contact.whatsapp}`,
+                    instagram: service.contact.instagram.startsWith('http') ? service.contact.instagram : `https://instagram.com/${service.contact.instagram.replace('@', '')}`,
+                    telegram: service.contact.telegram.startsWith('http') ? service.contact.telegram : `https://t.me/${service.contact.telegram.replace('@', '')}`
                 };
                 providerName = service.provider;
             } else {
@@ -456,7 +459,7 @@
                             <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-sky-600 text-white my-3">
                                 <i data-lucide="package-check" class="w-4 h-4 mr-1"></i> Published
                             </span>
-                            <p class="text-3xl font-black text-sky-400">$${product.price.toFixed(2)}</p>
+                            <p class="text-3xl font-black text-sky-400">$${parseFloat(product.price).toFixed(2)}</p>
                         </div>
                         
                         <div class="bg-gray-900 p-6 rounded-xl shadow-inner border border-gray-800 mb-8">
@@ -476,7 +479,7 @@
                             <div class="space-y-3 mb-6 border-b border-gray-700 pb-4">
                                 <div class="flex justify-between text-xl">
                                     <span class="text-gray-400">Total Price:</span>
-                                    <span class="font-extrabold text-white">$${product.price.toFixed(2)}</span>
+                                    <span class="font-extrabold text-white">$${parseFloat(product.price).toFixed(2)}</span>
                                 </div>
                             </div>
                             
@@ -593,11 +596,11 @@
                             <div class="space-y-3 mb-6 border-b border-gray-700 pb-4">
                                 <div class="flex justify-between text-lg">
                                     <span class="text-gray-400">Starting Price:</span>
-                                    <span class="font-bold text-white">$${service.price.toFixed(2)}</span>
+                                    <span class="font-bold text-white">$${parseFloat(service.price).toFixed(2)}</span>
                                 </div>
                             </div>
                             
-                            <button onclick="showContactModal(${service.id}, 'community')" class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-extrabold py-3 rounded-xl shadow-lg transition duration-200 transform hover:scale-[1.02] flex items-center justify-center space-x-2">
+                            <button onclick="showContactModal('${service.id}', 'community')" class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-extrabold py-3 rounded-xl shadow-lg transition duration-200 transform hover:scale-[1.02] flex items-center justify-center space-x-2">
                                 <i data-lucide="phone-call" class="w-5 h-5 mr-2"></i>
                                 <span>Request Service Now</span>
                             </button>
