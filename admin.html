@@ -12,6 +12,13 @@
         .admin-section { background-color: #1f2937; border: 1px solid #374151; }
         .sidebar { background-color: #0f172a; }
         [data-lucide] { margin-top: 0; } 
+        .form-group { position: relative; }
+        .remove-image-btn { 
+            position: absolute; 
+            top: 0.5rem; 
+            right: 0.5rem; 
+            z-index: 10;
+        }
     </style>
 </head>
 <body class="text-gray-100 bg-black min-h-screen">
@@ -24,6 +31,16 @@
                     <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
                     GitHub Configuration
                 </button>
+                <div class="py-2 border-t border-gray-800 my-3"></div>
+                <button onclick="changeAdminView('products')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="products">
+                    <i data-lucide="package" class="w-5 h-5 mr-3 text-sky-400"></i>
+                    Products Management
+                </button>
+                <button onclick="changeAdminView('services')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="services">
+                    <i data-lucide="users" class="w-5 h-5 mr-3 text-purple-400"></i>
+                    Services Management
+                </button>
+                <div class="py-2 border-t border-gray-800 my-3"></div>
                 <button onclick="changeAdminView('contact')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="contact">
                     <i data-lucide="phone-call" class="w-5 h-5 mr-3"></i>
                     Manage My Contact Info
