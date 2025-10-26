@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rxstore - Build Your Site Service</title>
+    <title>Rxstore - Products and Services Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
@@ -45,14 +45,21 @@
                 <div class="text-2xl font-black tracking-widest text-sky-400">Rxstore</div>
                 
                 <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
-                    <a href="#" onclick="navigate('home'); return false;" class="nav-link px-3 py-1.5 transition duration-200 hover:text-sky-400 border-b-2 border-transparent" data-view="home">Home</a>
+                    <a href="#" onclick="navigate('home', 'All'); return false;" class="nav-link px-3 py-1.5 transition duration-200 hover:text-sky-400 border-b-2 border-transparent" data-view="home">Home</a>
                     
                     <a href="#" onclick="navigate('my-service'); return false;" class="nav-link px-3 py-1.5 transition duration-200 hover:text-sky-400 border-b-2 border-transparent" data-view="my-service">Build Your Site</a>
+                    
+                    <a href="#" onclick="navigate('community-services'); return false;" class="nav-link px-3 py-1.5 transition duration-200 hover:text-sky-400 border-b-2 border-transparent" data-view="community-services">Services</a>
                     
                     <a href="#" onclick="navigate('contact'); return false;" class="nav-link px-3 py-1.5 transition duration-200 hover:text-sky-400 border-b-2 border-transparent" data-view="contact">Contact Us</a>
                 </div>
 
                 <div class="flex items-center space-x-4">
+                    <div class="relative hidden sm:block">
+                        <input type="text" placeholder="Search..." class="bg-gray-800 text-gray-200 text-sm pl-10 pr-4 py-2 rounded-full border border-gray-700 focus:ring-1 focus:ring-sky-400 focus:border-sky-400 transition" dir="ltr">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                    </div>
+                    
                     <button id="mobile-menu-btn" class="md:hidden p-2 rounded-full hover:bg-gray-800 transition" aria-label="Toggle Menu">
                         <i data-lucide="menu" class="w-5 h-5 text-sky-400"></i>
                     </button>
@@ -61,8 +68,9 @@
 
             <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-black/95 border-t border-gray-800 shadow-xl">
                 <div class="px-2 pt-2 pb-3 space-y-1 text-center">
-                    <a href="#" onclick="navigate('home'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800 hover:text-sky-400">Home</a>
+                    <a href="#" onclick="navigate('home', 'All'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800 hover:text-sky-400">Home</a>
                     <a href="#" onclick="navigate('my-service'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800 hover:text-sky-400">Build Your Site</a>
+                    <a href="#" onclick="navigate('community-services'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800 hover:text-sky-400">Services</a>
                     <a href="#" onclick="navigate('contact'); return false;" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-800 hover:text-sky-400">Contact Us</a>
                 </div>
             </div>
@@ -92,13 +100,17 @@
 
         <div class="mobile-fixed-nav md:hidden p-2">
             <div class="flex justify-around text-xs">
-                <a href="#" onclick="navigate('home'); return false;" class="mobile-nav-link flex flex-col items-center p-2 text-gray-400 hover:text-sky-400" data-view="home">
+                <a href="#" onclick="navigate('home', 'All'); return false;" class="mobile-nav-link flex flex-col items-center p-2 text-gray-400 hover:text-sky-400" data-view="home">
                     <i data-lucide="home" class="w-5 h-5"></i>
                     Home
                 </a>
                 <a href="#" onclick="navigate('my-service'); return false;" class="mobile-nav-link flex flex-col items-center p-2 text-gray-400 hover:text-sky-400" data-view="my-service">
                     <i data-lucide="monitor" class="w-5 h-5"></i>
                     My Site
+                </a>
+                <a href="#" onclick="navigate('community-services'); return false;" class="mobile-nav-link flex flex-col items-center p-2 text-gray-400 hover:text-sky-400" data-view="community-services">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                    Services
                 </a>
                 <a href="#" onclick="navigate('contact'); return false;" class="mobile-nav-link flex flex-col items-center p-2 text-gray-400 hover:text-sky-400" data-view="contact">
                     <i data-lucide="mail" class="w-5 h-5"></i>
@@ -115,19 +127,18 @@
         // ====================================================
 
         let currentView = 'home'; 
-        
+        let currentProductId = null; 
+        let currentServiceId = null;
+        let selectedCategory = 'All'; 
+
         // Products Array (Empty as requested)
         /* START_PRODUCTS_DATA */
-        
-let products = [];
-
+        let products = [];
         /* END_PRODUCTS_DATA */
 
         // Community Services Array (Empty as requested)
         /* START_SERVICES_DATA */
-        
-let userServices = [];
-
+        let userServices = [];
         /* END_SERVICES_DATA */
 
         // My Custom Service Data (Website Building)
@@ -143,19 +154,27 @@ let userServices = [];
         
         // My Contact Info (Managed by Admin)
         /* START_SETTINGS_CONTACT */
-        
-let settingsContact = {
-    "whatsapp": "https://wa.me/01124527286",
-    "instagram": "https://instagram.com/kaboos645",
-    "telegram": "https://t.me/yonzzc"
-};
-
+        let settingsContact = {
+            whatsapp: "https://wa.me/15550000000",
+            instagram: "https://instagram.com/rxstore_official_us",
+            telegram: "https://t.me/RxstoreAdminUS"
+        };
         /* END_SETTINGS_CONTACT */
 
 
         // ====================================================
         // HELPER FUNCTIONS 
         // ====================================================
+        
+        /** Maps categories for display (English only now) */
+        const categoryMap = {
+            'All': 'All Products',
+            'Phones': 'Phones',
+            'Monitors': 'Monitors',
+            'Audio': 'Audio',
+            'Projectors': 'Projectors',
+            'Accessories': 'Accessories',
+        };
         
         /** Generates HTML for a custom alert notification */
         const alertCustom = (title, message, type = 'success') => {
@@ -186,6 +205,60 @@ let settingsContact = {
             }, 5000);
         };
 
+        /** Generates HTML for a single product card */
+        const generateProductCard = (product) => {
+            return `
+                <div class="bg-gray-900 rounded-xl shadow-lg hover:shadow-sky-500/30 transition duration-300 transform hover:-translate-y-1 relative overflow-hidden border border-gray-800">
+                    <img src="${product.imageUrl || 'https://placehold.co/800x600/1f2937/d1d5db?text=Product+Image'}" alt="${product.title}" class="w-full h-48 object-cover rounded-t-xl opacity-80 hover:opacity-100 transition duration-300">
+                    <div class="p-5">
+                        <span class="text-xs font-semibold text-gray-500 mb-2 block">${categoryMap[product.category] || product.category}</span>
+                        <h3 class="text-xl font-bold mb-2 text-sky-400">${product.title}</h3>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">${product.description}</p>
+                        <div class="flex items-center mt-4 space-x-3">
+                            <span class="text-2xl font-extrabold text-white">$${product.price.toFixed(2)}</span>
+                            
+                            <a href="${product.affiliateUrl}" target="_blank" class="flex-1 text-center bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200">
+                                <span>Buy Now</span>
+                            </a>
+                            
+                            <button onclick="navigate('product-details', ${product.id})" class="text-white bg-gray-700 hover:bg-gray-600 font-semibold py-2 px-4 rounded-lg transition duration-200">
+                                <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        /** Generates HTML for a single community service card */
+        const generateUserServiceCard = (service) => {
+            return `
+                <div class="bg-gray-900 rounded-xl shadow-lg hover:shadow-purple-500/30 transition duration-300 transform hover:-translate-y-1 border border-gray-800 p-5 flex flex-col h-full">
+                    <div class="flex-grow">
+                        <h3 class="text-xl font-bold mb-2 text-purple-400 flex items-center">
+                            <i data-lucide="zap" class="w-5 h-5 mr-2 text-purple-500"></i> ${service.title}
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-3">Provider: ${service.provider}</p>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-3">${service.shortDescription}</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between items-center">
+                        <span class="text-2xl font-extrabold text-white">$${service.price.toFixed(2)}</span>
+                        
+                        <button onclick="navigate('service-details', ${service.id})" class="text-sky-400 hover:text-sky-300 transition duration-200 flex items-center space-x-1.5 text-sm font-semibold">
+                            <span>Details</span>
+                            <i data-lucide="chevrons-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    
+                    <button onclick="showContactModal(${service.id}, 'community')" class="mt-4 w-full text-center py-2 px-4 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition duration-200 flex items-center justify-center space-x-1.5 font-bold">
+                        <i data-lucide="phone-call" class="w-4 h-4 mr-2"></i>
+                        <span>Request Service Now</span>
+                    </button>
+                </div>
+            `;
+        };
+
+
         // ====================================================
         // CONTACT MODAL LOGIC 
         // ====================================================
@@ -195,11 +268,21 @@ let settingsContact = {
             let contactDetails, providerName;
 
             if (type === 'my-service') {
-                // Get data from the new contact object
+                // My exclusive service (uses admin-managed links)
                 contactDetails = settingsContact;
                 providerName = "Rxstore Management";
+            } else if (type === 'community') {
+                // Community services
+                const service = userServices.find(s => s.id === id);
+                if (!service) return;
+                // Note: Community services currently use simple handles/numbers which need mapping
+                contactDetails = {
+                    whatsapp: service.contact.whatsapp.startsWith('https') ? service.contact.whatsapp : `https://wa.me/${service.contact.whatsapp}`,
+                    instagram: service.contact.instagram.startsWith('https') ? service.contact.instagram : `https://instagram.com/${service.contact.instagram}`,
+                    telegram: service.contact.telegram.startsWith('https') ? service.contact.telegram : `https://t.me/${service.contact.telegram}`
+                };
+                providerName = service.provider;
             } else {
-                // Only 'my-service' type is supported now, since community services are removed
                 return;
             }
 
@@ -224,7 +307,7 @@ let settingsContact = {
                 `;
             }
             // Instagram Link
-            if (contactDetails.instagram && contactDetails.instagram.includes('instagram.com')) {
+            if (contactDetails.instagram) {
                  linksHTML += `
                     <a href="${contactDetails.instagram}" target="_blank" class="flex items-center space-x-4 p-3 rounded-lg bg-pink-600 hover:bg-pink-700 text-white font-semibold transition duration-200">
                         <i data-lucide="instagram" class="w-6 h-6 mr-4"></i>
@@ -234,7 +317,7 @@ let settingsContact = {
                 `;
             }
             // Telegram Link
-            if (contactDetails.telegram && contactDetails.telegram.includes('t.me')) {
+            if (contactDetails.telegram) {
                  linksHTML += `
                     <a href="${contactDetails.telegram}" target="_blank" class="flex items-center space-x-4 p-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition duration-200">
                         <i data-lucide="send" class="w-6 h-6 mr-4"></i>
@@ -294,8 +377,24 @@ let settingsContact = {
             lucide.createIcons();
         };
 
-        /** Render Home Page (simplified) */
-        const renderHomeView = () => {
+        /** Render Home Page (Products) */
+        const renderHomeView = (category = selectedCategory) => {
+            selectedCategory = category;
+            
+            // Get unique categories (even if the array is empty)
+            const uniqueCategories = ['All', ...new Set(products.map(p => p.category))];
+            const filteredProducts = products.filter(p => selectedCategory === 'All' || p.category === selectedCategory);
+            const productCardsHTML = filteredProducts.map(generateProductCard).join('');
+
+            // Generate HTML for category tabs
+            const categoryTabsHTML = uniqueCategories.map(cat => `
+                <button onclick="navigate('home', '${cat}')" 
+                    class="px-4 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition duration-200 
+                    ${cat === selectedCategory ? 'bg-sky-500 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'}">
+                    ${categoryMap[cat] || cat}
+                </button>
+            `).join('');
+
             const content = `
                 <section class="text-center py-16 md:py-24 bg-gray-900 rounded-2xl shadow-xl border border-gray-800 mb-12 relative overflow-hidden">
                     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-color-gray-900)_0%,_var(--tw-color-black)_100%)] opacity-80"></div>
@@ -304,25 +403,92 @@ let settingsContact = {
                             Welcome to <span class="text-sky-400">Rxstore</span>
                         </h1>
                         <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-                            Your exclusive source for building professional, high-performance websites.
+                            Your source for curated products and exclusive web development services.
                         </p>
                         <div class="flex justify-center flex-wrap gap-4">
                             <button onclick="navigate('my-service')" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 flex items-center space-x-2">
                                 <i data-lucide="monitor" class="w-5 h-5 mr-2"></i>
-                                <span>Explore Site Building Service</span>
+                                <span>Build Your Site Service</span>
                             </button>
                         </div>
                     </div>
                 </section>
 
-                <section class="mb-12 text-center">
-                    <h2 class="text-3xl font-extrabold text-white mb-6 border-l-4 border-sky-400 pl-3 inline-block">Featured Products</h2>
+                <section class="mb-12">
+                    <h2 class="text-3xl font-extrabold text-white mb-6 border-l-4 border-sky-400 pl-3">Our Featured Products</h2>
                     
-                    <div class="bg-gray-900 p-8 rounded-xl border border-gray-800">
-                         <i data-lucide="package-x" class="w-12 h-12 text-gray-600 mx-auto mb-4"></i>
-                         <p class="text-xl text-gray-500 py-4">We currently focus only on our exclusive "Build Your Site" service. Products section is empty.</p>
+                    <div class="category-scroll flex gap-3 p-4 bg-gray-900 rounded-xl mb-8 border border-gray-800 overflow-x-auto">
+                        ${categoryTabsHTML}
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        ${productCardsHTML.length > 0 ? productCardsHTML : `<p class="col-span-full text-center text-xl text-gray-500 py-10 bg-gray-900 rounded-xl border border-gray-800"><i data-lucide="package-x" class="w-8 h-8 text-gray-600 mx-auto mb-3"></i><br>No products available currently in the "${categoryMap[selectedCategory] || selectedCategory}" category. Please check back later.</p>`}
                     </div>
                 </section>
+            `;
+            document.getElementById('frontend-view').innerHTML = content;
+            lucide.createIcons();
+        };
+        
+        /** Render Product Details Page */
+        const renderProductDetailsView = (productId) => {
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                navigate('home');
+                alertCustom('Error', 'The selected product was not found.', 'error');
+                return;
+            }
+
+            const imagesGallery = (product.images || []).length > 0 ? product.images.map((img, index) => `
+                <img src="${img}" alt="${product.title} - Image ${index + 1}" class="w-full h-auto rounded-xl shadow-xl border border-gray-800">
+            `).join('') : `<img src="${product.imageUrl || 'https://placehold.co/600x400/1f2937/d1d5db?text=No+Extra+Image'}" alt="${product.title}" class="w-full h-auto rounded-xl shadow-xl border border-gray-800">`;
+
+            const content = `
+                <button onclick="navigate('home')" class="text-sky-400 hover:text-sky-300 mb-6 flex items-center space-x-1.5 transition duration-200">
+                    <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
+                    <span>Back to Products</span>
+                </button>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div class="lg:col-span-2">
+                        <div class="mb-8">
+                            <h1 class="text-4xl font-extrabold text-white mb-2">${product.title}</h1>
+                            <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-sky-600 text-white my-3">
+                                <i data-lucide="package-check" class="w-4 h-4 mr-1"></i> Published
+                            </span>
+                            <p class="text-3xl font-black text-sky-400">$${product.price.toFixed(2)}</p>
+                        </div>
+                        
+                        <div class="bg-gray-900 p-6 rounded-xl shadow-inner border border-gray-800 mb-8">
+                            <h2 class="text-2xl font-bold text-white mb-4 border-b border-gray-700 pb-2">Full Description</h2>
+                            <p class="text-gray-300 leading-relaxed">${product.description}</p>
+                        </div>
+
+                        <h2 class="text-2xl font-bold text-white mb-4 border-l-4 border-gray-600 pl-3">Image Gallery</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            ${imagesGallery}
+                        </div>
+                    </div>
+                    
+                    <div class="lg:col-span-1">
+                        <div class="sticky top-24 bg-gray-900 p-6 rounded-xl shadow-2xl border border-sky-400/50">
+                            <h3 class="text-2xl font-bold text-white mb-4">Purchase Summary</h3>
+                            <div class="space-y-3 mb-6 border-b border-gray-700 pb-4">
+                                <div class="flex justify-between text-xl">
+                                    <span class="text-gray-400">Total Price:</span>
+                                    <span class="font-extrabold text-white">$${product.price.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            
+                            <a href="${product.affiliateUrl}" target="_blank" class="block w-full text-center bg-sky-500 hover:bg-sky-600 text-white font-extrabold py-3 rounded-xl shadow-lg transition duration-200 transform hover:scale-[1.02] flex items-center justify-center space-x-2">
+                                <i data-lucide="shopping-cart" class="w-5 h-5 mr-2"></i>
+                                <span>Buy Now (Go to Store)</span>
+                            </a>
+
+                            <p class="text-center text-xs text-gray-500 mt-4">You will be redirected to the e-commerce platform (e.g., Amazon) to complete the purchase.</p>
+                        </div>
+                    </div>
+                </div>
             `;
             document.getElementById('frontend-view').innerHTML = content;
             lucide.createIcons();
@@ -371,26 +537,100 @@ let settingsContact = {
             lucide.createIcons();
         };
 
+        /** Render Community Services Page */
+        const renderCommunityServicesView = () => {
+            const communityServiceHTML = userServices.map(generateUserServiceCard).join('');
+
+            const content = `
+                <h1 class="text-4xl font-extrabold text-white mb-10 border-l-4 border-purple-400 pl-3">Community Expert Services</h1>
+                <p class="text-lg text-gray-400 mb-8">Discover services offered by experts in our community. From PC building to video editing, find what you need here.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    ${communityServiceHTML.length > 0 ? communityServiceHTML : `<p class="col-span-full text-center text-xl text-gray-500 py-10 bg-gray-900 rounded-xl border border-gray-800"><i data-lucide="users-round" class="w-8 h-8 text-gray-600 mx-auto mb-3"></i><br>No community services are published at the moment. This section is ready for future service additions.</p>`}
+                </div>
+            `;
+            document.getElementById('frontend-view').innerHTML = content;
+            lucide.createIcons();
+        };
+
+        /** Render Service Details Page */
+        const renderServiceDetailsView = (serviceId) => {
+            const service = userServices.find(s => s.id === serviceId);
+            if (!service) {
+                navigate('community-services');
+                alertCustom('Error', 'The requested service was not found.', 'error');
+                return;
+            }
+
+            const portfolioHTML = (service.portfolio || []).map(img => `
+                <img src="${img}" alt="Portfolio image for ${service.title}" class="w-full h-auto rounded-lg object-cover shadow-md border border-gray-700">
+            `).join('');
+
+            const content = `
+                <button onclick="navigate('community-services')" class="text-purple-400 hover:text-purple-300 mb-6 flex items-center space-x-1.5 transition duration-200">
+                    <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
+                    <span>Back to Services</span>
+                </button>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div class="lg:col-span-2">
+                        <h1 class="text-4xl font-extrabold text-white mb-2">${service.title}</h1>
+                        <p class="text-lg text-gray-400 mb-6">Provider: <span class="font-bold text-purple-400">${service.provider}</span></p>
+
+                        <div class="bg-gray-900 p-6 rounded-xl shadow-inner border border-gray-800 mb-8">
+                            <h2 class="text-2xl font-bold text-white mb-4 border-b border-gray-700 pb-2">Service Details</h2>
+                            <p class="text-gray-300 leading-relaxed">${service.longDescription || service.shortDescription}</p>
+                        </div>
+
+                        <h2 class="text-2xl font-bold text-white mb-4 border-l-4 border-gray-600 pl-3">Provider Portfolio</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            ${portfolioHTML.length > 0 ? portfolioHTML : `<p class="col-span-full text-center text-gray-500 py-6 bg-gray-900 rounded-lg border border-gray-800">No portfolio images available currently.</p>`}
+                        </div>
+                    </div>
+                    
+                    <div class="lg:col-span-1">
+                        <div class="sticky top-24 bg-gray-900 p-6 rounded-xl shadow-2xl border border-purple-400/50">
+                            <h3 class="text-2xl font-bold text-white mb-4">Request Service</h3>
+                            <div class="space-y-3 mb-6 border-b border-gray-700 pb-4">
+                                <div class="flex justify-between text-lg">
+                                    <span class="text-gray-400">Starting Price:</span>
+                                    <span class="font-bold text-white">$${service.price.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            
+                            <button onclick="showContactModal(${service.id}, 'community')" class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-extrabold py-3 rounded-xl shadow-lg transition duration-200 transform hover:scale-[1.02] flex items-center justify-center space-x-2">
+                                <i data-lucide="phone-call" class="w-5 h-5 mr-2"></i>
+                                <span>Request Service Now</span>
+                            </button>
+
+                            <p class="text-center text-xs text-gray-500 mt-4">This will open direct contact options with the service provider.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('frontend-view').innerHTML = content;
+            lucide.createIcons();
+        };
+
         /** Render Contact Page */
         const renderContactView = () => {
              const content = `
                 <h1 class="text-4xl font-extrabold text-white mb-10 border-l-4 border-sky-400 pl-3">Contact Us</h1>
                 <div class="bg-gray-900 p-8 rounded-xl shadow-2xl border border-gray-800 max-w-2xl mx-auto">
-                    <p class="text-lg text-gray-400 mb-8 text-center">We are here to answer all your inquiries regarding our custom website building service.</p>
+                    <p class="text-lg text-gray-400 mb-8 text-center">We are here to answer all your inquiries regarding our custom website building service or published products.</p>
                     
                     <form onsubmit="event.preventDefault(); alertCustom('Thank You','Your message has been received successfully. We will contact you soon.','success'); this.reset();">
                         <div class="space-y-6">
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
-                                <input type="text" id="name" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+                                <input type="text" id="name" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition" dir="ltr">
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
-                                <input type="email" id="email" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+                                <input type="email" id="email" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition" dir="ltr">
                             </div>
                             <div>
                                 <label for="message" class="block text-sm font-medium text-gray-300 mb-2">Message</label>
-                                <textarea id="message" rows="5" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition"></textarea>
+                                <textarea id="message" rows="5" required class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-sky-500 focus:border-sky-500 text-white transition" dir="ltr"></textarea>
                             </div>
                             <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 transform hover:scale-[1.01]">
                                 Send Message
@@ -426,25 +666,42 @@ let settingsContact = {
         // ====================================================
 
         /** Main navigation function */
-        const navigate = (view) => {
+        const navigate = (view, id = null) => {
             currentView = view;
             
+            if (view === 'product-details') {
+                currentProductId = id;
+            } else if (view === 'service-details') {
+                currentServiceId = id;
+            } else if (view === 'home' && id !== null) {
+                selectedCategory = id;
+            }
+
             switch (view) {
                 case 'home':
-                    renderHomeView();
+                    renderHomeView(selectedCategory);
+                    break;
+                case 'product-details':
+                    renderProductDetailsView(currentProductId);
                     break;
                 case 'my-service':
                     renderMyServiceView();
+                    break;
+                case 'community-services':
+                    renderCommunityServicesView();
+                    break;
+                case 'service-details':
+                    renderServiceDetailsView(currentServiceId);
                     break;
                 case 'contact':
                     renderContactView();
                     break;
                 default:
-                    renderHomeView();
+                    renderHomeView(selectedCategory);
                     break;
             }
-            updateNavState(); // Update nav bar
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
+            updateNavState(); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
         };
 
         // ====================================================
