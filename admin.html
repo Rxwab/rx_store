@@ -1,73 +1,262 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rxstore - Admin Panel</title>
+    <title>Rxstore Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #000; }
-        .admin-section { background-color: #1f2937; border: 1px solid #374151; }
-        .sidebar { background-color: #0f172a; }
-        [data-lucide] { margin-top: 0; } 
-        .form-group { position: relative; }
-        .remove-image-btn { 
-            position: absolute; 
-            top: 0.5rem; 
-            right: 0.5rem; 
-            z-index: 10;
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: #0d0d0d; color: #f3f4f6; }
+        .nav-btn { background-color: transparent; border-radius: 0.75rem; text-align: right; transition: all 0.2s; }
+        .nav-btn:hover { background-color: #1f2937; }
+        .nav-btn.active { background-color: #1f2937; border-right: 4px solid #38bdf8; }
+        .alert-container { position: fixed; top: 20px; right: 20px; z-index: 50; }
     </style>
 </head>
-<body class="text-gray-100 bg-black min-h-screen">
+<body class="min-h-screen flex">
 
-    <div class="flex min-h-screen">
-        <div class="sidebar w-64 p-6 hidden md:block border-r border-gray-800 sticky top-0 h-screen">
-            <h1 class="text-2xl font-black tracking-widest text-sky-400 mb-8 border-b border-gray-700 pb-4">Rxstore Admin</h1>
-            <nav class="space-y-3">
-                <button onclick="changeAdminView('config')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="config">
-                    <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
-                    GitHub Configuration
-                </button>
-                <div class="py-2 border-t border-gray-800 my-3"></div>
-                <button onclick="changeAdminView('products')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="products">
-                    <i data-lucide="package" class="w-5 h-5 mr-3 text-sky-400"></i>
-                    Products Management
-                </button>
-                <button onclick="changeAdminView('services')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="services">
-                    <i data-lucide="users" class="w-5 h-5 mr-3 text-purple-400"></i>
-                    Services Management
-                </button>
-                <div class="py-2 border-t border-gray-800 my-3"></div>
-                <button onclick="changeAdminView('contact')" class="nav-btn w-full flex items-center p-3 rounded-lg text-left text-sm font-medium text-gray-400 hover:bg-gray-700 transition duration-200" data-view="contact">
-                    <i data-lucide="phone-call" class="w-5 h-5 mr-3"></i>
-                    Manage My Contact Info
-                </button>
-            </nav>
-            <div id="live-status" class="mt-8 p-3 bg-gray-700/50 rounded-lg text-xs text-center text-red-400 font-bold">
-                (Token Not Entered)
+    <div id="alert-container" class="alert-container"></div>
+
+    <aside class="w-64 bg-gray-900 border-l border-gray-800 p-6 flex flex-col fixed h-full z-10">
+        <h2 class="text-3xl font-bold text-sky-400 mb-8 border-b border-gray-800 pb-4">لوحة التحكم</h2>
+        
+        <div class="mb-8">
+            <div class="flex items-center space-x-2 justify-end">
+                <span id="github-status-text" class="text-sm font-medium text-red-400">غير متصل</span>
+                <div id="github-status-indicator" class="w-3 h-3 rounded-full bg-red-500"></div>
             </div>
+            <p class="text-xs text-gray-500 mt-1 text-right">حالة اتصال GitHub</p>
         </div>
 
-        <main class="flex-1 p-4 md:p-10">
-            <h2 class="text-3xl font-extrabold text-white mb-8" id="admin-title">Admin Panel</h2>
+        <nav class="space-y-3 flex-grow">
+            <button onclick="changeAdminView('dashboard')" class="nav-btn w-full flex items-center p-3" data-view="dashboard">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 ml-3 text-white"></i>
+                لوحة القيادة
+            </button>
             
-            <div id="admin-view">
-                </div>
-        </main>
-    </div>
-    
-    <script src="admin.js"></script>
+            <div class="py-2 border-t border-gray-800 my-3"></div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            if (typeof changeAdminView === 'function') {
-                changeAdminView('config'); // Start with the config screen
-            }
-        });
-    </script>
+            <button onclick="changeAdminView('products')" class="nav-btn w-full flex items-center p-3" data-view="products">
+                <i data-lucide="package" class="w-5 h-5 ml-3 text-sky-400"></i>
+                إدارة المنتجات
+            </button>
+            <button onclick="changeAdminView('services')" class="nav-btn w-full flex items-center p-3" data-view="services">
+                <i data-lucide="users" class="w-5 h-5 ml-3 text-purple-400"></i>
+                إدارة الخدمات
+            </button>
+            
+            <div class="py-2 border-t border-gray-800 my-3"></div>
+
+            <button onclick="changeAdminView('contact')" class="nav-btn w-full flex items-center p-3" data-view="contact">
+                <i data-lucide="phone-call" class="w-5 h-5 ml-3 text-green-400"></i>
+                إدارة التواصل معي
+            </button>
+            
+            <div class="py-2 border-t border-gray-800 my-3"></div>
+
+        </nav>
+        
+        <button onclick="changeAdminView('settings')" class="nav-btn w-full flex items-center p-3 mt-auto" data-view="settings">
+            <i data-lucide="settings" class="w-5 h-5 ml-3 text-gray-500"></i>
+            إعدادات GitHub
+        </button>
+
+    </aside>
+
+    <main class="flex-grow mr-64 p-8">
+        
+        <div id="admin-content">
+
+            <div id="settings-view" class="p-8 hidden" data-view="settings">
+                <h1 class="text-3xl font-bold text-gray-200 mb-6">إعدادات اتصال GitHub</h1>
+                <p class="text-gray-400 mb-8">أدخل بيانات مستودع GitHub الخاص بك. سيتم حفظ البيانات في متصفحك بشكل آمن.</p>
+
+                <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                    <form id="github-config-form">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="pat" class="block text-sm font-medium text-gray-300 mb-2">GitHub Personal Access Token (PAT)</label>
+                                <input type="password" id="pat" required class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+                            </div>
+                            <div>
+                                <label for="owner" class="block text-sm font-medium text-gray-300 mb-2">اسم المالك (Owner/Username)</label>
+                                <input type="text" id="owner" required class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+                            </div>
+                            <div>
+                                <label for="repo" class="block text-sm font-medium text-gray-300 mb-2">اسم المستودع (Repository Name)</label>
+                                <input type="text" id="repo" required class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+                            </div>
+                            <div>
+                                <label for="branch" class="block text-sm font-medium text-gray-300 mb-2">اسم الفرع (Branch Name - عادةً main أو gh-pages)</label>
+                                <input type="text" id="branch" value="main" required class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-sky-500 focus:border-sky-500 text-white transition">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+                            <i data-lucide="save" class="w-5 h-5 ml-2"></i>
+                            <span>حفظ الإعدادات والاتصال</span>
+                        </button>
+                    </form>
+                    
+                    <button onclick="clearLocalStorage()" class="mt-4 w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+                        <i data-lucide="trash-2" class="w-5 h-5 ml-2"></i>
+                        <span>مسح الإعدادات المحلية</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="dashboard-view" class="p-8 hidden" data-view="dashboard">
+                <h1 class="text-3xl font-bold text-gray-200 mb-6">مرحباً بك في لوحة تحكم Rxstore</h1>
+                <p class="text-gray-400 mb-8">ابدأ باختيار أحد الأقسام من القائمة الجانبية لإدارة محتوى موقعك.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <i data-lucide="package" class="w-8 h-8 text-sky-400"></i>
+                            <span id="product-count" class="text-4xl font-bold">0</span>
+                        </div>
+                        <p class="text-gray-400 mt-2">منتج منشور</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <i data-lucide="users" class="w-8 h-8 text-purple-400"></i>
+                            <span id="service-count" class="text-4xl font-bold">0</span>
+                        </div>
+                        <p class="text-gray-400 mt-2">خدمة مجتمعية متاحة</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <i data-lucide="phone-call" class="w-8 h-8 text-green-400"></i>
+                            <span class="text-2xl font-bold">جاهز</span>
+                        </div>
+                        <p class="text-gray-400 mt-2">روابط التواصل</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="products-view" class="p-8 hidden" data-view="products">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold text-sky-400">إدارة المنتجات</h1>
+                    <button onclick="showProductModal('add')" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-xl flex items-center space-x-2">
+                        <i data-lucide="plus" class="w-5 h-5 ml-2"></i>
+                        <span>إضافة منتج جديد</span>
+                    </button>
+                </div>
+                <div id="products-list" class="space-y-4">
+                    <p class="text-center text-gray-500 py-10" id="products-empty">لا توجد منتجات منشورة حالياً.</p>
+                </div>
+            </div>
+
+            <div id="services-view" class="p-8 hidden" data-view="services">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold text-purple-400">إدارة الخدمات المجتمعية</h1>
+                    <button onclick="showServiceModal('add')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-xl flex items-center space-x-2">
+                        <i data-lucide="plus" class="w-5 h-5 ml-2"></i>
+                        <span>إضافة خدمة جديدة</span>
+                    </button>
+                </div>
+                <div id="services-list" class="space-y-4">
+                    <p class="text-center text-gray-500 py-10" id="services-empty">لا توجد خدمات منشورة حالياً.</p>
+                </div>
+            </div>
+            
+            <div id="contact-view" class="p-8 hidden" data-view="contact">
+                <h1 class="text-3xl font-bold text-green-400 mb-6">إدارة معلومات التواصل</h1>
+                <p class="text-gray-400 mb-8">قم بتحديث روابط التواصل الرئيسية التي تظهر في موقعك (مثل صفحة اتصل بنا وخدمة بناء موقعك).</p>
+
+                <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
+                    <form id="contact-update-form">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="contact-whatsapp" class="block text-sm font-medium text-gray-300 mb-2">رابط الواتساب الكامل (مثال: https://wa.me/+966...)</label>
+                                <input type="url" id="contact-whatsapp" required class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-green-500 focus:border-green-500 text-white transition">
+                            </div>
+                            <div>
+                                <label for="contact-instagram" class="block text-sm font-medium text-gray-300 mb-2">رابط انستجرام الكامل (مثال: https://instagram.com/user)</label>
+                                <input type="url" id="contact-instagram" required class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-green-500 focus:border-green-500 text-white transition">
+                            </div>
+                            <div>
+                                <label for="contact-telegram" class="block text-sm font-medium text-gray-300 mb-2">رابط تيليجرام الكامل (مثال: https://t.me/user)</label>
+                                <input type="url" id="contact-telegram" required class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-green-500 focus:border-green-500 text-white transition">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex items-center justify-center space-x-2">
+                            <i data-lucide="upload" class="w-5 h-5 ml-2"></i>
+                            <span>تحديث معلومات التواصل والنشر</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+
+            <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+                <div id="product-modal" class="bg-gray-800 p-6 rounded-xl w-full max-w-2xl shadow-2xl relative hidden">
+                    <h2 id="product-modal-title" class="text-2xl font-bold mb-4 text-sky-400">إضافة منتج جديد</h2>
+                    <form id="product-form" class="space-y-4">
+                        <input type="hidden" id="product-id">
+                        <input type="hidden" id="product-action-type">
+
+                        <div><label for="product-title" class="block text-sm font-medium text-gray-300">اسم المنتج</label><input type="text" id="product-title" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                        <div><label for="product-category" class="block text-sm font-medium text-gray-300">التصنيف</label><input type="text" id="product-category" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                        <div><label for="product-price" class="block text-sm font-medium text-gray-300">السعر ($)</label><input type="number" id="product-price" step="0.01" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                        <div><label for="product-affiliate" class="block text-sm font-medium text-gray-300">رابط الشراء (Affiliate/Buy URL)</label><input type="url" id="product-affiliate" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                        <div><label for="product-image" class="block text-sm font-medium text-gray-300">رابط الصورة الرئيسية</label><input type="url" id="product-image" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                        <div><label for="product-gallery" class="block text-sm font-medium text-gray-300">روابط صور المعرض (افصل بينها بفاصلة ,)</label><textarea id="product-gallery" rows="2" class="w-full p-3 rounded-lg bg-gray-700 text-white"></textarea></div>
+                        <div><label for="product-description" class="block text-sm font-medium text-gray-300">الوصف التفصيلي</label><textarea id="product-description" rows="4" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></textarea></div>
+
+                        <div class="flex justify-end space-x-4 pt-4">
+                            <button type="button" onclick="closeModal()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg">إلغاء</button>
+                            <button type="submit" id="product-submit-btn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                                <i data-lucide="upload" class="w-5 h-5 ml-2"></i> نشر المنتج
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="service-modal" class="bg-gray-800 p-6 rounded-xl w-full max-w-3xl shadow-2xl relative hidden">
+                    <h2 id="service-modal-title" class="text-2xl font-bold mb-4 text-purple-400">إضافة خدمة جديدة</h2>
+                    <form id="service-form" class="space-y-4">
+                        <input type="hidden" id="service-id">
+                        <input type="hidden" id="service-action-type">
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label for="service-title" class="block text-sm font-medium text-gray-300">عنوان الخدمة</label><input type="text" id="service-title" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                            <div><label for="service-provider" class="block text-sm font-medium text-gray-300">اسم مقدم الخدمة</label><input type="text" id="service-provider" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                        </div>
+
+                        <div><label for="service-price" class="block text-sm font-medium text-gray-300">السعر المبدئي ($)</label><input type="number" id="service-price" step="0.01" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                        <div><label for="service-short-desc" class="block text-sm font-medium text-gray-300">وصف قصير (يظهر في القائمة)</label><textarea id="service-short-desc" rows="2" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></textarea></div>
+                        <div><label for="service-long-desc" class="block text-sm font-medium text-gray-300">وصف تفصيلي كامل</label><textarea id="service-long-desc" rows="4" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></textarea></div>
+
+                        <h3 class="text-xl font-semibold mt-6 text-gray-300">معلومات التواصل لمقدم الخدمة</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div><label for="service-whatsapp" class="block text-sm font-medium text-gray-300">رقم الواتساب (بدون تنسيق)</label><input type="text" id="service-whatsapp" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                            <div><label for="service-instagram" class="block text-sm font-medium text-gray-300">معرف انستجرام (@user)</label><input type="text" id="service-instagram" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                            <div><label for="service-telegram" class="block text-sm font-medium text-gray-300">معرف تيليجرام (@user)</label><input type="text" id="service-telegram" required class="w-full p-3 rounded-lg bg-gray-700 text-white"></div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mt-6 text-gray-300">معرض الأعمال (Portfolio)</h3>
+                        <div><label for="service-portfolio" class="block text-sm font-medium text-gray-300">روابط صور Portfolio (افصل بينها بفاصلة ,)</label><textarea id="service-portfolio" rows="3" class="w-full p-3 rounded-lg bg-gray-700 text-white"></textarea></div>
+
+
+                        <div class="flex justify-end space-x-4 pt-4">
+                            <button type="button" onclick="closeModal()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg">إلغاء</button>
+                            <button type="submit" id="service-submit-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                                <i data-lucide="upload" class="w-5 h-5 ml-2"></i> نشر الخدمة
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script src="admin.js"></script>
+    <script> lucide.createIcons(); </script>
 </body>
 </html>
